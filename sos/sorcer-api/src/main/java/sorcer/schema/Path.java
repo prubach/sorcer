@@ -1,8 +1,6 @@
 package sorcer.schema;
-/**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+/*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +32,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(METHOD)
 @Retention(RUNTIME)
 public @interface Path {
+    public static final String DEFAULT = "DEFAULT_PATH";
+
     /**
      * Path in context
      */
-    public String value();
+    public String value() default DEFAULT;
 }
