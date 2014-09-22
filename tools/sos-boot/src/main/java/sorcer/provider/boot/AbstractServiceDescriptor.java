@@ -35,6 +35,7 @@ import sorcer.container.core.ConfiguringModule;
 import sorcer.container.core.SingletonModule;
 import sorcer.core.service.Configurer;
 import sorcer.core.service.ServiceModule;
+import sorcer.util.ClassLoaders;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -42,6 +43,7 @@ import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.security.AllPermission;
 import java.security.Permission;
 import java.security.Policy;
@@ -118,10 +120,9 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         if (codebase != null && !codebase.isEmpty()) {
             annotator = new ClassAnnotator(codebase.toArray(new URL[codebase.size()]));
         }
-
+        ClassLoader classLoader = null;
         try {
             Set<URI> classpath = getClasspath();
-            ClassLoader classLoader;
             if (classpath != null && !classpath.isEmpty()) {
                 classLoader = getServiceClassLoader(currentClassLoader, annotator, classpath);
                 currentThread.setContextClassLoader(classLoader);
@@ -165,6 +166,14 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
             Injector injector = parentInjector.createChildInjector(modules);
             Object impl = injector.getInstance(implClass);
             return (new Service(impl, null, this));
+        } catch (NoClassDefFoundError cnfe) {
+            if (classLoader instanceof URLClassLoader) {
+                StringBuilder sb = new StringBuilder("Tried loading from: \n");
+                for (URL url : ((URLClassLoader) classLoader).getURLs())
+                    sb.append(url + "\n");
+                logger.error(sb.toString());
+            }
+            throw cnfe;
         } finally {
             currentThread.setContextClassLoader(currentClassLoader);
         }

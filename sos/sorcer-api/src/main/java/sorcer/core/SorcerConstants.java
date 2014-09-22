@@ -283,7 +283,9 @@ public interface SorcerConstants {
 
     public static final String S_SORCER_LOCAL_HOSTADDR= "sorcer.local.hostaddress";
 
-	/**
+    public static final String S_JNA_LIB_PATH = "jna.library.path";
+
+    /**
 	 * sorcer.env file name (or path)
 	 */
 	String S_KEY_SORCER_ENV = "sorcer.env.file";
@@ -1227,6 +1229,7 @@ public interface SorcerConstants {
     String MDC_PROVIDER_ID = "prvId";
     String START_PACKAGE = "com.sun.jini.start";
     String REMOTE_LOGGER_INTERFACE = "RemoteLogger";
+    String S_SHARED_DIRS_FILE = "sorcer.sharedDirs.file";
 }
 
 

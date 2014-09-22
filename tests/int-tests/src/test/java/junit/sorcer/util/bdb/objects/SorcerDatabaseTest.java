@@ -67,11 +67,12 @@ public class SorcerDatabaseTest {
 	
 	@BeforeClass 
 	public static void setUpOnce() throws Exception {
-		dbDir = new File("tmp/ju-sorcer-db");
+        String tempDir = System.getProperty("java.io.tmpdir");
+        String homeDir = tempDir + "/ju-sorcer-db";
+		dbDir = new File(homeDir);
         IOUtils.deleteDir(dbDir);
-        System.out.println("Sorcer DB dir: " + dbDir.getCanonicalPath());
+        //System.out.println("Sorcer DB dir: " + dbDir.getCanonicalPath());
 		dbDir.mkdirs();
-		String homeDir = "tmp/ju-sorcer-db";
 		runner = new SorcerDatabaseRunner(homeDir);
         runner.run();
 	}
@@ -85,8 +86,9 @@ public class SorcerDatabaseTest {
                 // Always attempt to close the database cleanly.
                 runner.close();
             } catch (Exception e) {
-                System.err.println("Exception during database close:");
-                e.printStackTrace();
+                System.err.println("Trying again to close database: " + e.getMessage());
+                Thread.sleep(1000);
+                runner.close();
             }
         }
 	}

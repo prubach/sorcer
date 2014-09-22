@@ -208,9 +208,9 @@ public class SorcerDatabase {
     public void close()
         throws DatabaseException {
         // Close secondary databases, then primary databases.
+        runtimeByProviderNameDb.close();
         exertionDb.close();
         runtimeDb.close();
-        runtimeByProviderNameDb.close();
         contextDb.close();
         tableDb.close();
         varDb.close();

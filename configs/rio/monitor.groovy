@@ -81,9 +81,9 @@ class MonitorConfig {
         }
     }
 
-    ServiceResourceSelector getServiceResourceSelector() {
+/*    ServiceResourceSelector getServiceResourceSelector() {
         return new LeastActiveSelector()
-    }
+    }*/
 
     Entry[] getServiceUIs(String codebase) {
         String uiClass = 'org.rioproject.tools.ui.ServiceUIWrapper'

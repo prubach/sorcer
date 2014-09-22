@@ -84,7 +84,8 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		}
 		UpdateThread ut = new UpdateThread(uuid, uuidObject);
         Uuid id = ut.getUuid();
-        ut.start();
+        //ut.start();
+        ut.run();
         return id;
 	}
 	
@@ -105,11 +106,10 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
     }
 
     private void waitWhileObjectIsModified(Uuid uuid) {
-        logger.debug("Init wait for uuid: " + uuid);
         while (objectsBeingModified.contains(uuid)) {
             try {
-                Thread.sleep(25);
                 logger.debug("waiting for uuid: " + uuid);
+                Thread.sleep(25);
             } catch (InterruptedException ie) {
                 logger.error("Interrupted in getObject while waiting for object to be modified: " + uuid);
             }
@@ -136,10 +136,20 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 
     public Object getObject(Uuid uuid) {
         waitWhileObjectIsModified(uuid);
-        logger.info("Getting object: " + uuid);
+        logger.debug("Getting object: " + uuid);
         StoredMap<UuidKey, UuidObject> uuidObjectMap = views.getUuidObjectMap();
-		UuidObject uuidObj = uuidObjectMap.get(new UuidKey(uuid));
         int tries = 0;
+        while (uuidObjectMap==null && tries<20) {
+            logger.debug("Didn't get UuidObjectMap, trying: " + tries);
+            try {
+                Thread.sleep(25);
+            } catch (InterruptedException ie) {
+            }
+            views.getUuidObjectMap();
+            tries++;
+        }
+		UuidObject uuidObj = uuidObjectMap.get(new UuidKey(uuid));
+        /*int tries = 0;
         while (uuidObj==null && tries<20) {
             try {
                 Thread.sleep(25);
@@ -147,7 +157,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
             }
             uuidObj = uuidObjectMap.get(new UuidKey(uuid));
             tries++;
-        }
+        }*/
 		return (uuidObj!=null ? uuidObj.getObject() : null);
 	}
 	
