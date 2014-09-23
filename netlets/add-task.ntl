@@ -4,7 +4,9 @@ codebase mvn://org.sorcersoft.sorcer:ex6-api
 
 import sorcer.arithmetic.provider.Adder;
 
-task("f4", sig("add", Adder.class),
+Job job = job("job", task("f4", sig("add", Adder.class),
 	context("add",
 		input(path("arg/x1"), 10.0d), 
-		input(path("arg/x2"), 50.0d)));
+		input(path("arg/x2"), 50.0d))) , strategy(Access.PUSH, Flow.AUTO, Monitor.TRUE, Provision.TRUE, Wait.TRUE))
+
+;

@@ -1,15 +1,12 @@
 #!/usr/bin/env nsh
 
-codebase mvn://org.sorcersoft.sorcer:ex1-api
+codebase artifact:org.sorcersoft.sorcer/ex1-api/1.0-SNAPSHOT
+codebase artifact:org.sorcersoft.sorcer/ex1-rdl/1.0-SNAPSHOT
 
-import sorcer.core.context.ServiceContext;
-import sorcer.core.exertion.ServiceTask;
-import sorcer.core.signature.ServiceSignature;
 import sorcer.ex1.requestor.RequestorMessage;
-import sorcer.service.Context;
-import sorcer.service.Signature;
-import sorcer.service.Task;
-import sorcer.service.Signature.Operation;
+import sorcer.core.context.ServiceContext;
+import sorcer.core.signature.ServiceSignature;
+import sorcer.core.exertion.NetTask;
 
 String hostname, ipAddress;
 InetAddress inetAddress = InetAddress.getLocalHost();
@@ -30,4 +27,4 @@ Signature signature3 = new ServiceSignature("getCanonicalHostName",
 Signature signature4 = new ServiceSignature("getTimestamp",
 		sorcer.ex1.WhoIsIt.class, providername, Operation.POSTPROCESS);
 
-Task task = new ServiceTask("Who Is It?", context, signature1, signature2, signature3, signature4);
+task = new NetTask("Who Is It?", context, signature1, signature2, signature3, signature4);

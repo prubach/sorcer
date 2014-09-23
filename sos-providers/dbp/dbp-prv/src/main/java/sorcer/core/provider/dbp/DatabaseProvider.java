@@ -248,21 +248,27 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		}
 		
 		public void run() {
+            StoredMap storedMap = null;
+            UuidKey key = null;
 			try {
-                StoredMap storedMap = null;
+                key = new UuidKey(uuid);
                 if (object instanceof Context) {
                     storedMap = views.getContextMap();
-                    storedMap.replace(new UuidKey(uuid), object);
+                    storedMap.replace(key, object);
                 } else if (object instanceof Exertion) {
                     storedMap = views.getExertionMap();
-                    storedMap.replace(new UuidKey(uuid), object);
+                    storedMap.replace(key, object);
                 } else if (object instanceof ModelTable) {
                     storedMap = views.getTableMap();
-                    storedMap.replace(new UuidKey(uuid), object);
+                    storedMap.replace(key, object);
                 } else if (object instanceof Object) {
                     storedMap = views.getUuidObjectMap();
-                    storedMap.replace(new UuidKey(uuid), object);
+                    storedMap.replace(key, object);
                 }
+            } catch (IllegalArgumentException ie) {
+                logger.error("Problem updating object with key: " + key.toString() + "\n" + storedMap.get(key).toString());
+                objectsBeingModified.remove(this.uuid);
+                throw (ie);
             } finally {
                 objectsBeingModified.remove(this.uuid);
             }

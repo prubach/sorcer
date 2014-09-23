@@ -80,6 +80,7 @@ public class NshTest {
 
         assertTrue(res.contains(SorcerEnv.getActualSpaceName()));
         assertFalse(res.contains(EXCEPTION));
+        logger.info("Err:\n" + result.getErr());
         assertFalse(result.getErr().contains(EXCEPTION));
     }
 
@@ -93,6 +94,7 @@ public class NshTest {
 
         assertTrue(res.contains(SorcerEnv.getActualDatabaseStorerName()));
         assertFalse(res.contains(EXCEPTION));
+        logger.info("Err:\n" + result.getErr());
         assertFalse(result.getErr().contains(EXCEPTION));
     }
 
