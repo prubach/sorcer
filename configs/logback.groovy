@@ -83,7 +83,7 @@ logger("sorcer.core.provider.rendezvous.ServiceJobber", info, [jobber])
 logger("sorcer.core.provider.rendezvous.ServiceSpacer", info, [spacer])
 logger("sorcer.core.provider.ServiceTasker", info, [tasker])
 logger("sorcer.core.provider.logger", info, [remoteLogger])
-logger("sorcer.core.provider.dbp", debug, [databaseProvider])
+//logger("sorcer.core.provider.dbp", debug, [databaseProvider])
 
 // do not log to the main logger ( additive=false)
 logger("sorcer.core.provider.cataloger", info, [cataloger], false)
@@ -97,14 +97,14 @@ logger("sorcer.test", DEBUG)
 logger("private", DEBUG)
 logger("sorcer.arithmetic", DEBUG)
 
-logger("sorcer.core.provider.logger", DEBUG)
-logger("sorcer.platform.logger", DEBUG)
-logger("sorcer.core.dispatch", DEBUG)
+//logger("sorcer.core.provider.logger", DEBUG)
+//logger("sorcer.platform.logger", DEBUG)
+//logger("sorcer.core.dispatch", DEBUG)
 
 logger("sorcer.core.invoker.MethodInvoker", INFO)
 logger("sorcer.modeling.vfe", DEBUG)
 
-logger("mil.afrl.mstc.engineering.optimization.conmin.provider", DEBUG)
+///logger("mil.afrl.mstc.engineering.optimization.conmin.provider", DEBUG)
 /*
 logger("sorcer.resolver.ProjectArtifactResolver", DEBUG)
 logger("sorcer.launcher.SorcerLauncher", DEBUG)
