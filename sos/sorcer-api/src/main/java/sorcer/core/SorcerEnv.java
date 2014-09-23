@@ -1952,7 +1952,7 @@ public class SorcerEnv {
     }
 
     public File getResolverCache() {
-        return new File(getDataDir(), "resolver.ser");
+        return new File(getHomeDir(), "databases/resolver.ser");
     }
 
     /**

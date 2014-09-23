@@ -418,7 +418,12 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		} else {
 			throw new ContextException("Wrong update object Uuid: " + id);
 		}
-		uuid = update(uuid, object);
+        try {
+            uuid = update(uuid, object);
+        } catch (IllegalArgumentException e) {
+            logger.error("GOT EXCEPTION in contextUpdate for:" + id + "\nObject to be updated: " + object.toString() +"CTX:\n" + context);
+            throw e;
+        }
 		Store type = getStoreType(object);
 		URL sdbUrl = getDatabaseURL(type, uuid);
 		if (context.getReturnPath() != null)

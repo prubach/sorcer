@@ -494,6 +494,16 @@
         </files>
         <fileSets>
 
+        <!-- netlets -->
+        <fileSet>
+            <directory>${basedir}/../examples/</directory>
+            <outputDirectory>/netlets</outputDirectory>
+            <includes>
+                <include>**/**/*.ntl</include>
+            </includes>
+            <filtered>false</filtered>
+        </fileSet>
+
         <!-- examples -->
         <fileSet>
             <directory>${basedir}/../examples/</directory>
