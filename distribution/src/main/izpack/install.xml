@@ -88,6 +88,7 @@
                 <include name="deploy/**/*"/>
                 <include name="lib/**/*"/>
                 <include name="logs/**/*"/>
+                <include name="netlets/*"/>
                 <exclude name="lib/apache-ant"/>
                 <exclude name="lib/apache-ant/**/*"/>
                 <exclude name="lib/apache-maven"/>
@@ -105,12 +106,22 @@
                 <include name="deploy/**/*"/>
                 <include name="lib/**/*"/>
                 <include name="logs/**/*"/>
+                <include name="netlets/*"/>
                 <exclude name="lib/apache-ant"/>
                 <exclude name="lib/apache-ant/**/*"/>
                 <exclude name="lib/apache-maven"/>
                 <exclude name="lib/apache-maven/**/*"/>
                 <os family="windows"/>
             </fileset>
+
+            <executable targetfile="$INSTALL_PATH/netlets/f1.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/netlets/f1a.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/netlets/f1b.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/netlets/f2.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/netlets/f4.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/netlets/run.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/netlets/acc_run.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/netlets/caller_run.ntl" os="unix"/>
 
             <executable targetfile="$INSTALL_PATH/bin/sorcer-boot" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/sorcer-browser" os="unix"/>
@@ -167,7 +178,6 @@
                 <os family="unix"/>
                 <os family="mac"/>
             </fileset>
-            <executable targetfile="$INSTALL_PATH/examples/account/account-req/run.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex0/ex0-req/run.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1a.ntl" os="unix"/>

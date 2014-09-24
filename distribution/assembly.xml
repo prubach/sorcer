@@ -496,10 +496,10 @@
 
         <!-- netlets -->
         <fileSet>
-            <directory>${basedir}/../examples/</directory>
+            <directory>${basedir}/target/netlets</directory>
             <outputDirectory>/netlets</outputDirectory>
             <includes>
-                <include>**/**/*.ntl</include>
+                <include>*.ntl</include>
             </includes>
             <filtered>false</filtered>
         </fileSet>

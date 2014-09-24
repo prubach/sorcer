@@ -31,7 +31,7 @@
         <v.groovy>2.2.1</v.groovy>
         <v.sigar>1.6.4</v.sigar>
         <v.lockmgr>0.2-3</v.lockmgr>
-        <v.slf4j>1.7.7</v.slf4j>
+        <v.slf4j>1.7.5</v.slf4j>
         <v.logback>1.0.13</v.logback>
         <v.junit>4.11</v.junit>
         <v.plexus>3.0.15</v.plexus>

@@ -689,9 +689,28 @@
                             </tasks>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-ntls</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${basedir}/target/netlets"/>
+                                <copy todir="${basedir}/target/netlets">
+                                <!--<mkdir dir="${basedir}/target/sorcer-${project.version}/sorcer-${project.version}/netlets"/>
+                                <copy todir="${basedir}/target/sorcer-${project.version}/sorcer-${project.version}/netlets">-->
+                                    <fileset dir="${basedir}/../examples/">
+                                        <include name="**/*.ntl"/>
+                                    </fileset>
+                                    <mapper type="flatten"/>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 

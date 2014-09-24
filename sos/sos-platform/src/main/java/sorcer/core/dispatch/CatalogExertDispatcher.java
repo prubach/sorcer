@@ -118,7 +118,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
     protected Task execServiceTask(Task task) throws ExertionException {
         logger.info("Starting execServiceTask for: " + task.getName());
         Task result = null;
-        int maxTries = 5;
+        int maxTries = 6;
         int tried=0;
         try {
             if (((NetSignature) task.getProcessSignature()).getService()!=null) {
@@ -227,10 +227,6 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                                         + getClass().getName());
             }
             logger.debug("got result: {}", result);
-        //}
-        //catch (ExertionException ee) {
-        //    task.reportException(ee);
-        //    throw ee;
         } catch (Exception re) {
             System.out.println("+++++++++++++++Dispatcher failed for task, tried: " + tried + " : "
                     + xrt.getName());
