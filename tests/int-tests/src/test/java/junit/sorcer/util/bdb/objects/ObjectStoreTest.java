@@ -28,6 +28,8 @@ import org.junit.Test;
 
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import sorcer.core.context.PositionalContext;
+import sorcer.core.context.ServiceContext;
 import sorcer.core.provider.DatabaseStorer;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
@@ -123,8 +125,8 @@ public class ObjectStoreTest {
 	
 	@Test
 	public void updateContextTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
-		Context data = cxt("store", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
-		Context updatedData = cxt("store", in("arg/x3", par("x3", 10.0)), in("arg/x4", par("x4", 20.0)));
+		Context data = cxt("storeUpd", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
+		//Context updatedData = cxt("storeUpd", in("arg/x3", par("x3", 10.0)), in("arg/x4", par("x4", 20.0)));
 		
 		//store task to be executed for data
 		//URL objURL = store(data);
@@ -136,23 +138,47 @@ public class ObjectStoreTest {
 	
 		objectStoreTask = exert(objectStoreTask);
 		Uuid objUuid = (Uuid)value(context(objectStoreTask), DatabaseStorer.object_uuid);
+        logger.warn("updateContextTest, stored id: " + objUuid);
+
+
+        //retrieve task to be executed for updatedData in the previous task
+        Task objectRetrieveTask = task(
+                "retrieve",
+                sig("contextRetrieve", DatabaseStorer.class, null,
+                        Sorcer.getActualDatabaseStorerName()),
+                SdbUtil.getRetrieveContext(objUuid, DatabaseStorer.Store.context));
+
+        objectRetrieveTask = exert(objectRetrieveTask);
+        objUuid = (Uuid)value(context(objectRetrieveTask), DatabaseStorer.object_uuid);
+        Context ctxRtr = (Context)value(context(objectRetrieveTask), DatabaseStorer.object_retrieved);
+        logger.warn("updateContextTest, retrieved id: " + objUuid);
+        logger.warn("updateContextTest, retrieved data: " + ctxRtr.toString());
+
+        ctxRtr.putInValue("arg/x5", 50d);
+        Context updatedData = ctxRtr;
+        logger.warn("updateContextTest, retrieved moded data: " + ctxRtr.toString());
+
 
 		//updated task to be executed for updatedData
 		Task objectUpdateTask = task(
 				"update",
 				sig("contextUpdate", DatabaseStorer.class, null, Sorcer.getActualDatabaseStorerName()),
-                SdbUtil.getUpdateContext(updatedData, objUuid));
+                SdbUtil.getUpdateContext(ctxRtr, objUuid));
 		
 		objectUpdateTask = exert(objectUpdateTask);
-		
+        objUuid = (Uuid)value(context(objectUpdateTask), DatabaseStorer.object_uuid);
+        logger.warn("updateContextTest, updated id: " + objUuid);
+
 		//retrieve task to be executed for updatedData in the previous task
-		Task objectRetrieveTask = task(
+		objectRetrieveTask = task(
 				"retrieve",
 				sig("contextRetrieve", DatabaseStorer.class, null,
                         Sorcer.getActualDatabaseStorerName()),
                 SdbUtil.getRetrieveContext(objUuid, DatabaseStorer.Store.context));
 		
 		objectRetrieveTask = exert(objectRetrieveTask);
+        objUuid = (Uuid)value(context(objectRetrieveTask), DatabaseStorer.object_uuid);
+        logger.warn("updateContextTest, retrieved id: " + objUuid);
         logger.info("updated data: " + updatedData);
 		logger.info("retrieved updated data: " + value(context(objectRetrieveTask), DatabaseStorer.object_retrieved));
 		Assert.assertEquals(value(context(objectRetrieveTask),DatabaseStorer.object_retrieved), updatedData);
