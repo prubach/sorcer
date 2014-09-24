@@ -87,8 +87,6 @@ public class ArithmeticNoNetTest {
 				pipe(out(t5, "result/y"), in(t3, "arg/x2")));
 	}
 
-    // TODO - Problem with context value mappings
-    //@Ignore
     @Test
     public void contexterTest() throws Exception {
         Task cxtt = task("addContext", sig("getContext", createContext()),
@@ -101,8 +99,6 @@ public class ArithmeticNoNetTest {
 
     }
 
-    // TODO - Problem with context value mappings
-    //@Ignore
     @Test
     public void objectContexterTaskTest() throws Exception {
         Task t5 = task("t5", sig("add", AdderImpl.class),
