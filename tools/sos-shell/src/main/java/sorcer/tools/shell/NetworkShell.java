@@ -759,14 +759,16 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 	public static List<ServiceRegistrar> getRegistrars() {
         // Remove non-existent registrars                                                                                       T
         List<ServiceRegistrar> regsToRemove = new ArrayList<ServiceRegistrar>();
-        for (ServiceRegistrar sr : registrars) {
-            try {
-                sr.getGroups();
-            } catch (Exception e) {
-                regsToRemove.add(sr);
+        synchronized (registrars) {
+            for (ServiceRegistrar sr : registrars) {
+                try {
+                    sr.getGroups();
+                } catch (Exception e) {
+                    regsToRemove.add(sr);
+                }
             }
+            if (!regsToRemove.isEmpty()) registrars.removeAll(regsToRemove);
         }
-        if (!regsToRemove.isEmpty()) registrars.removeAll(regsToRemove);
         if (registrars.isEmpty()) {
             NetworkShell.getDisco().terminate();
             // start new lookup discovery
