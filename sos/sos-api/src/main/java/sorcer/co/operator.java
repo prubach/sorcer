@@ -27,6 +27,7 @@ import java.util.Set;
 
 import sorcer.co.tuple.AnnotatedEntry;
 import sorcer.co.tuple.Entry;
+import sorcer.co.tuple.FidelityEntry;
 import sorcer.co.tuple.StrategyEntry;
 import sorcer.co.tuple.Tuple1;
 import sorcer.co.tuple.Tuple2;
@@ -37,9 +38,14 @@ import sorcer.co.tuple.Tuple6;
 import sorcer.core.context.ListContext;
 import sorcer.service.Arg;
 import sorcer.service.ContextException;
+import sorcer.service.FidelityInfo;
 import sorcer.service.Strategy;
 import sorcer.util.Loop;
+//import sorcer.vfe.filter.TableReader;
+//import sorcer.vfe.util.Response;
+import sorcer.util.Table;
 
+@SuppressWarnings({ "rawtypes" })
 public class operator {
 
 	private static int count = 0;
@@ -99,12 +105,12 @@ public class operator {
 	public static <T> T[] array(T... elems) {
 		return elems;
 	}
-
-    public static Arg[] args(Arg... elems) {
-        return elems;
-    }
-
-    public static <T> Set<T> bag(T... elems) {
+	
+	public static Arg[] args(Arg... elems) {
+		return elems;
+	}
+	
+	public static <T> Set<T> bag(T... elems) {
 		return new HashSet<T>(list(elems));
 	}
 
@@ -128,7 +134,7 @@ public class operator {
 		return list;
 	}
 
-	public static List<String> Header(String... elems) {
+	public static List<String> header(String... elems) {
 		List<String> out = new Header<String>(elems.length);
 		for (String each : elems) {
 			out.add(each);
@@ -144,14 +150,14 @@ public class operator {
 		return out;
 	}
 
-    public static List<String> names(List<String>... nameLists) {
-        List<String> out = new ArrayList<String>();
-        for (List<String> each : nameLists) {
-            out.addAll(each);
-        }
-        return out;
-    }
-
+	public static List<String> names(List<String>... nameLists) {
+		List<String> out = new ArrayList<String>();
+		for (List<String> each : nameLists) {
+			out.addAll(each);
+		}
+		return out;
+	}
+	
 	public static <T1, T2> Tuple2<T1, T2> duo(T1 x1, T2 x2) {
 		return new Tuple2<T1, T2>(x1, x2);
 	}
@@ -163,6 +169,7 @@ public class operator {
 	public static <T2> Entry<T2> entry(String x1, T2 x2) {
 		return new Entry<T2>(x1, x2);
 	}
+	
 	public static <T2> Entry<T2> entry(String x1) {
 		return new Entry<T2>(x1, null);
 	}
@@ -187,6 +194,10 @@ public class operator {
 	public static <T1, T2, T3> Tuple3<T1, T2, T3> entry(T1 x1, T2 x2, T3 x3) {
 		return new Tuple3<T1, T2, T3>(x1, x2, x3);
 	}
+
+	public static FidelityEntry entry(String x1, FidelityInfo x3) {
+		return new FidelityEntry(x1, x3);
+	}
 	
 	public static StrategyEntry entry(String x1, Strategy x2) {
 		return new StrategyEntry(x1, x2);
@@ -198,6 +209,20 @@ public class operator {
 	
 	public static <T1, T2> T2 value(Tuple2<T1, T2> entry) {
 		return entry._2;
+	}
+		
+	public static <T extends List<?>> Table table(T... elems) {
+		int rowCount = elems.length;
+		int columnCount = ((List<?>) elems[0]).size();
+		Table out = new Table(rowCount, columnCount);
+		for (int i = 0; i < rowCount; i++) {
+			if (elems[i] instanceof Header) {
+				out.setColumnIdentifiers(elems[0]);
+			} else {
+				out.addRow((List<?>) elems[i]);
+			}
+		}
+		return out;
 	}
 
 	public static <T extends Object> ListContext<T> listContext(T... elems)
@@ -224,7 +249,7 @@ public class operator {
 		}
 		return map;
 	}
-	
+
 	public static Loop loop(int to) {
 		Loop loop = new Loop(to);
 		return loop;
@@ -253,7 +278,7 @@ public class operator {
 	public static List<String> names(Loop loop, String prefix) {
 		return loop.getNames(prefix);
 	}
-	
+		
 	public static String[] names(String name, int size, int from) {
 		List<String> out = new ArrayList<String>();
 		for (int i = from - 1; i < from + size - 1; i++) {
