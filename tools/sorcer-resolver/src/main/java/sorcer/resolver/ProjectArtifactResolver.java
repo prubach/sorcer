@@ -17,8 +17,7 @@ package sorcer.resolver;
 
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AbstractFileFilter;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
@@ -34,6 +33,7 @@ import java.util.*;
  */
 public class ProjectArtifactResolver implements ArtifactResolver {
     private static final Logger log = LoggerFactory.getLogger(ProjectArtifactResolver.class);
+    private static final IOFileFilter DIR_FILTER = FileFilterUtils.and(DirectoryFileFilter.INSTANCE, HiddenFileFilter.VISIBLE);
 
     private Collection<File> roots;
 
@@ -122,7 +122,7 @@ public class ProjectArtifactResolver implements ArtifactResolver {
     }
 
     protected File resolveRelative(File root, String artifactId) {
-        Collection<File> files = FileUtils.listFiles(root, new ArtifactIdFileFilter(artifactId), DirectoryFileFilter.INSTANCE);
+        Collection<File> files = FileUtils.listFiles(root, new ArtifactIdFileFilter(artifactId), DIR_FILTER);
         if (files.size() > 0) {
             File result = files.iterator().next();
             if (files.size() > 1) {
