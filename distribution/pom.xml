@@ -17,6 +17,12 @@
         <!-- sos -->
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-lib</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-installer</artifactId>
             <version>${project.version}</version>
         </dependency>

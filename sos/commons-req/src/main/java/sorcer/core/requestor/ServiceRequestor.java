@@ -231,6 +231,11 @@ abstract public class
         return prepareCodebase((ArtifactCoordinates[])null);
     }
 
+    public static Webster prepareCodebaseAsString(List<String> artifactCoords) {
+        String[] arrArtif = artifactCoords.toArray(new String[0]);
+        return prepareCodebase(arrArtif);
+    }
+
     public static Webster prepareCodebase(String[] artifactCoords) {
         if (artifactCoords==null)
             return prepareCodebase((ArtifactCoordinates[])null);
@@ -241,6 +246,12 @@ abstract public class
         }
         return prepareCodebase(acc);
     }
+
+    public static Webster prepareCodebase(List<ArtifactCoordinates> artifactCoords) {
+        ArtifactCoordinates[] arrArtif = artifactCoords.toArray(new ArtifactCoordinates[0]);
+        return prepareCodebase(arrArtif);
+    }
+
 
     public static Webster prepareCodebase(ArtifactCoordinates[] artifactCoords) {
         // Initialize system properties: configs/sorcer.env

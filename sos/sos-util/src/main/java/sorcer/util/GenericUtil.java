@@ -3837,7 +3837,7 @@ public class GenericUtil implements Serializable {
         try {
             return new URL("artifact:" + artifactCoordinates.replace(':', '/') + ";" + codebaseRoot);
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Invalid artifact " + artifactCoordinates, e);
+            throw new IllegalArgumentException("Invalid artifact " + artifactCoordinates + "\ncodebaseRoot: " + codebaseRoot, e);
         }
     }
 }

@@ -33,5 +33,6 @@
         <module>sorcer-resolver</module>
         <module>sorcer-pkg</module>
         <module>sorcer-junit</module>
+        <module>sorcer-lib</module>
     </modules>
 </project>
