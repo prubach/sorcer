@@ -23,5 +23,6 @@ public class HandlerInstaller {
     @javax.inject.Inject
     public HandlerInstaller(sorcer.protocol.ProtocolHandlerRegistry protocolHandlerRegistry) {
         protocolHandlerRegistry.register("sos", new sorcer.util.url.sos.Handler());
+        protocolHandlerRegistry.register("artifact", new org.rioproject.url.artifact.Handler());
     }
 }
