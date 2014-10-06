@@ -29,6 +29,11 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-webster</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -41,10 +46,6 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-rio-start</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
         </dependency>
         <dependency>
             <groupId>net.jini</groupId>

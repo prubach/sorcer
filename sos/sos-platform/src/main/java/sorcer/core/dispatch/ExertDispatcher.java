@@ -277,8 +277,10 @@ abstract public class ExertDispatcher implements Dispatcher {
 		int argIndex = -1;
 		try {
 			Map<String, String> toInMap = Contexts.getInPathsMap(toContext);
-			logger.debug("updating inputs in context toContext = {}", toContext);
-			logger.debug("updating based on = {}", toInMap);
+			if (toInMap.size()>0) {
+                logger.debug("updating inputs in context toContext = {}", toContext);
+                logger.debug("updating based on = {}", toInMap);
+            }
 			for (Map.Entry<String, String> e  : toInMap.entrySet()) {
                 toPath = e.getKey();
 				// find argument for parametric context
@@ -292,16 +294,17 @@ abstract public class ExertDispatcher implements Dispatcher {
 				toPathcp = e.getValue();
 				logger.debug("toPathcp = {}", toPathcp);
 				fromPath = Contexts.getContextParameterPath(toPathcp);
-				logger.debug("context ID = {}", Contexts.getContextParameterID(toPathcp));
-				fromContext = getSharedContext(fromPath, Contexts.getContextParameterID(toPathcp));
+                String ctxId = Contexts.getContextParameterID(toPathcp);
+				if (ctxId.length()>0) logger.error("context ID = {}", ctxId);
+				fromContext = getSharedContext(fromPath, ctxId);
 				logger.debug("fromContext = {}", fromContext);
 				logger.debug("before updating toContext: {}", toContext
                         + "\n>>> TO path: " + toPath + "\nfromContext: "
                         + fromContext + "\n>>> FROM path: " + fromPath);
                 if (fromContext != null) {
-					logger.debug("updating toContext: {}", toContext
-                            + "\n>>> TO path: " + toPath + "\nfromContext: "
-                            + fromContext + "\n>>> FROM path: " + fromPath);
+					//logger.debug("updating toContext: {}", toContext
+                    //        + "\n>>> TO path: " + toPath + "\nfromContext: "
+                     //       + fromContext + "\n>>> FROM path: " + fromPath);
                     // make parametric substitution if needed
                     if (argIndex >=0 ) {
                         Object args = toContext.getValue(Context.PARAMETER_VALUES);
@@ -319,7 +322,7 @@ abstract public class ExertDispatcher implements Dispatcher {
                         // make contextual substitution
                         Contexts.copyValue(fromContext, fromPath, toContext, toPath);
                     }
-//					logger.info("updated dataContext:\n" + toContext);
+					logger.debug("updated dataContext:\n" + toContext);
                 }
             }
         } catch (Exception ex) {
@@ -347,7 +350,9 @@ abstract public class ExertDispatcher implements Dispatcher {
             return null;
         if (id != null && id.length() > 0) {
             for (Context hc : sharedContexts) {
-                if (UuidFactory.create(id).equals(hc.getId()))
+                Uuid sharedCtxId = UuidFactory.create(id);
+                logger.debug("Comparing: " + sharedCtxId + " with: " + hc.getId() + "\n" + hc);
+                if (sharedCtxId.equals(hc.getId()))
                     return (ServiceContext) hc;
             }
         }

@@ -53,14 +53,17 @@ public class NetArithmeticReq {
 		Job job = new NetJob("1job1task");
 		job.addExertion(internal);
 		job.addExertion(task3);
-		
+
 		// make the result of second task as the first argument of task
 		// three
 		task2.getContext().connect("out/value", "arg1/value", task3.getContext());
 		// make the result of the first task as the second argument of task
 		// three
 		task1.getContext().connect("out/value", "arg2/value", task3.getContext());
-		
+
+        //logger.info("EXERTLETER defined job with context: " + job.getContext());
+        logger.info("EXERTLETER defined job: " + job.describe() + "\n" + job.getContext());
+
 		return job;
 	}
 	

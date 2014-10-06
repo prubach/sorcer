@@ -253,8 +253,8 @@ public class Arithmometer implements Serializable {
                     if (inputs.size() > 2) {
                         throw new ContextException("more than two arguments for subtraction");
                     }
-                    result = (Double) revalue(cxt.getInValueAt(1));
-                    result -= (Double) revalue(cxt.getInValueAt(2));
+                    result = (Double) revalue(inputs.get(1));
+                    result -= (Double) revalue(inputs.get(0));
                 }
             } else if (selector.equals(MULTIPLY)) {
                 result = inputs.get(0);
@@ -263,8 +263,8 @@ public class Arithmometer implements Serializable {
             } else if (selector.equals(DIVIDE)) {
                 if (inputs.size() > 2)
                     throw new ContextException("more than two arguments for division");
-                result = (Double)revalue(cxt.getInValueAt(1));
-                result /= (Double)revalue(cxt.getInValueAt(2));
+                result = (Double)revalue(inputs.get(1));
+                result /= (Double)revalue(inputs.get(0));
             } else if (selector.equals(AVERAGE)) {
                 result = (Double)revalue(inputs.get(0));
                 for (int i = 1; i < inputs.size(); i++) {

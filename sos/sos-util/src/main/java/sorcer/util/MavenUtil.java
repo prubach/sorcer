@@ -89,7 +89,7 @@ public class MavenUtil {
         JarEntry entry = null;
         while ((entry = zip.getNextJarEntry()) != null) {
             String name = entry.getName();
-            if (name.startsWith("META-INF/") && name.endsWith("/pom.properties")) {
+            if (name.startsWith("META-INF/") && name.endsWith("/pom.properties") && entry.getSize()>0) {
                 byte[] buf = new byte[(int) entry.getSize()];
                 zip.read(buf);
                 InputStream is = new ByteArrayInputStream(buf);
