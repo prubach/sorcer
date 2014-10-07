@@ -52,4 +52,6 @@ public interface Service {
 	public Exertion service(Exertion exertion, Transaction txn)
 			throws TransactionException, ExertionException, RemoteException;
 
+    public Exertion service(Exertion exertion)
+            throws TransactionException, ExertionException, RemoteException;
 }

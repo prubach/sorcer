@@ -23,6 +23,9 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.Collections;
+
+import net.jini.core.transaction.Transaction;
+import net.jini.core.transaction.TransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -3063,16 +3066,6 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		this.isRevaluable = isRevaluable;
 	}
 
-	/* (non-Javadoc)
-	 * @see sorcer.service.Invocation#invoke(sorcer.service.Context, sorcer.service.Arg[])
-	 */
-	//@Override
-	public T invoke(Context context, Arg... entries) throws RemoteException,
-			InvocationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public Context getBlockScope() {
 		return blockScope;
 	}
@@ -3080,25 +3073,41 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	public void setBlockScope(Context blockScope) {
 		this.blockScope = blockScope;
 	}
-	
-//	/* (non-Javadoc)
-//	 * @see sorcer.service.Service#service(sorcer.service.Exertion, net.jini.core.transaction.Transaction)
-//	 */
-//	@Override
-//	public Exertion service(Exertion exertion, Transaction txn)
-//			throws TransactionException, ExertionException, RemoteException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	/* (non-Javadoc)
-//	 * @see sorcer.service.Service#service(sorcer.service.Exertion)
-//	 */
-//	@Override
-//	public Exertion service(Exertion exertion) throws TransactionException,
-//			ExertionException, RemoteException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-	
+
+    /* (non-Javadoc)
+         * @see sorcer.service.Invocation#invoke(sorcer.service.Context, sorcer.service.Arg[])
+         */
+    @Override
+    public T invoke(Context<T> context, Arg... entries) throws RemoteException,
+            InvocationException {
+        try {
+            appendContext(context);
+            return getValue(entries);
+        } catch (Exception e) {
+            throw new InvocationException(e);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see sorcer.service.Service#service(sorcer.service.Exertion, net.jini.core.transaction.Transaction)
+     */
+    @Override
+    public Exertion service(Exertion exertion, Transaction txn)
+            throws TransactionException, ExertionException, RemoteException {
+        try {
+            ((ServiceExertion)exertion).getContext().appendContext(this);
+        } catch (Exception e) {
+            throw new ExertionException(e);
+        }
+        return exertion.exert(txn);
+    }
+
+    /* (non-Javadoc)
+     * @see sorcer.service.Service#service(sorcer.service.Exertion)
+     */
+    @Override
+    public Exertion service(Exertion exertion) throws TransactionException,
+            ExertionException, RemoteException {
+        return service(exertion, null);
+    }
 }
