@@ -28,19 +28,20 @@
 	<name>SORCER examples :: ex0 :: requestor</name>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>ex0-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-api</artifactId>
-		</dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-req</artifactId>
+            <artifactId>ex0-api</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-lib</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${v.groovy}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

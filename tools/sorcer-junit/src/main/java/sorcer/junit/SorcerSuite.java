@@ -39,7 +39,7 @@ public class SorcerSuite extends Suite {
             return Arrays.asList((Runner) new SorcerRunner(klass, null));
 
         if (sorcerServiceConfiguration != null && sorcerServiceConfigurations != null)
-            throw new InitializationError("Both @SorcerServiceConfigurations and @SorcerServiceConfiguration is allowed");
+            throw new InitializationError("Both @SorcerServiceConfigurations and @SorcerServiceConfiguration are not allowed");
 
         SorcerServiceConfiguration[] configurations;
         if (sorcerServiceConfigurations != null) {
