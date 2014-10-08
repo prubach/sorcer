@@ -16,17 +16,16 @@
 
 package sorcer.core.provider;
 
+import net.jini.config.ConfigurationException;
 import net.jini.core.lease.Lease;
 import net.jini.core.lease.UnknownLeaseException;
 import net.jini.lease.LeaseRenewalManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.exertion.NetTask;
 import sorcer.core.monitor.MonitorSessionManagement;
 import sorcer.core.monitor.MonitoringManagement;
 import sorcer.core.monitor.MonitoringSession;
 import sorcer.service.*;
-import sorcer.service.monitor.MonitorUtil;
 
 import java.rmi.RemoteException;
 
@@ -46,25 +45,25 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
 
     private LeaseRenewalManager lrm;
 
-    public MonitoringControlFlowManager(Exertion exertion, ProviderDelegate delegate) {
+    public MonitoringControlFlowManager(Exertion exertion, ProviderDelegate delegate) throws RemoteException, ConfigurationException {
         super(exertion, delegate);
         sessionMonitor = Accessor.getService(MonitoringManagement.class);
         lrm = new LeaseRenewalManager();
     }
 
-    public MonitoringControlFlowManager(Exertion exertion, ProviderDelegate delegate, Jobber jobber) {
+    public MonitoringControlFlowManager(Exertion exertion, ProviderDelegate delegate, Jobber jobber) throws RemoteException, ConfigurationException {
         super(exertion, delegate, jobber);
         sessionMonitor = Accessor.getService(MonitoringManagement.class);
         lrm = new LeaseRenewalManager();
     }
 
-    public MonitoringControlFlowManager(Exertion exertion, ProviderDelegate delegate, Spacer spacer) {
+    public MonitoringControlFlowManager(Exertion exertion, ProviderDelegate delegate, Spacer spacer) throws RemoteException, ConfigurationException {
         super(exertion, delegate, spacer);
         sessionMonitor = Accessor.getService(MonitoringManagement.class);
         lrm = new LeaseRenewalManager();
     }
 
-    public MonitoringControlFlowManager(Exertion exertion, ProviderDelegate delegate, Concatenator concatenator) {
+    public MonitoringControlFlowManager(Exertion exertion, ProviderDelegate delegate, Concatenator concatenator) throws RemoteException, ConfigurationException {
         super(exertion, delegate, concatenator);
         sessionMonitor = Accessor.getService(MonitoringManagement.class);
         lrm = new LeaseRenewalManager();

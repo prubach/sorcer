@@ -21,6 +21,8 @@ import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.DispatchResult;
 import sorcer.core.dispatch.DispatcherException;
 import sorcer.core.dispatch.DispatcherFactory;
@@ -44,6 +46,8 @@ import static sorcer.util.StringUtils.tName;
  * exertions to be executed.
  */
 public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
+    private Logger logger = LoggerFactory.getLogger(ServiceSpacer.class.getName());
+
     private LokiMemberUtil myMemberUtil;
 
     /**
@@ -52,16 +56,6 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
      * @throws RemoteException
      */
     public ServiceSpacer() throws RemoteException {
-        myMemberUtil = new LokiMemberUtil(ServiceSpacer.class.getName());
-    }
-
-    /**
-     * Require ctor for Jini 2 NonActivatableServiceDescriptor
-     *
-     * @throws RemoteException
-     */
-    public ServiceSpacer(String[] args, LifeCycle lifeCycle) throws Exception {
-        super(args, lifeCycle);
         myMemberUtil = new LokiMemberUtil(ServiceSpacer.class.getName());
     }
 
@@ -120,10 +114,10 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
                     && !task.isWaitable()) {
                 replaceNullExertionIDs(task);
                 notifyViaEmail(task);
-                new TaskThread((Task) task, this).start();
+                new TaskThread((Task) task, provider).start();
                 return task;
             } else {
-                TaskThread taskThread = new TaskThread((Task) task, this);
+                TaskThread taskThread = new TaskThread((Task) task, provider);
                 taskThread.start();
                 taskThread.join();
                 Task result = taskThread.getResult();
@@ -142,16 +136,5 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
             return ExertionDispatcherFactory.getFactory(myMemberUtil);
         else
             return super.getDispatcherFactory(exertion);
-    }
-
-    @Override
-    protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
-        if (!exertion.isSpacable())
-            return super.getControlFlownManager(exertion);
-
-        if (exertion.isMonitorable())
-            return new MonitoringControlFlowManager(exertion, delegate, this);
-        else
-            return new ControlFlowManager(exertion, delegate, this);
     }
 }

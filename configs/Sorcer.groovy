@@ -55,9 +55,8 @@ deployment(name: 'Sorcer') {
             api : 'org.sorcersoft.sorcer:default-codebase:pom:' + SORCER_VERSION
     ]
 
-    artifact id: 'jobber-cfg', "org.sorcersoft.sorcer:jobber-cfg:" + getSorcerVersion()
-    artifact id: 'concatenator-cfg', "org.sorcersoft.sorcer:concatenator-cfg:" + getSorcerVersion()
-    artifact id: 'spacer-cfg', "org.sorcersoft.sorcer:spacer-cfg:" + getSorcerVersion()
+
+    artifact id: 'rendezvous-cfg', "org.sorcersoft.sorcer:rendezvous-cfg:" + getSorcerVersion()
 
     def logger = [
             codebase : 'org.sorcersoft.sorcer:logger-dl:pom:' + SORCER_VERSION,
@@ -148,39 +147,16 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Jobber") { //fork:'yes'
-        interfaces {
-            classes 'sorcer.core.provider.Jobber'
-            artifact sorcer.codebase
-        }
-        implementation(class: 'sorcer.core.provider.rendezvous.ServiceJobber') {
-            artifact ref: 'jobber-cfg'
-        }
-        configuration file: 'classpath:jobber.config'
-        maintain 1
-    }
 
-    service(name: "Spacer") { //fork:'yes'
+    service(name: "Rendezvous") { //fork:'yes'
         interfaces {
-            classes 'sorcer.core.provider.Spacer'
+            classes 'sorcer.core.provider.Jobber', 'sorcer.core.provider.Spacer', 'sorcer.core.provider.Concatenator'
             artifact sorcer.codebase
         }
-        implementation(class: 'sorcer.core.provider.rendezvous.ServiceSpacer') {
-            artifact ref: 'spacer-cfg'
+        implementation(class: 'sorcer.core.provider.ServiceProvider') {
+            artifact ref: 'rendezvous-cfg'
         }
-        configuration file: 'classpath:spacer.config'
-        maintain 1
-    }
-
-    service(name: "Concatenator") { //fork:'yes'
-        interfaces {
-            classes 'sorcer.core.provider.Concatenator'
-            artifact sorcer.codebase
-        }
-        implementation(class: 'sorcer.core.provider.rendezvous.ServiceConcatenator') {
-            artifact ref: 'concatenator-cfg'
-        }
-        configuration file: 'classpath:concatenator.config'
+        configuration file: 'classpath:rendezvous-prv.config'
         maintain 1
     }
 

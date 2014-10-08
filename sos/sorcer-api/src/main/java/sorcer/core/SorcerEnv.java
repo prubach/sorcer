@@ -454,7 +454,7 @@ public class SorcerEnv {
     }
 
     public static String getSpacerName() {
-        return sorcerEnv.getProperty(SPACER_NAME, "Spacer");
+        return sorcerEnv.getProperty(SPACER_NAME, "Rendezvous");
     }
 
     public static String getActualSpacerName() {

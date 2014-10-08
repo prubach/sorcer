@@ -25,13 +25,14 @@ import org.slf4j.LoggerFactory;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
+import sorcer.ex5.provider.Adder;
 import sorcer.junit.*;
-import sorcer.service.Context;
+import sorcer.service.*;
 import sorcer.core.provider.Exerter;
-import sorcer.service.Job;
-import sorcer.service.Task;
 
 import static org.junit.Assert.assertEquals;
+import static sorcer.eo.operator.*;
+import static sorcer.eo.operator.get;
 
 /**
  * @author Mike Sobolewski
@@ -84,4 +85,25 @@ public class ArithmeticExerterTest {
 				out.getValue("1job1task/subtract/result/value"),
 				400.0);
 	}
+
+    @Test
+    public void exerterTest() throws Exception {
+        System.out.println("========== exerterTest ==========");
+        Task f5 = task(
+                "f5",
+                sig("add", Adder.class),
+                context("add", in("arg/x1", 20.0),
+                        in("arg/x2", 80.0), out("result/y", null)),
+                strategy(Strategy.Monitor.NO, Strategy.Wait.YES));
+
+        Exertion out = null;
+        Exerter exerter = (Exerter) Accessor.getService(new NetSignature(Exerter.class));
+    	logger.info("got exerter: " + exerter);
+
+        out = exerter.exert(f5);
+
+        logger.info("task f5 context: " + context(out));
+        logger.info("task f5 result/y: " + get(context(out), "result/y"));
+        assertEquals(get(out, "result/y"), 100.00);
+    }
 }

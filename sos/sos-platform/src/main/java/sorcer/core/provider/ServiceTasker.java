@@ -22,14 +22,11 @@ import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
-import sorcer.service.Executor;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Task;
-import sorcer.service.Tasker;
+import sorcer.service.*;
 
 import com.sun.jini.start.LifeCycle;
+
+import javax.security.auth.Subject;
 
 /**
  * A <code>ServiceTasker</code> is a service coordinating execution of all
@@ -62,8 +59,18 @@ public class ServiceTasker extends ServiceProvider implements Tasker, Executor, 
 	/** {@inheritDoc} */
 	public ServiceExertion execute(Exertion task, Transaction transaction)
 			throws TransactionException, ExertionException {
-		return (Task) new ControlFlowManager(task, delegate)
-				.process();
+        try {
+            return (Task) new ControlFlowManager(task, delegate)
+                    .process();
+        } catch (Exception e) {
+            ((Task) task).reportException(e);
+            throw new ExertionException(e);
+        }
 	}
+
+    @Override
+    public boolean isAuthorized(Subject subject, Signature signature) throws RemoteException {
+        return true;
+    }
 
 }

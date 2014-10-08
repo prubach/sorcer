@@ -33,8 +33,6 @@ public class JobThread implements Runnable {
 	private final static Logger logger = LoggerFactory.getLogger(JobThread.class
 			.getName());
 
-	private static final int SLEEP_TIME = 250;
-	// doJob method calls this internally
 	private Job job;
 
 	private Job result;

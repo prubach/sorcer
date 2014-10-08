@@ -21,6 +21,9 @@ import static sorcer.service.TaskFactory.task;
 
 import java.rmi.RemoteException;
 import java.util.List;
+
+import net.jini.config.*;
+import net.jini.config.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -98,10 +101,14 @@ public class ControlFlowManager {
 	 *            Exertion
 	 * @param delegate
 	 *            ExerterDelegate
-	 */
-	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate) {
+     * @throws ConfigurationException
+     * @throws RemoteException
+     */
+	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate)
+            throws RemoteException, ConfigurationException {
 		this.delegate = delegate;
 		this.exertion = exertion;
+        init();
 	}
 
     /**
@@ -114,10 +121,12 @@ public class ControlFlowManager {
      *            ExerterDelegate
  	 * @param jobber
 	 *            Jobber
-	 */
+     * @throws ConfigurationException
+     * @throws RemoteException
+     */
 	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
-			Jobber jobber) {
-		this(exertion, delegate);
+			Jobber jobber) throws RemoteException, ConfigurationException {
+        this(exertion, delegate);
 		this.jobber = jobber;
 	}
 	/**
@@ -130,9 +139,11 @@ public class ControlFlowManager {
 	 *            ExerterDelegate
 	 * @param concatenator
 	 *            Concatenator
+     * @throws ConfigurationException
+     * @throws RemoteException
 	 */
 	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
-			Concatenator concatenator) {
+			Concatenator concatenator) throws RemoteException, ConfigurationException {
 		this(exertion, delegate);
 		this.concatenator = concatenator;
 	}
@@ -147,13 +158,33 @@ public class ControlFlowManager {
 	 *            ExerterDelegate
 	 * @param spacer
 	 *            Spacer
+     * @throws ConfigurationException
+     * @throws RemoteException
 	 */
 	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
-			Spacer spacer) {
+			Spacer spacer) throws RemoteException, ConfigurationException {
 		this(exertion, delegate);
 		this.jobber = spacer;
 		this.spacer = spacer;
 	}
+
+    private void init() throws RemoteException, net.jini.config.ConfigurationException {
+        Concatenator c = (Concatenator) delegate.getBean(Concatenator.class);
+        if (c != null) {
+            concatenator = c;
+        }
+        Jobber j = (Jobber) delegate.getBean(Jobber.class);
+        if (j != null) {
+            jobber = j;
+        }
+        Spacer s = (Spacer) delegate.getBean(Spacer.class);
+        if (s != null) {
+            spacer = s;
+            delegate.spaceEnabled(true);
+            delegate.initSpaceSupport();
+        }
+    }
+
 
     /**
      * Process the Exertion accordingly if it is a job, task, or a Conditional
@@ -230,6 +261,22 @@ public class ControlFlowManager {
 
 	public Block doBlock(Block block) throws RemoteException, ExertionException,
 			SignatureException, TransactionException, ContextException {
+
+
+        if (concatenator == null) {
+            String spacerName = block.getRendezvousName();
+            if (spacerName != null) {
+                concatenator = Accessor.getService(spacerName, Concatenator.class);
+            } else {
+                try {
+                    concatenator = Accessor.getService(Concatenator.class);
+                } catch (Exception x) {
+                    throw new ExertionException("Could not find Concatenator", x);
+                }
+            }
+            logger.info("Got Concatenator: " + concatenator);
+            return (Block)concatenator.service(block, null);
+        }
         return (Block)((ServiceConcatenator)concatenator).execute(block);
 	}
 

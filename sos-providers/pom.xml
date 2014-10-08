@@ -15,11 +15,14 @@
 
 	<modules>
         <module>other-configs</module>
+<!--
         <module>jobber</module>
         <module>concatenator</module>
+-->
 		<module>cataloger</module>
-		<module>spacer</module>
-		<module>logger</module>
+<!--		<module>spacer</module>-->
+		<module>rendezvous</module>
+        <module>logger</module>
 		<module>exertmonitor</module>
 		<module>dbp</module>
         <module>exerter</module>

@@ -45,108 +45,39 @@ import com.sun.jini.start.LifeCycle;
  * coordination for executing exertions using directly (PUSH) service providers.
  * 
  */
-public class ServiceConcatenator extends ServiceProvider implements Concatenator, Executor, SorcerConstants {
+public class ServiceConcatenator extends RendezvousBean implements Concatenator, Executor, SorcerConstants {
 	private Logger logger = LoggerFactory.getLogger(ServiceConcatenator.class.getName());
 
-	public ServiceConcatenator() throws RemoteException {
-		// do nothing
-	}
+    public ServiceConcatenator() throws RemoteException {
+    }
 
-	// require constructor for Jini 2 NonActivatableServiceDescriptor
-	public ServiceConcatenator(String[] args, LifeCycle lifeCycle) throws Exception {
-		super(args, lifeCycle);
-	}
-
-    @Override
-    protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
-        if (!(exertion instanceof Block))
-            throw new ExertionException(new IllegalArgumentException("Unknown exertion type " + exertion));
-
-        if (exertion.isMonitorable())
-            return new MonitoringControlFlowManager(exertion, delegate, this);
-        else
-            return new ControlFlowManager(exertion, delegate, this);
-	}
-
-	public void setServiceID(Exertion ex) {
-		try {
-			if (getProviderID() != null) {
-				logger.trace(getProviderID().getLeastSignificantBits() + ":"
-						+ getProviderID().getMostSignificantBits());
-				((ServiceExertion) ex).setLsbId(getProviderID()
-						.getLeastSignificantBits());
-				((ServiceExertion) ex).setMsbId(getProviderID()
-						.getMostSignificantBits());
-			}
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public Exertion service(Exertion exertion) throws RemoteException, ExertionException {
-		logger.trace("service: " + exertion.getName());
-		try {
-			// Concatenator overrides SorcerProvider.service method here
-			setServiceID(exertion);
-			// Create an instance of the ExertionProcessor and call on the
-			// process method, returns an Exertion
-			Exertion exrt = new ControlFlowManager(exertion, delegate, this).process();
-			exrt.getDataContext().setExertion(null);
-			return exrt;
-		} 
-		catch (Exception e) {
-			e.printStackTrace();
-			throw new ExertionException();
-		}
-	}
-
-	public Exertion execute(Exertion exertion) throws RemoteException,
+    public Exertion execute(Exertion exertion) throws RemoteException,
 			TransactionException, ExertionException {
 		return execute(exertion, null);
 	}
 	
 	public Exertion execute(Exertion exertion, Transaction txn)
 			throws TransactionException, ExertionException, RemoteException {
-		return doBlock(exertion, txn);
-	}
-
-	public Exertion doBlock(Exertion block) {
-		return doBlock(block, null);
-	}
-	
-	public Exertion doBlock(Exertion block, Transaction txn) {
-		//logger.info("*********************************************ServiceJobber.doJob(), job = " + job);
-		setServiceID(block);
-		try {
-			if ((block).getControlContext().isMonitorable()
-					&& !((block).getControlContext()).isWaitable()) {
-				replaceNullExertionIDs(block);
-				new BlockThread((Block) block, this).start();
-				return block;
-			} else {
-				BlockThread blockThread = new BlockThread((Block) block, this);
-				blockThread.start();
-				blockThread.join();
-				Block result = blockThread.getResult();
-				Condition.cleanupScripts(result);
-				logger.trace("<== Result: " + result);
-				return result;
-			}
-		} catch (Throwable e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	private void replaceNullExertionIDs(Exertion ex) {
-		if (ex != null && ex.getId() == null) {
-			((ServiceExertion) ex)
-					.setId(UuidFactory.generate());
-			if (ex.isJob()) {
-				for (int i = 0; i < ((Job) ex).size(); i++)
-					replaceNullExertionIDs(((Job) ex).get(i));
-			}
-		}
+        setServiceID(exertion);
+        try {
+            if ((exertion).getControlContext().isMonitorable()
+                    && !((exertion).getControlContext()).isWaitable()) {
+                replaceNullExertionIDs(exertion);
+                new BlockThread((Block) exertion, provider).start();
+                return exertion;
+            } else {
+                BlockThread blockThread = new BlockThread((Block) exertion, provider);
+                blockThread.start();
+                blockThread.join();
+                Block result = blockThread.getResult();
+                Condition.cleanupScripts(result);
+                logger.trace("<== Result: " + result);
+                return result;
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
 	}
 
 }

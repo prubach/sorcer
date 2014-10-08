@@ -41,6 +41,7 @@ import javax.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 
+import com.sun.jini.thread.TaskManager;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
@@ -198,7 +199,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
     protected ScheduledExecutorService scheduler;
 
-    protected ServiceProvider() {
+    public ServiceProvider() {
 		providers.add(this);
         InjectionHelper.injectMembers(this);
         serviceBuilder = new ProviderServiceBuilder(this);
@@ -1357,11 +1358,15 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
     protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
         if (!(exertion instanceof Task))
             throw new ExertionException(new IllegalArgumentException("Unknown exertion type " + exertion));
-
-        if (exertion.isMonitorable())
-            return new MonitoringControlFlowManager(exertion, delegate);
-        else
-            return new ControlFlowManager(exertion, delegate);
+        try {
+            if (exertion.isMonitorable())
+                return new MonitoringControlFlowManager(exertion, delegate);
+            else
+                return new ControlFlowManager(exertion, delegate);
+        } catch (Exception e) {
+            ((Task) exertion).reportException(e);
+            throw new ExertionException(e);
+        }
 	}
 
 	public Exertion service(Exertion exertion) throws RemoteException,

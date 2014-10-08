@@ -62,7 +62,7 @@ public class NshTest {
         ExecUtils.CmdResult result = ExecUtils.execCommand(cmds);
         String res =  result.getOut();
         logger.info("Result running: " + StringUtils.join(cmds, " ") +":\n" + res);
-        assertTrue(res.contains(SorcerEnv.getActualName("Jobber")));
+        assertTrue(res.contains(SorcerEnv.getActualName("Rendezvous")));
         assertTrue(res.contains(SorcerEnv.getActualSpacerName()));
         assertTrue(res.contains(SorcerEnv.getActualDatabaseStorerName()));
         assertTrue(res.contains(SorcerEnv.getLookupGroups()[0]));
@@ -111,7 +111,7 @@ public class NshTest {
         logger.info("Result running: " + StringUtils.join(cmds, " ") +":\n" + res);
         if (!result.getErr().isEmpty())
             logger.info("batchCmdTest Result ERROR: " + result.getErr());
-        assertTrue(res.contains(SorcerEnv.getActualName("Jobber")));
+        assertTrue(res.contains(SorcerEnv.getActualName("Rendezvous")));
         assertTrue(res.contains(SorcerEnv.getActualSpacerName()));
         assertTrue(res.contains(SorcerEnv.getActualDatabaseStorerName()));
         assertTrue(res.contains(SorcerEnv.getLookupGroups()[0]));

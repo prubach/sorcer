@@ -64,7 +64,7 @@ public class WhoIsItPullJobTest {
         // get the queried provider name
         String providerName1 = SorcerEnv.getSuffixedName("XYZ");
         String providerName2 = SorcerEnv.getSuffixedName("ABC");
-        String jobberName = SorcerEnv.getSuffixedName("Spacer");
+        String jobberName = SorcerEnv.getSuffixedName("Rendezvous");
 
 		logger.info("Who is '{}'?", providerName1);
 		logger.info("Who is '{}'?", providerName2);

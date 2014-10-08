@@ -844,8 +844,13 @@ public class ProviderDelegate {
 
 	private Context processContinousely(Task task, List<Signature> signatures)
 			throws ExertionException, ContextException {
-		ControlFlowManager cfm = new ControlFlowManager(task, this);
-		return cfm.processContinousely(task, signatures);
+		try {
+            ControlFlowManager cfm = new ControlFlowManager(task, this);
+            return cfm.processContinousely(task, signatures);
+        }   catch (Exception e) {
+            ((Task) task).reportException(e);
+            throw new ExertionException(e);
+        }
 	}
 
 	private void resetSigantures(List<Signature> signatures, Signature.Type type) {
@@ -2909,6 +2914,35 @@ public class ProviderDelegate {
 	public void setServiceComponents(Map serviceComponents) {
 		this.serviceComponents = serviceComponents;
 	}
+
+    public Object getBean(Class serviceType) {
+        if (serviceComponents == null || serviceComponents.size() == 0)
+            return null;
+        Object val = serviceComponents.get(serviceType);
+        if (val!=null) return val;
+
+        Iterator i = serviceComponents.entrySet().iterator();
+
+        for (Object valu : serviceComponents.values()) {
+            if (valu.getClass().isAssignableFrom(serviceType)) return valu;
+        }
+
+/*        Map.Entry next;
+        while (i.hasNext()) {
+            next = (Map.Entry) i.next();
+            // check declared interfaces
+            if (next.getKey().equals(serviceType))
+                return next.getValue();
+
+            // check implemented interfaces
+            Class[] supertypes = ((Class)next.getKey()).getInterfaces();
+            for (Class st : supertypes) {
+                if (st.equals(serviceType))
+                    return st;
+            }
+        }*/
+        return null;
+    }
 
 	public String getHostAddress() {
 		if (hostAddress == null)

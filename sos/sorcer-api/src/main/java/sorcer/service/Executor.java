@@ -71,5 +71,17 @@ public interface Executor {
 	
 	public Exertion execute(Exertion exertion, Transaction txn)
 			throws TransactionException, ExertionException, RemoteException;
+    /**
+     * Returns true if the <code>subject</code> is authorized to execute the
+     * <code>exertion</code>.
+     *
+     * @param subject
+     *            <code>subject</code> invoking the <code>exertion</code>
+     * @param signature
+     *            an input task
+     * @return true if authorized, otherwise false
+     * @throws RemoteException
+     */
+    public boolean isAuthorized(Subject subject, Signature signature) throws RemoteException;
 
 }
