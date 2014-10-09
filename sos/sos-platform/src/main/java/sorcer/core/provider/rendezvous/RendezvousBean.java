@@ -187,9 +187,9 @@ abstract public class RendezvousBean implements Service, Executor, SorcerConstan
     protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
         try {
             if (exertion.isMonitorable())
-                return new MonitoringControlFlowManager(exertion, delegate);
+                return new MonitoringControlFlowManager(exertion, delegate, this);
             else
-                return new ControlFlowManager(exertion, delegate);
+                return new ControlFlowManager(exertion, delegate, this);
         } catch (Exception e) {
             ((Task) exertion).reportException(e);
             throw new ExertionException(e);

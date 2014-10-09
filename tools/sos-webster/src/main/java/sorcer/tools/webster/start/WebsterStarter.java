@@ -26,7 +26,6 @@ import sorcer.config.ConfigEntry;
 import sorcer.core.SorcerEnv;
 import sorcer.core.service.Configurer;
 import org.rioproject.tools.webster.Webster;
-//import sorcer.tools.webster.Webster;
 import sorcer.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -95,8 +94,9 @@ public class WebsterStarter implements DestroyAdmin {
                 //webster = new Webster(i, StringUtils.join(roots, ';'), websterAddress, false);
                 webster = new Webster(i, StringUtils.join(roots, ';'), websterAddress);
                 SorcerEnv.setWebsterUrl(websterAddress, i);
+                log.info("Webster started at: " + websterAddress + ":" + i);
             } catch (BindException ex) {
-                log.debug("Error while starting Webster", ex);
+                log.debug("Error while starting Webster. Cannot bind to: {}:{}", websterAddress, i);
             }
         }
     }
@@ -107,7 +107,7 @@ public class WebsterStarter implements DestroyAdmin {
         try {
             ping(url);
             WebsterMonitor websterMonitor = new WebsterMonitor(url, startOnError);
-            ScheduledFuture<?> scheduledFuture = executor.scheduleAtFixedRate(websterMonitor, 2, 2, TimeUnit.SECONDS);
+            ScheduledFuture<?> scheduledFuture = executor.scheduleAtFixedRate(websterMonitor, 3, 3, TimeUnit.SECONDS);
             websterMonitor.setFuture(scheduledFuture);
         } catch (IOException e) {
             log.debug("Error pinging {}", url, e);
@@ -126,10 +126,12 @@ public class WebsterStarter implements DestroyAdmin {
 
     protected static void ping(URL url) throws IOException, IllegalStateException {
         log.debug("ping {}", url);
+
+        String server=null;
         URLConnection conn = url.openConnection();
         conn.setConnectTimeout(2000);
-
-        String server = conn.getHeaderField("Server");
+        server = conn.getHeaderField("Server");
+        conn.getInputStream().close();
         log.debug("ping server = {}", server);
         if (!sorcer.tools.webster.Webster.class.getName().equals(server) && !org.rioproject.tools.webster.Webster.class.getName().equals(server)) {
             throw new IllegalStateException("Remote server on " + url + " not a Webster, " + server);

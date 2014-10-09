@@ -36,6 +36,7 @@ import sorcer.core.exertion.LoopExertion;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.OptExertion;
+import sorcer.core.provider.rendezvous.RendezvousBean;
 import sorcer.core.provider.rendezvous.ServiceConcatenator;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
@@ -119,6 +120,36 @@ public class ControlFlowManager {
      *            Exertion
      * @param delegate
      *            ExerterDelegate
+     * @param rendezvousBean
+     *            Rendezvous
+     * @throws ConfigurationException
+     * @throws RemoteException
+     */
+    public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
+                              RendezvousBean rendezvousBean) throws RemoteException, ConfigurationException {
+        this.delegate = delegate;
+        this.exertion = exertion;
+        if (rendezvousBean instanceof Concatenator) {
+            concatenator = (ServiceConcatenator)rendezvousBean;
+        }
+        else if (rendezvousBean instanceof Spacer){
+            spacer = (Spacer) rendezvousBean;
+        }
+        else if (rendezvousBean instanceof Jobber) {
+            jobber = (Jobber) rendezvousBean;
+        }
+        init();
+    }
+
+
+    /**
+     * Overloaded constructor which takes in an Exertion, ExerterDelegate, and
+     * Spacer. This constructor is used when handling {@link sorcer.service.Job}s.
+     *
+     * @param exertion
+     *            Exertion
+     * @param delegate
+     *            ExerterDelegate
  	 * @param jobber
 	 *            Jobber
      * @throws ConfigurationException
@@ -169,19 +200,23 @@ public class ControlFlowManager {
 	}
 
     private void init() throws RemoteException, net.jini.config.ConfigurationException {
-        Concatenator c = (Concatenator) delegate.getBean(Concatenator.class);
-        if (c != null) {
-            concatenator = c;
+        if (concatenator==null) {
+            Concatenator c = (Concatenator) delegate.getBean(Concatenator.class);
+            if (c != null) {
+                concatenator = c;
+            }
         }
-        Jobber j = (Jobber) delegate.getBean(Jobber.class);
-        if (j != null) {
-            jobber = j;
+        if (jobber==null) {
+            Jobber j = (Jobber) delegate.getBean(Jobber.class);
+            if (j != null) {
+                jobber = j;
+            }
         }
-        Spacer s = (Spacer) delegate.getBean(Spacer.class);
-        if (s != null) {
-            spacer = s;
-            delegate.spaceEnabled(true);
-            delegate.initSpaceSupport();
+        if (spacer==null) {
+            Spacer s = (Spacer) delegate.getBean(Spacer.class);
+            if (s != null) {
+                spacer = s;
+            }
         }
     }
 

@@ -18,7 +18,7 @@ package sorcer.core.requestor;
 
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
-import sorcer.tools.webster.Webster;
+import org.rioproject.tools.webster.Webster;
 import sorcer.util.Artifact;
 
 import java.net.BindException;
@@ -38,8 +38,8 @@ public class ResolvingWebster {
         String roots = env.getWebsterRootsString();
         Webster webster = null;
         try {
-            webster = new Webster(roots, true);
-
+            webster = new Webster(0, roots);
+            //
             URL root = SorcerEnv.getWebsterUrlURL();
             String codebase;
             if (userCodebase == null || userCodebase.isEmpty()) {
@@ -51,7 +51,8 @@ public class ResolvingWebster {
             System.setProperty(RMI_SERVER_CODEBASE, codebase);
             return webster;
         } catch (BindException e) {
-            throw new IllegalStateException("Could not bind to " + Webster.getWebster().getAddress() + ":" + webster.getPort(), e);
+            //throw new IllegalStateException("Could not bind to " + Webster.getWebster().getAddress() + ":" + webster.getPort(), e);
+            throw new IllegalStateException("Could not bind to " + webster.getAddress() + ":" + webster.getPort(), e);
         }
     }
 }

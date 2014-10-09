@@ -411,7 +411,7 @@ $MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
     else
         exec "$JAVACMD" $JAVA_OPTS \
         	-Djava.security.policy=$SORCER_HOME/configs/sorcer.policy \
-            -Dwebster.tmp.dir="$SORCER_HOME"/data \
+            -Dwebster.put.dir="$SORCER_HOME"/data \
             -classpath "$BOOT_CLASSPATH" \
             -Dprogram.name="$PROGNAME" \
             $STARTER_MAIN_CLASS \
@@ -425,6 +425,7 @@ SR_CP=$(createSorcerRioCp)
       	SHELL_CLASSPATH="$LOG_CP:$JINI_CLASSPATH:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
+$MVN_REPO/org/rioproject/webster/$V_RIO/webster-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
 $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\

@@ -24,7 +24,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.tools.webster.InternalWebster;
-import sorcer.tools.webster.Webster;
+import org.rioproject.tools.webster.Webster;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.GenericUtil;
 import sorcer.util.JavaSystemProperties;

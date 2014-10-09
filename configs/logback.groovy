@@ -99,7 +99,7 @@ logger("sorcer.arithmetic", DEBUG)
 
 //logger("sorcer.core.provider.logger", DEBUG)
 //logger("sorcer.platform.logger", DEBUG)
-//logger("sorcer.core.dispatch", DEBUG)
+logger("sorcer.core.dispatch", DEBUG)
 
 logger("sorcer.core.invoker.MethodInvoker", INFO)
 logger("sorcer.modeling.vfe", DEBUG)
@@ -113,7 +113,7 @@ logger("sorcer.launcher.SorcerLauncher", DEBUG)
 //logger("sorcer.provider.boot", DEBUG)
 
 //logger("sorcer.core.service", debug)
-logger("sorcer.tools.webster.start.WebsterStarter", debug)
+//logger("sorcer.tools.webster.start.WebsterStarter", debug)
 //logger("sorcer.container.core", debug)
 
 
@@ -200,7 +200,6 @@ def prepareAppenders() {
  * file
  */
 // appenders << createWatchAppender()
-
 
     return appenders
 }
