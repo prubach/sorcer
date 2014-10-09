@@ -15,12 +15,7 @@
 
 	<modules>
         <module>other-configs</module>
-<!--
-        <module>jobber</module>
-        <module>concatenator</module>
--->
 		<module>cataloger</module>
-<!--		<module>spacer</module>-->
 		<module>rendezvous</module>
         <module>logger</module>
 		<module>exertmonitor</module>

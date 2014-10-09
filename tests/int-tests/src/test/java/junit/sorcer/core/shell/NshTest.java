@@ -30,12 +30,12 @@ public class NshTest {
             .getLogger(NshTest.class.getName());
     private static final String EXCEPTION = "Exception";
 
-    private String baseCmd;
+    private static String baseCmd;
 
     private String[] cmds;
 
     @BeforeClass
-    public void init() throws IOException {
+    public static void init() throws IOException {
         baseCmd = new StringBuilder(new java.io.File(SorcerEnv.getHomeDir(),
                 "bin"+ java.io.File.separator + "nsh").getCanonicalPath()).toString();
     }

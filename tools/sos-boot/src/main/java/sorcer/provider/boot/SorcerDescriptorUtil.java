@@ -43,104 +43,12 @@ public class SorcerDescriptorUtil {
     public static final ArtifactCoordinates CATALOGER_PRV = sorcer("cataloger-prv");
     public static final ArtifactCoordinates LOGGER_PRV = sorcer("logger-prv");
     public static final ArtifactCoordinates LOGGER_SUI = sorcer("logger-sui");
-    public static final ArtifactCoordinates SPACER_PRV = sorcer("spacer-prv");
     public static final ArtifactCoordinates JOBBER_PRV = sorcer("rendezvous-prv");
 
     public static final ArtifactCoordinates SLEEPYCAT = coords("com.sleepycat:je");
     public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui");
 
 	private static String sorcerHome = SorcerEnv.getHomeDir().getAbsolutePath();
-
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.core.provider.Spacer} using the Webster port created
-	 * by this utility.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param spacerConfig
-	 *            The configuration options the Spacer will use
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-	 *         Spacer using an anonymous port. The <tt>spacer.jar</tt> file
-	 *         will be loaded from <tt>sorcer.home/lib</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 * @throws RuntimeException
-	 *             If the <tt>sorcer.home</tt> system property is not set
-	 */
-	public static ServiceDescriptor getSpacer(String policy,
-			String... spacerConfig) throws IOException {
-		return (getSpacer(policy, Booter.getPort(), spacerConfig));
-	}
-
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.core.provider.Spacer}.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param port
-	 *            The port to use when constructing the codebase
-	 * @param spacerConfig
-	 *            The configuration options the Spacer will use
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-	 *         Spacer using an anonymous port. The <tt>spacer.jar</tt> file
-	 *         will be loaded from <tt>sorcer.home/lib</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 * @throws RuntimeException
-	 *             If the <tt>sorcer.home</tt> system property is not set
-	 */
-	public static ServiceDescriptor getSpacer(String policy, int port,
-			String... spacerConfig) throws IOException {
-		return (getSpacer(policy, Booter.getHostAddress(), port, spacerConfig));
-
-	}
-
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.core.provider.Spacer}.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param hostAddress
-	 *            The address to use when constructing the codebase
-	 * @param port
-	 *            The port to use when constructing the codebase
-	 * @param spacerConfig
-	 *            The configuration options the Spacer will use
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-	 *         Spacer using an anonymous port. The <tt>spacer.jar</tt> file
-	 *         will be loaded from <tt>sorcer.home/lib</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 * @throws RuntimeException
-	 *             If the <tt>sorcer.home</tt> system property is not set
-	 */
-	public static ServiceDescriptor getSpacer(String policy,
-			String hostAddress, int port, String... spacerConfig)
-			throws IOException {
-		if (sorcerHome == null)
-			throw new RuntimeException("'sorcer.home' property not declared");
-		
-		// service provider classpath
-		String spacerClasspath = Resolver.resolveClassPath(SPACER_PRV, SOS_PLATFORM);
-
-		// service provider codebase
-        String spacerCodebase = getCodebase(new ArtifactCoordinates[]{
-				SOS_PLATFORM,
-				//SOS_ENV,
-				SERVICEUI,
-				EXERTLET_UI,
-		}, hostAddress, Integer.toString(port));
-		String implClass = "sorcer.core.provider.rendezvous.ServiceSpacer";
-		return (new SorcerServiceDescriptor(spacerCodebase, policy,
-				spacerClasspath, implClass, spacerConfig));
-
-	}
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for

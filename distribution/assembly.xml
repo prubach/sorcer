@@ -68,11 +68,6 @@
                 <destName>exerter-${v.sorcer}.pom</destName>
             </file>
             <file>
-                <source>${basedir}/../sos-providers/jobber/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>jobber-${v.sorcer}.pom</destName>
-            </file>
-            <file>
                 <source>${basedir}/../sos-providers/logger/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>logger-${v.sorcer}.pom</destName>
@@ -83,9 +78,9 @@
                 <destName>logger-dl-${v.sorcer}.pom</destName>
             </file>
             <file>
-                <source>${basedir}/../sos-providers/spacer/pom.xml</source>
+                <source>${basedir}/../sos-providers/rendezvous/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
-                <destName>spacer-${v.sorcer}.pom</destName>
+                <destName>rendezvous-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../sos-providers/exertmonitor/pom.xml</source>
@@ -96,11 +91,6 @@
                 <source>${basedir}/../sos-providers/exertmonitor/exertmonitor-dl/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>exertmonitor-dl-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/concatenator/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>concatenator-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../sorcer-rio/pom.xml</source>
