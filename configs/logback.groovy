@@ -111,11 +111,11 @@ logger("sorcer.launcher.SorcerLauncher", DEBUG)
 */
 
 //logger("sorcer.provider.boot", DEBUG)
-/*
-logger("sorcer.core.service", debug)
+
+//logger("sorcer.core.service", debug)
 logger("sorcer.tools.webster.start.WebsterStarter", debug)
-logger("sorcer.container.core", debug)
-*/
+//logger("sorcer.container.core", debug)
+
 
 root(INFO, appenders)
 

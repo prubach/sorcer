@@ -217,6 +217,7 @@ public abstract class Launcher implements ILauncher {
         sysProps.put(SORCER_HOME, home.getPath());
         //sysProps.put(S_WEBSTER_TMP_DIR, System.getProperty(S_WEBSTER_TMP_DIR, new File(home, "data").getPath()));
         sysProps.put(S_WEBSTER_TMP_DIR, new File(home, "data").getPath());
+        sysProps.put(S_WEBSTER_PUT_DIR, new File(home, "data").getPath());
         sysProps.put(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());
         //sysProps.put(S_WEBSTER_INTERFACE, getInetAddress());
 

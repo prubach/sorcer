@@ -25,8 +25,8 @@ import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
 import sorcer.core.SorcerEnv;
 import sorcer.core.service.Configurer;
-//import org.rioproject.tools.webster.Webster;
-import sorcer.tools.webster.Webster;
+import org.rioproject.tools.webster.Webster;
+//import sorcer.tools.webster.Webster;
 import sorcer.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -92,8 +92,8 @@ public class WebsterStarter implements DestroyAdmin {
         for (int i = startPort; i < endPort + 1 && webster == null; i++) {
             log.debug("Trying {}:{}", websterAddress, i);
             try {
-                webster = new Webster(i, StringUtils.join(roots, ';'), websterAddress, false);
-                //webster = new Webster(i, StringUtils.join(roots, ';'), websterAddress);
+                //webster = new Webster(i, StringUtils.join(roots, ';'), websterAddress, false);
+                webster = new Webster(i, StringUtils.join(roots, ';'), websterAddress);
                 SorcerEnv.setWebsterUrl(websterAddress, i);
             } catch (BindException ex) {
                 log.debug("Error while starting Webster", ex);
@@ -131,7 +131,7 @@ public class WebsterStarter implements DestroyAdmin {
 
         String server = conn.getHeaderField("Server");
         log.debug("ping server = {}", server);
-        if (!Webster.class.getName().equals(server) && !org.rioproject.tools.webster.Webster.class.getName().equals(server)) {
+        if (!sorcer.tools.webster.Webster.class.getName().equals(server) && !org.rioproject.tools.webster.Webster.class.getName().equals(server)) {
             throw new IllegalStateException("Remote server on " + url + " not a Webster, " + server);
         }
     }

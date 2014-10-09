@@ -16,6 +16,7 @@
 package sorcer.installer;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.settings.building.SettingsBuildingException;
 import org.eclipse.aether.installation.InstallationException;
 import org.rioproject.resolver.aether.AetherService;
 import org.slf4j.Logger;
@@ -217,7 +218,7 @@ public class Installer {
         }
     }
 
-    public void install(File file) throws IOException, InstallationException {
+    public void install(File file) throws IOException, InstallationException, SettingsBuildingException {
         File fileNoExt = replaceExt(file, null);
         String artifactId = fileNoExt.getName();
 
@@ -238,7 +239,7 @@ public class Installer {
             FileUtils.forceDelete(pom);
     }
 
-    private void installPom(File pom, ArtifactCoordinates ac) throws IOException, InstallationException {
+    private void installPom(File pom, ArtifactCoordinates ac) throws IOException, InstallationException, SettingsBuildingException {
         aetherService.install(ac.getGroupId(), ac.getArtifactId(), ac.getVersion(), ac.getClassifier(), pom, null);
     }
 

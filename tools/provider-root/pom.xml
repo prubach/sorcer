@@ -27,7 +27,7 @@
         <v.jini>2.2.2</v.jini>
         <v.blitz>2.3</v.blitz>
         <v.sleepycat>5.0.104</v.sleepycat>
-        <v.rio>5.0-M4-S7</v.rio>
+        <v.rio>5.0-M4-S8</v.rio>
         <v.groovy>2.2.1</v.groovy>
         <v.sigar>1.6.4</v.sigar>
         <v.lockmgr>0.2-3</v.lockmgr>

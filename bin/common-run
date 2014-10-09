@@ -515,6 +515,7 @@ else
         -Djava.rmi.server.useCodebaseOnly=false \
         -Dwebster.internal="true" \
         -Dwebster.tmp.dir="$SORCER_HOME"/data \
+        -Dwebster.put.dir="$SORCER_HOME"/data \
         -Dprogram.name="$PROGNAME" \
         -Dsorcer.home="$SORCER_HOME" \
         -Dtools.jar="$TOOLS_JAR" \

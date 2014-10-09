@@ -32,7 +32,7 @@ public interface SorcerConstants {
 	/* service provider genetic properties */
     public static final String SORCER_VERSION = "1.0-SNAPSHOT";
     // Rio default version
-    public static final String RIO_VERSION = "5.0-M4-S7";
+    public static final String RIO_VERSION = "5.0-M4-S8";
 	// SORCER global properties defined in sorcer.util.SorcerEnv.java
 	public static final String SORCER_HOME = "sorcer.home";
 
@@ -294,6 +294,11 @@ public interface SorcerConstants {
 	 * Webster upload dir
 	 */
 	String S_WEBSTER_TMP_DIR = "webster.tmp.dir";
+
+    /**
+     * Webster upload dir
+     */
+    String S_WEBSTER_PUT_DIR = "webster.put.dir";
 
 	/**
 	 * RIO_HOME

@@ -295,7 +295,7 @@ abstract public class ExertDispatcher implements Dispatcher {
 				logger.debug("toPathcp = {}", toPathcp);
 				fromPath = Contexts.getContextParameterPath(toPathcp);
                 String ctxId = Contexts.getContextParameterID(toPathcp);
-				if (ctxId.length()>0) logger.error("context ID = {}", ctxId);
+				if (ctxId.length()>0) logger.debug("context ID = {}", ctxId);
 				fromContext = getSharedContext(fromPath, ctxId);
 				logger.debug("fromContext = {}", fromContext);
 				logger.debug("before updating toContext: {}", toContext
