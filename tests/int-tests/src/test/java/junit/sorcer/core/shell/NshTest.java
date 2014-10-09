@@ -1,6 +1,7 @@
 package junit.sorcer.core.shell;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -33,7 +34,7 @@ public class NshTest {
 
     private String[] cmds;
 
-    @Before
+    @BeforeClass
     public void init() throws IOException {
         baseCmd = new StringBuilder(new java.io.File(SorcerEnv.getHomeDir(),
                 "bin"+ java.io.File.separator + "nsh").getCanonicalPath()).toString();

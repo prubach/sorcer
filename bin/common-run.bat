@@ -126,6 +126,7 @@ set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorce
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\codehaus\groovy\groovy-all\%v.groovy%\groovy-all-%v.groovy%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-api\%v.rio%\rio-api-%v.rio%.jar
+set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\rioproject\webster\%v.rio%\webster-%v.rio%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-platform\%v.rio%\rio-platform-%v.rio%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\codehaus\plexus\plexus-utils\%v.plexus%\plexus-utils-%v.plexus%.jar

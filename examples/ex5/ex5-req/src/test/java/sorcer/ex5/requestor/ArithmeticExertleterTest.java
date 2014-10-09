@@ -17,12 +17,14 @@
  */
 package sorcer.ex5.requestor;
 
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
@@ -32,6 +34,10 @@ import sorcer.service.Context;
 import sorcer.service.Evaluation;
 import sorcer.service.Invocation;
 import sorcer.service.Task;
+import sorcer.util.StringUtils;
+import sorcer.util.exec.ExecUtils;
+
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -66,6 +72,17 @@ public class ArithmeticExertleterTest {
 
 	private final static Logger logger = LoggerFactory
 			.getLogger(NetArithmeticReqTest.class);
+
+    @BeforeClass
+    public static void before() throws IOException, InterruptedException {
+        String baseCmd = new StringBuilder(new java.io.File(SorcerEnv.getHomeDir(),
+                "bin"+ java.io.File.separator + "nsh").getCanonicalPath()).toString();
+        String[] cmds = new String[] { baseCmd, "-c", "lup", "-s"};
+
+        ExecUtils.CmdResult result = ExecUtils.execCommand(cmds);
+        String res =  result.getOut();
+        logger.info("Services running:\n" + res);
+    }
 
 
     public Object exertExertleterReturnValue() throws Exception {

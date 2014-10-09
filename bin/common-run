@@ -488,6 +488,7 @@ $MVN_REPO/org/sorcersoft/sorcer/sorcer-spi/$V_SORCER/sorcer-spi-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/webster/$V_RIO/webster-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar"
