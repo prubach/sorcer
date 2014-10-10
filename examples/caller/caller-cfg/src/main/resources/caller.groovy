@@ -19,8 +19,8 @@ deployment(name: 'Caller') {
 
     codebase getCodebase()
 
-    artifact id: 'caller-dl', 'org.sorcersoft.sorcer:caller-dl:pom:1.0-SNAPSHOT'
-    artifact id: 'caller-cfg', 'org.sorcersoft.sorcer:caller-cfg:1.0-SNAPSHOT'
+    artifact id: 'caller-dl', 'org.sorcersoft.sorcer:caller-dl:pom:1.0'
+    artifact id: 'caller-cfg', 'org.sorcersoft.sorcer:caller-cfg:1.0'
 
     service(name: 'Caller') {
         interfaces {

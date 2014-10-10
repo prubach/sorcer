@@ -6,18 +6,18 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>examples</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 
 	<groupId>org.sorcersoft.sorcer</groupId>
 	<artifactId>caller</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>pom</packaging>
 	<name>SORCER :: caller</name>
 	<description>System Caller Service</description>
 
 	<properties>
-		<v.sorcer>1.0-SNAPSHOT</v.sorcer>
+		<v.sorcer>1.0</v.sorcer>
 	</properties>
 
 	<modules>

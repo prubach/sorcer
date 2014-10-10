@@ -12,7 +12,7 @@
 // - on Unix you can simply run the script by invoking: ./run.ntl
 //
 //
-codebase mvn://org.sorcersoft.sorcer:caller-api:1.0-SNAPSHOT
+codebase mvn://org.sorcersoft.sorcer:caller-api:1.0
 
 // If you want to run the codebase from an external codeserver please add @computer:port to point to the
 // codeserver (webster) that serves the caller-api.jar file.

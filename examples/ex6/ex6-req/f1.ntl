@@ -1,7 +1,7 @@
 #!/usr/bin/env nsh
 
 //codebase mvn://org.sorcersoft.sorcer:ex6-api
-codebase artifact:org.sorcersoft.sorcer/ex6-dl/pom/1.0-SNAPSHOT
+codebase artifact:org.sorcersoft.sorcer/ex6-dl/pom/1.0
 
 import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Multiplier;

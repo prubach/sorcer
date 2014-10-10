@@ -16,7 +16,7 @@ import static sorcer.eo.operator.*;
 
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:caller-dl:pom:1.0-SNAPSHOT"})
+@ExportCodebase({"org.sorcersoft.sorcer:caller-dl:pom:1.0"})
 @SorcerServiceConfiguration(":caller-cfg")
 public class CallerTest {
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env nsh
-codebase artifact:org.sorcersoft.sorcer/ex6-prv/1.0-SNAPSHOT
+codebase artifact:org.sorcersoft.sorcer/ex6-prv/1.0
 
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.MultiplierImpl;
