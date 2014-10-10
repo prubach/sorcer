@@ -174,14 +174,14 @@ public class RemoteLoggerManager implements RemoteLogger {
     }
 
     public EventRegistration registerLogListener(RemoteEventListener listener, MarshalledObject handback, long duration, List<Map<String,String>> filterMap) throws LeaseDeniedException, RemoteException {
-        log.info("Registering new listener for remote logs: " + listener);
+        log.debug("Registering new listener for remote logs: " + listener);
         EventDescriptor eventDescriptor = new EventDescriptor(ILoggingEvent.class, LoggerRemoteEvent.ID);
         EventHandler eventHandler;
         try {
             //eventHandler = new DispatchEventHandler(eventDescriptor);
             eventHandler = new SenderEventHandler(eventDescriptor);
             EventRegistration evReg = eventHandler.register(provider.getProxy(), listener, handback, duration);
-            log.info("Got evRegID: " + evReg.getID() + " filters: " + filterMap);
+            log.debug("Got evRegID: " + evReg.getID() + " filters: " + filterMap);
             remoteLogHandlers.put(evReg.getID(), eventHandler);
             for (Map<String, String>  fMap : filterMap)
                 remoteLogListeners.put(fMap, eventHandler);
@@ -194,7 +194,7 @@ public class RemoteLoggerManager implements RemoteLogger {
 
     //@Override
     public void unregisterLogListener(EventRegistration evReg) throws RemoteException {
-        log.info("Unregistering listener for remote logs: " + evReg.getID());
+        log.debug("Unregistering listener for remote logs: " + evReg.getID());
         try {
             EventHandler evHandler = remoteLogHandlers.get(evReg.getID());
             if (evHandler!=null) {

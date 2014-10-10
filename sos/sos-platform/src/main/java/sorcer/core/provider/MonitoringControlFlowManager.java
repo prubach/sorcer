@@ -134,8 +134,8 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
         ServiceExertion registeredExertion = (ServiceExertion) (sessionMonitor.register(null,
                 exertion, LEASE_RENEWAL_PERIOD));
         MonitoringSession session = getMonitoringSession(registeredExertion);
-        log.info("Session for the exertion = {}", session);
-        log.info("Lease to be renewed for duration = {}",
+        log.debug("Session for the exertion = {}", session);
+        log.debug("Lease to be renewed for duration = {}",
                 (session.getLease().getExpiration() - System
                         .currentTimeMillis())
         );

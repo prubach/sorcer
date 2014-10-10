@@ -179,6 +179,7 @@
                 <os family="mac"/>
             </fileset>
             <executable targetfile="$INSTALL_PATH/examples/ex0/ex0-req/run.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/ex0/ex0-req/test.sh" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1a.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f4.ntl" os="unix"/>

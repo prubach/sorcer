@@ -94,15 +94,15 @@ logger("com.sorcersoft.bazaar", info, [bazaar])
 
 //logger("sorcer.core.security", OFF)
 logger("sorcer.test", DEBUG)
-logger("private", DEBUG)
+//logger("private", DEBUG)
 logger("sorcer.arithmetic", DEBUG)
 
 //logger("sorcer.core.provider.logger", DEBUG)
 //logger("sorcer.platform.logger", DEBUG)
-logger("sorcer.core.dispatch", DEBUG)
+//logger("sorcer.core.dispatch", DEBUG)
 
 logger("sorcer.core.invoker.MethodInvoker", INFO)
-logger("sorcer.modeling.vfe", DEBUG)
+//logger("sorcer.modeling.vfe", DEBUG)
 
 ///logger("mil.afrl.mstc.engineering.optimization.conmin.provider", DEBUG)
 /*

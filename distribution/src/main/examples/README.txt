@@ -32,6 +32,6 @@
 **      ./run.ntl or
 **      Starting the nsh shell: nsh
 **      and then running: exert path/to/file.ntl
-**   7. Some examples have precompiled requestors. In that case look for
-**      ant scripts and start them by running:
+**   7. Some examples have precompiled requestors. In that case look for batch/bash files or
+**      ant scripts. To start an ant script run:
 **      ant -f script.xml
