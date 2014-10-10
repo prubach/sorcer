@@ -1309,19 +1309,19 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 			// This should not happen
 			if (pre == null && post == null) {
-				logger.info(">>serviceChanged::Null serviceItem! ? ");
+				logger.debug(">>serviceChanged::Null serviceItem! ? ");
 				return;
 			} else if (pre.service == null && post.service != null) {
-				logger.info(">>serviceChanged::The proxy's service is now not null \n");
-				logger.info(">>serviceChanged::Proxy later: post.service ("
+				logger.debug(">>serviceChanged::The proxy's service is now not null \n");
+				logger.debug(">>serviceChanged::Proxy later: post.service ("
 						+ post.service.getClass().getName() + ")\n");
 			} else if (pre.service != null && post.service == null) {
-				logger.info(">>serviceChanged::The service's proxy has become null::check codebase problem");
-				logger.info(">>serviceChanged::Proxy later: pre.service ("
+				logger.debug(">>serviceChanged::The service's proxy has become null::check codebase problem");
+				logger.debug(">>serviceChanged::Proxy later: pre.service ("
 						+ pre.service.getClass().getName() + ")\n");
 				cinfo.remove(post);
 			} else {
-				logger.info("Service attribute has changed pre=" + pre
+				logger.debug("Service attribute has changed pre=" + pre
 						+ " post=" + post);
 				cinfo.remove(pre);
 				cinfo.addServiceItem(post);
@@ -1334,10 +1334,10 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		}
 
 		public void run() {
-			if (cinfo != null) {
+			if (cinfo != null && logger.isDebugEnabled()) {
 				StringBuilder buffer = new StringBuilder(msg).append("\n");
 				buffer.append(cinfo).append("\n");
-				logger.info(buffer.toString());
+				logger.debug(buffer.toString());
 			}
 		}
 	}
