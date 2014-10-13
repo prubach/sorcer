@@ -17,17 +17,18 @@
 package sorcer.launcher;
 
 import com.sun.jini.start.LifeCycle;
+import org.apache.commons.io.filefilter.*;
 import org.rioproject.logging.ServiceLogEventHandlerHelper;
 import org.rioproject.resolver.Artifact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.boot.ServiceStarter;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.ArtifactResolver;
 import sorcer.resolver.MappedFlattenedArtifactResolver;
 import sorcer.resolver.Resolver;
 import sorcer.util.ConfigurableThreadFactory;
+import org.apache.commons.io.FileUtils;
 import sorcer.util.StringUtils;
 
 import java.io.File;
@@ -38,6 +39,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
 import java.util.concurrent.ThreadFactory;
+import java.util.regex.Pattern;
 
 import static sorcer.core.SorcerConstants.P_MONITOR_INITIAL_OPSTRINGS;
 import static sorcer.util.Collections.toProperties;
@@ -72,6 +74,7 @@ public class SorcerLauncher extends Launcher {
         } catch (Exception e) {
             log.debug("Error", e);
         }
+        resolvers.add(new FileSearchResolver());
         resolvers.add(new ConfigResolver() {
             @Override
             public File resolve(String config) {
@@ -324,6 +327,7 @@ class OptionalResolver implements ConfigResolver {
     }
 }
 
+
 class ProjectResolver extends OptionalResolver {
     protected ProjectResolver() throws Exception {
         super("sorcer.resolver.ProjectArtifactResolver", new Class[0]);
@@ -337,5 +341,43 @@ class ProjectResolver extends OptionalResolver {
         if (pathname == null)
             return null;
         return new File(pathname);
+    }
+}
+
+class FileSearchResolver implements ConfigResolver {
+    final private static Logger log = LoggerFactory.getLogger(FileSearchResolver.class);
+
+    private String curDir;
+
+    @SuppressWarnings("unchecked")
+    public FileSearchResolver() {
+        this.curDir = System.getProperty("user.dir");
+    }
+
+    @Override
+    public File resolve(String config) {
+        if (!config.startsWith(":"))
+            return null;
+        Collection<File> fileList = FileUtils.listFiles(new File(curDir),
+                new WildcardFileFilter(new String[]{config.substring(1) + "*.jar",
+                        config.substring(1) + "*oar"}),
+                DirectoryFileFilter.DIRECTORY);
+        if (fileList.size() > 0) {
+            File result = fileList.iterator().next();
+            if (fileList.size() > 1) {
+                log.warn("Multiple files found:\n {} " +
+                        "\nBooting: {}", allFileNames(fileList), result);
+            }
+            return result;
+        }
+        return null;
+    }
+
+    private String allFileNames(Collection<File> files) {
+        StringBuilder sb = new StringBuilder();
+        for (File f : files) {
+            sb.append(f.getAbsolutePath()+"\n");
+        }
+        return sb.toString();
     }
 }

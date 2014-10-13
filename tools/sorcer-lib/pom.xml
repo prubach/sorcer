@@ -11,6 +11,8 @@
 
     <artifactId>sorcer-lib</artifactId>
 
+    <name>SORCER tools :: requestor library</name>
+
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
