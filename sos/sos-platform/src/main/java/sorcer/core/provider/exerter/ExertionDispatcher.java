@@ -37,7 +37,6 @@ import sorcer.core.dispatch.*;
 import sorcer.core.provider.*;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.model.par.Par;
-import sorcer.core.exertion.ObjectJob;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.ext.Provisioner;
