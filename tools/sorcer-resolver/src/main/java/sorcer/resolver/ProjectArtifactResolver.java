@@ -152,9 +152,16 @@ class ArtifactIdFileFilter extends AbstractFileFilter {
                         "target".equals(parent)
                                 //check repository just in case
                                 || artifactId.equals(grandParent)
+
+                        || (
+                            //check gradle development structure
+                            "libs".equals(parent)
+                                    //check repository just in case
+                                    || "build".equals(grandParent)
+                        )
                 )
-                        //check distribution structure
-                        || "lib".equals(grandParent) && (artifactId + ".jar").equals(name)
+                //check distribution structure
+                || "lib".equals(grandParent) && (artifactId + ".jar").equals(name)
                 ;
     }
 }
