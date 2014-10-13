@@ -108,6 +108,7 @@ set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\commons-cli\commons-cli\1.2\com
 
 set SORCER_RIO_CP=
 set SORCER_RIO_CP=%SORCER_COMMON%;%JINI_BASE%
+set SORCER_RIO_CP=%SORCER_RIO_CP%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-spi\%v.sorcer%\sorcer-spi-%v.sorcer%.jar
 set SORCER_RIO_CP=%SORCER_RIO_CP%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
 set SORCER_RIO_CP=%SORCER_RIO_CP%;%MVN_REPO%\org\apache\commons\commons-lang3\3.2.1\commons-lang3-3.2.1.jar
 

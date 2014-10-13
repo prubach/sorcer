@@ -40,10 +40,4 @@ class ReggieConfig {
     Exporter getServerExporter() {
         return ExporterConfiguration.getDefaultExporter()
     }
-
-    LookupLocator[] getInitialLookupLocators(){
-        def result = []
-        SorcerEnv.getLookupLocators().each(){ s -> result += new LookupLocator("jini://$s/".toString())}
-        return result as LookupLocator[];
-    }
 }

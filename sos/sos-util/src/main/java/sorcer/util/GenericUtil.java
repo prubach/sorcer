@@ -984,7 +984,7 @@ public class GenericUtil implements Serializable {
 
     public static boolean isWindows32() {
         if (!isWindows()) return false;
-        if (System.getProperty("os.arch").contains("32")) return true;
+        if (System.getProperty("os.arch").contains("86")) return true;
         return false;
     }
 
@@ -996,7 +996,7 @@ public class GenericUtil implements Serializable {
 
     public static boolean isLinux32() {
         if (!isLinux()) return false;
-        if (System.getProperty("os.arch").contains("x86")) return true;
+        if (System.getProperty("os.arch").contains("86")) return true;
         return false;
     }
 

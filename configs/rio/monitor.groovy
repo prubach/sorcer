@@ -67,6 +67,8 @@ class MonitorConfig {
         remoteRepository.setUrl(SorcerEnv.getWebsterUrl())
         remoteRepository.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE)
         remoteRepository.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE)
+        remoteRepository.setReleaseUpdatePolicy(RemoteRepository.UPDATE_POLICY_ALWAYS)
+        remoteRepository.setSnapshotUpdatePolicy(RemoteRepository.UPDATE_POLICY_ALWAYS)
         def repositories = [remoteRepository]
         return repositories as RemoteRepository[]
     }
@@ -81,9 +83,9 @@ class MonitorConfig {
         }
     }
 
-/*    ServiceResourceSelector getServiceResourceSelector() {
-        return new LeastActiveSelector()
-    }*/
+    ServiceResourceSelector getServiceResourceSelector() {
+        return new RoundRobinSelector()
+    }
 
     Entry[] getServiceUIs(String codebase) {
         String uiClass = 'org.rioproject.tools.ui.ServiceUIWrapper'
