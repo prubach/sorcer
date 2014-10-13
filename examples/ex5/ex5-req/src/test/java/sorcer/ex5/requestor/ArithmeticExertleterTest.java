@@ -114,6 +114,7 @@ public class ArithmeticExertleterTest {
     @Test
     public void exertExertleterNTimes() throws Exception {
         int n = 5;
+        Thread.sleep(3000);
         // invoke exertleter with the current contexts
 
         for (int i=0;i<n;i++) {
