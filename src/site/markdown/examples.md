@@ -34,7 +34,7 @@ To run the first "Hello World" example:
 - run:
 <pre>nsh run.ntl</pre>
 or run
-<pre>ant -f run.xml</pre>
+<pre>test.sh</pre>
 
 If everything works correctly you should see something like this:
 ``
@@ -63,9 +63,10 @@ Most examples contain the following directory structure:
 - exX-cfg - this folder contains the configuration files of the service. You can start the provider by executing <pre>sorcer-boot :exX-cfgY</pre> in the console after building the examples.
 - exX-dl  - the codebase of the service provider (this module only contains a pom.xml file with dependent libraries that have to be exposed in the codebase of the provider).
 - exX-req - this folder contains the requestor used for testing the service provider. The testing code may be implemented either as a:
- - regular java application
-
-    you should find ant scripts for starting the requestor - there may be more than one script - they usually differ by input parameters that are provided as arguments during startup.
+ - regular java application  
+                           
+    In ex0/ex0-req there is `test.sh` / `test.bat` script that invokes a Main style java application contained in the `HelloWorldReq` class. 
+    In other examples you will find ant scripts for starting the requestor - there may be more than one script - they usually differ by input parameters that are provided as arguments during startup.
  - junit test class
 
     you may start the tests by calling <pre>mvn test -f examples/pom.xml</pre> which will run all junit tests in the example modules or <pre>mvn test -Prun-its</pre> which will run all tests that require running SORCER (which you must first run).

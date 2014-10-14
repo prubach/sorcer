@@ -36,64 +36,25 @@
 			<td>Sorcer ${v_sos_release} ZIP release</td>
 			<td>zip</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}.zip/download">Download</a></td>
-                        <td>63 MB</td>
+                        <td>79 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}.zip.md5/download">MD5</a></td>
-                        <td align="center">01/04/2014</td>
+                        <td align="center">15/10/2014</td>
                     </tr>
                     <tr>
 			<td>Sorcer ${v_sos_release} Windows setup</td>
 			<td>exe</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.exe/download">Download</a></td>
-                        <td>65 MB</td>
+                        <td>80 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.exe.md5/download">MD5</a></td>
-                        <td align="center">01/04/2014</td>
+                        <td align="center">15/10/2014</td>
                     </tr>
 		    <tr>
 			<td>Sorcer ${v_sos_release} cross-platform setup</td>
 			<td>jar</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.jar/download">Download</a></td>
-                        <td>64 MB</td>
+                        <td>80 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.jar.md5/download">MD5</a></td>
-                        <td align="center">01/04/2014</td>
-                    </tr>
-                </tbody>
-            </table>
-	    
-            
-            <h2>Download Sorcer 1.0-M2 - milestone version before integration with Rio.</h2>
-            <table>
-                <tbody>
-                    <tr>
-                        <th></th>
-                        <th>Type</th>
-                        <th>Link</th>
-                        <th>Size</th>
-                        <th>Signature</th>
-                        <th>Date</th>
-                    </tr>
-                    <tr>
-			<td>Sorcer 1.0-M2 ZIP release</td>
-			<td>zip</td> 
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M2/sorcer-1.0-M2.zip/download">Download</a></td>
-                        <td>40 MB</td>
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M2/sorcer-1.0-M2.zip.md5/download">MD5</a></td>
-                        <td align="center">24/07/2013</td>
-                    </tr>
-                    <tr>
-			<td>Sorcer 1.0-M2 Windows setup</td>
-			<td>exe</td> 
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M2/sorcer-1.0-M2-setup.exe/download">Download</a></td>
-                        <td>40 MB</td>
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M2/sorcer-1.0-M2-setup.exe.md5/download">MD5</a></td>
-                        <td align="center">24/07/2013</td>
-                    </tr>
-		    <tr>
-			<td>Sorcer 1.0-M2 cross-platform setup</td>
-			<td>jar</td> 
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M2/sorcer-1.0-M2-setup.jar/download">Download</a></td>
-                        <td>40 MB</td>
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M2/sorcer-1.0-M2-setup.jar.md5/download">MD5</a></td>
-                        <td align="center">24/07/2013</td>
+                        <td align="center">15/10/2014</td>
                     </tr>
                 </tbody>
             </table>
@@ -109,6 +70,8 @@
 		<li>if you prefer a manual install please use the zip file.</li>
 	    </ul>
 	    </p>
+
+	    <p>Previous unstable releases are available on our Sourceforge Site <a href="http://sourceforge.net/projects/sorcer/files">HERE</a></p>
 
 	    <p>
         <ul>

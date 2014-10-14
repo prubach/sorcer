@@ -62,6 +62,7 @@ The Sorcer installation directory (<tt>SORCER_HOME</tt>) contains the following 
     </li>
     <li><tt>lib</tt> - directory with all sorcer and third-party jar files</li>
     <li><tt>logs</tt> - empty directory for logs</li>
+    <li><tt>netlets</tt> - examples of NTL scripts for testing </li>        
     <li><tt>Uninstaller</tt> - not available if you've installed SORCER from a zip file.
         <ul>
             <li><tt>\ Uninstaller.jar</tt> - application that performs an uninstall of SORCER</li>

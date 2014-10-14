@@ -124,6 +124,7 @@
             <executable targetfile="$INSTALL_PATH/netlets/caller_run.ntl" os="unix"/>
 
             <executable targetfile="$INSTALL_PATH/bin/sorcer-boot" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/create-provider" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/sorcer-browser" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/nsh" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/setenv" os="unix"/>
