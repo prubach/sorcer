@@ -329,12 +329,13 @@ createSorcerRioCp ( ) {
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-spi/$V_SORCER/sorcer-spi-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
-$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
 $MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
+$MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
+$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
+$MVN_REPO/javax/inject/javax.inject/1/javax.inject-1.jar:\
 $MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
 
     echo $SORCER_RIO_CP
@@ -359,12 +360,8 @@ $MVN_REPO/org/sorcersoft/sorcer/sorcer-launcher/$V_SORCER/sorcer-launcher-$V_SOR
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
-$MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
-$MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
-$MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
-$MVN_REPO/org/rioproject/rio-proxy/$V_RIO/rio-proxy-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/guava/16.0.1/guava-16.0.1.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
@@ -376,6 +373,10 @@ $MVN_REPO/javax/inject/javax.inject/1/javax.inject-1.jar:\
 $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\
 $MVN_REPO/asm/asm/1.5.3/asm-1.5.3.jar:\
 $MVN_REPO/cglib/cglib/2.1_3/cglib-2.1_3.jar:\
+$MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-proxy/$V_RIO/rio-proxy-$V_RIO.jar:\
 $MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
 
     # Determine webster url

@@ -38,7 +38,8 @@ class ReggieConfig {
     }
 
     Exporter getServerExporter() {
-        return ExporterConfiguration.getDefaultExporter()
+        //        return ExporterConfiguration.getDefaultExporter()
+        return sorcer.container.jeri.ExporterFactories.getBasicTcp()
     }
 
     LookupLocator[] getInitialLookupLocators(){
