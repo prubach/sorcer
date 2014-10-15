@@ -61,7 +61,7 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
     /**
 	 * @param coords artifact coordinates in the form of
 	 *               groupId:artifactId[[:packaging[:classifier]]:version]
-	 * @throws IllegalArgumentException
+	 * @throws IllegalArgumentException when artifact is not formated correctly
 	 */
 	public static ArtifactCoordinates coords(String coords) {
         if(!isArtifact(coords))
