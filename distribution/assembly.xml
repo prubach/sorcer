@@ -216,6 +216,11 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>ju-arithmetic-${v.sorcer}.pom</destName>
             </file>
+            <file>
+                <source>${basedir}/../tests/ju-arithmetic/ju-arithmetic-dl/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ju-arithmetic-dl-${v.sorcer}.pom</destName>
+            </file>
 
             <!-- River -->
             <file>
