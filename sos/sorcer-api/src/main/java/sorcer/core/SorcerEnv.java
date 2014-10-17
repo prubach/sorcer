@@ -1360,7 +1360,7 @@ public class SorcerEnv {
     }
 
     public static InetAddress getLocalHost() throws UnknownHostException {
-        String hostnameProp = System.getProperty(JavaSystemProperties.RMI_SERVER_HOSTNAME);
+        String hostnameProp = getProperty(JavaSystemProperties.RMI_SERVER_HOSTNAME);
         if (hostnameProp != null && !hostnameProp.isEmpty())
             return InetAddress.getByName(hostnameProp);
         else

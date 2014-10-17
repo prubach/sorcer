@@ -384,7 +384,7 @@ $MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
     WEBSTER_INTERFACE=$(getProperty provider.webster.interface=)
     WEBSTER_PORT=$(getProperty provider.webster.port=)
 
-    if [ "$WEBSTER_INTERFACE"=="$${localhost}" ]; then
+    if [ "$WEBSTER_INTERFACE" = "\${localhost}" ]; then
         WEBSTER_INTERFACE=`hostname`
     fi
 

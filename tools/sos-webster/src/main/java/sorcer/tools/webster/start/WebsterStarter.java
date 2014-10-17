@@ -38,6 +38,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.Collections.i;
@@ -200,6 +203,13 @@ public class WebsterStarter implements DestroyAdmin {
     }
 
     private InetAddress find(String address, Enumeration<NetworkInterface> interfaces) {
+        if (!validIP(address)) {
+            try {
+                address = InetAddress.getByName(address).getHostAddress();
+            } catch (UnknownHostException e) {
+                log.trace("Problem resolving host address: {}", e);
+            }
+        }
         for (NetworkInterface iface : i(interfaces)) {
             for (InetAddress addr : i(iface.getInetAddresses())) {
                 log.trace("{}", addr);
@@ -212,6 +222,22 @@ public class WebsterStarter implements DestroyAdmin {
                 return result;
         }
         return null;
+    }
+
+    public static boolean validIP(String ip) {
+        String IPV4_REGEX =
+                "^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$";
+        if (ip == null || ip.isEmpty()) return false;
+        ip = ip.trim();
+        if ((ip.length() < 6) & (ip.length() > 15)) return false;
+
+        try {
+            Pattern pattern = Pattern.compile(IPV4_REGEX);
+            Matcher matcher = pattern.matcher(ip);
+            return matcher.matches();
+        } catch (PatternSyntaxException ex) {
+            return false;
+        }
     }
 
     @Override

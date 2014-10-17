@@ -2612,7 +2612,7 @@ public class ProviderDelegate {
 			try {
 				exporterInterface = (String) config.getEntry(
 						ServiceProvider.COMPONENT, EXPORTER_INTERFACE,
-						String.class, SorcerEnv.getHostAddress());
+						String.class, SorcerEnv.getLocalHost().getHostAddress());
 			} catch (Exception e) {
 				// do nothng
 			}
