@@ -42,6 +42,10 @@ public interface SorcerConstants {
 
 	public static final String S_SORCER_EXT = "sorcer.ext";
 
+    public static final String E_ENG_HOME = "ENG_HOME";
+
+    public static final String S_ENG_HOME = "eng.home";
+
     public static final String E_SORCER_MODELING = "SORCER_MODELING";
 
     public static final String S_SORCER_MODELING = "sorcer.modeling";
@@ -1233,6 +1237,7 @@ public interface SorcerConstants {
     String MDC_EXERTION_ID = "xrtId";
     String MDC_PROVIDER_ID = "prvId";
     String START_PACKAGE = "com.sun.jini.start";
+    String DEPLOYMENT_PACKAGE = "sorcer.core.exertion.deployment";
     String REMOTE_LOGGER_INTERFACE = "RemoteLogger";
     String S_SHARED_DIRS_FILE = "sorcer.sharedDirs.file";
 }

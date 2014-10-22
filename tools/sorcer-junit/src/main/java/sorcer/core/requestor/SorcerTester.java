@@ -37,9 +37,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.rmi.RemoteException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,12 +60,20 @@ import static org.junit.Assert.assertTrue;
 	protected int port;
 
 
-    public SorcerTester() throws Exception {
-        init();
+    public SorcerTester() {
+        try {
+            init();
+        } catch (Exception e) {
+            logger.error("Unable to properly initialize SorcerTester", e);
+        }
     }
 
-    public SorcerTester(String... args) throws Exception {
-        init(args);
+    public SorcerTester(String... args) {
+        try {
+            init(args);
+        } catch (Exception e) {
+            logger.error("Unable to properly initialize SorcerTester", e);
+        }
     }
 
 	/**

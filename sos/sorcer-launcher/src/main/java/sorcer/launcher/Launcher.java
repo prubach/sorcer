@@ -207,6 +207,8 @@ public abstract class Launcher implements ILauncher {
         sysProps.put(SECURITY_POLICY, policyPath.getPath());
         sysProps.put(UTIL_LOGGING_CONFIG_FILE, new File(configDir, "sorcer.logging").getPath());
         sysProps.put(S_SORCER_EXT, ext.getPath());
+        if (System.getenv(E_ENG_HOME)!=null) sysProps.put(S_ENG_HOME, System.getenv(E_ENG_HOME));
+
         try {
             sysProps.put(RMI_SERVER_HOSTNAME, SorcerEnv.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {

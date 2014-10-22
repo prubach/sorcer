@@ -22,7 +22,7 @@ import java.rmi.MarshalledObject;
 
 import net.jini.io.MarshalledInstance;
 
-public class ObjectCloner {
+public class ObjectClonerSimple {
 
 	public static Object clone(Object o) {
 		try {

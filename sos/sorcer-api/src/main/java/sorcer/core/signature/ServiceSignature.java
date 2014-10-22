@@ -77,6 +77,8 @@ public class ServiceSignature implements Signature {
 	/** indicates whether this method is being processed by the exert method */
 	protected boolean isActive = true;
 
+    private boolean isProvisionable = false;
+
 	/**
 	 * a context template to define the context appended from a provider
 	 * identified by this method
@@ -265,6 +267,13 @@ public class ServiceSignature implements Signature {
 		isActive = state;
 	}
 
+    public void setActive(Active state) {
+        if (state == Active.YES || state == Active.TRUE)
+            isActive = true;
+        else
+            isActive = false;
+    }
+
 	public String[] getContextTemplateIDs() {
 		return contextTemplateIDs;
 	}
@@ -354,6 +363,24 @@ public class ServiceSignature implements Signature {
 
     public boolean isAppendType() {
         return execType == Type.APD_DATA;
+    }
+
+
+    public boolean isProvisionable() {
+        return isProvisionable;
+    }
+
+    public void setProvisionable(boolean isProvisionable) {
+        this.isProvisionable = isProvisionable;
+    }
+
+    public void setProvisionable(Strategy.Provision isProvisionable) {
+        if (isProvisionable == Strategy.Provision.YES
+                || isProvisionable == Strategy.Provision.TRUE) {
+            this.isProvisionable = true;
+        } else {
+            this.isProvisionable = true;
+        }
     }
 
 	public String toString() {

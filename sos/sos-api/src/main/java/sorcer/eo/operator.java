@@ -54,7 +54,7 @@ import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Provision;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.modeling.Variability;
-import sorcer.util.ObjectClonerAdv;
+import sorcer.util.ObjectCloner;
 import sorcer.core.provider.exerter.ExertionDispatcher;
 import sorcer.util.Sorcer;
 import sorcer.util.url.sos.SdbUtil;
@@ -536,15 +536,22 @@ public class operator {
             sig = new ObjectSignature(operation, serviceType);
         }
         if (parameters.length > 0) {
+            Provision p = null;
             for (Object o : parameters) {
                 if (o instanceof Type) {
                     sig.setType((Type) o);
+                } else if (o instanceof Signature.Active) {
+                    ((ServiceSignature)sig).setActive((Signature.Active) o);
+                } else if (o instanceof Provision) {
+                    p = (Provision)o;
+                    ((ServiceSignature)sig).setProvisionable((Provision) o);
                 } else if (o instanceof ReturnPath) {
                     sig.setReturnPath((ReturnPath) o);
                 } else if (o instanceof ServiceDeployment) {
-                    sig.setDeployment((ServiceDeployment) o);
+                    if (p != null)
+                        ((ServiceDeployment)o).setProvisionable(p);
+                    ((ServiceSignature)sig).setDeployment((ServiceDeployment)o);
                 }
-
             }
         }
         return sig;
@@ -2242,7 +2249,7 @@ public class operator {
 		}
 		Exertion xrt = null;
 		for (String name : names) {
-			xrt = (Exertion) ObjectClonerAdv.cloneAnnotatedWithNewIDs(exertion);
+			xrt = (Exertion) ObjectCloner.cloneAnnotatedWithNewIDs(exertion);
 			((ServiceExertion) xrt).setName(name);
 			block.addExertion(xrt);
 		}

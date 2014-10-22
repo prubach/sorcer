@@ -8,7 +8,7 @@
         <appversion>@v_sorcer@</appversion>
         <appsubpath>sorcer</appsubpath>
         <authors>
-            <author email="michael.sobolewski@sorcersoft.com" name="Michael Sobolewski"/>
+            <author email="sobol@sorcersoft.org" name="Michael Sobolewski"/>
             <author email="pawel.rubach@sorcersoft.com" name="Pawe&#x142; Rubach"/>
             <author email="rafal.krupinski@sorcersoft.com" name="Rafa&#x142; Krupi&#x144;ski"/>
             <author email="kacper.marczewski@sorcersoft.com" name="Kacper Marczewski"/>

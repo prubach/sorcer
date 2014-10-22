@@ -76,7 +76,7 @@ public class SorcerEnv {
      * Stores the description of where from the sorcer env was loaded
      */
     protected String envFrom;
-    private Properties properties = new ParentFirstProperties(System.getProperties());
+    protected Properties props = new ParentFirstProperties(System.getProperties());
     /**
      * Indicates if Booter is used in this environment.
      */
@@ -88,7 +88,7 @@ public class SorcerEnv {
 
     public SorcerEnv(Map<String, String> props) {
         this();
-        properties.putAll(props);
+        props.putAll(props);
     }
 
     protected SorcerEnv() {
@@ -177,11 +177,11 @@ public class SorcerEnv {
      * @return the current URL for the SORCER class server.
      */
     public static String getWebsterUrl() {
-        String result = sorcerEnv.properties.getProperty(WEBSTER_URL);
+        String result = sorcerEnv.props.getProperty(WEBSTER_URL);
         if (result == null) {
             try {
                 setWebsterUrl(getWebsterInterface(), getWebsterPort());
-                return sorcerEnv.properties.getProperty(WEBSTER_URL);
+                return sorcerEnv.props.getProperty(WEBSTER_URL);
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
@@ -253,7 +253,7 @@ public class SorcerEnv {
         URL url = new URL("http", host, port, "");
         logger.debug("New Webster URL: " + url);
         String urlString = url.toExternalForm();
-        sorcerEnv.properties.setProperty(WEBSTER_URL, urlString);
+        sorcerEnv.props.setProperty(WEBSTER_URL, urlString);
         System.setProperty("org.rioproject.codeserver", urlString);
     }
 
@@ -664,11 +664,11 @@ public class SorcerEnv {
      * @return the instance of Properties
      */
     public static Properties getEnvProperties() {
-        return sorcerEnv.properties;
+        return sorcerEnv.props;
     }
 
-    public void setEnvProperties(Properties properties) {
-        this.properties = properties;
+    public void setEnvProperties(Properties props) {
+        this.props = props;
     }
 
     /**
@@ -687,88 +687,88 @@ public class SorcerEnv {
      * <code>properties</code> and makes them available as the global SORCER
      * environment properties.
      *
-     * @param properties the additional properties used to update the
+     * @param props the additional properties used to update the
      *                   <code>Sorcer<code>
      *                   properties
      */
-    public static void updateFromProperties(Properties properties) {
+    public static void updateFromProperties(Properties props) {
 
         try {
             String val = null;
 
-            val = properties.getProperty(SORCER_HOME);
+            val = props.getProperty(SORCER_HOME);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(SORCER_HOME, val);
 
-            val = properties.getProperty(S_JOBBER_NAME);
+            val = props.getProperty(S_JOBBER_NAME);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(S_JOBBER_NAME, val);
 
-            val = properties.getProperty(S_CATALOGER_NAME);
+            val = props.getProperty(S_CATALOGER_NAME);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(S_CATALOGER_NAME, val);
 
-            val = properties.getProperty(S_COMMANDER_NAME);
+            val = props.getProperty(S_COMMANDER_NAME);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(S_COMMANDER_NAME, val);
 
-            val = properties.getProperty(SORCER_HOME);
+            val = props.getProperty(SORCER_HOME);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(SORCER_HOME, val);
 
-            val = properties.getProperty(S_RMI_HOST);
+            val = props.getProperty(S_RMI_HOST);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(S_RMI_HOST, val);
-            val = properties.getProperty(S_RMI_PORT);
+            val = props.getProperty(S_RMI_PORT);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(S_RMI_PORT, val);
 
-            val = properties.getProperty(P_WEBSTER_INTERFACE);
+            val = props.getProperty(P_WEBSTER_INTERFACE);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(P_WEBSTER_INTERFACE, val);
-            val = properties.getProperty(P_WEBSTER_PORT);
+            val = props.getProperty(P_WEBSTER_PORT);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(P_WEBSTER_PORT, val);
 
-            val = properties.getProperty(P_PORTAL_HOST);
+            val = props.getProperty(P_PORTAL_HOST);
             if (val != null && val.length() != 0)
                 getEnvProperties().put("P_PORTAL_HOST", val);
-            val = properties.getProperty(P_PORTAL_PORT);
+            val = props.getProperty(P_PORTAL_PORT);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(P_PORTAL_PORT, val);
 
             // provider data
-            val = properties.getProperty(DATA_SERVER_INTERFACE);
+            val = props.getProperty(DATA_SERVER_INTERFACE);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(DATA_SERVER_INTERFACE, val);
-            val = properties.getProperty(DATA_SERVER_PORT);
+            val = props.getProperty(DATA_SERVER_PORT);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(DATA_SERVER_PORT, val);
-            val = properties.getProperty(P_DATA_DIR);
+            val = props.getProperty(P_DATA_DIR);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(P_DATA_DIR, val);
 
-            val = properties.getProperty(P_SCRATCH_DIR);
+            val = props.getProperty(P_SCRATCH_DIR);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(P_SCRATCH_DIR, val);
 
-            val = properties.getProperty(LOOKUP_WAIT);
+            val = props.getProperty(LOOKUP_WAIT);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(LOOKUP_WAIT, val);
 
-            val = properties.getProperty(LOOKUP_CACHE_ENABLED);
+            val = props.getProperty(LOOKUP_CACHE_ENABLED);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(LOOKUP_CACHE_ENABLED, val);
 
-            val = properties.getProperty(P_SERVICE_ID_PERSISTENT);
+            val = props.getProperty(P_SERVICE_ID_PERSISTENT);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(P_SERVICE_ID_PERSISTENT, val);
 
-            val = properties.getProperty(P_SPACE_GROUP);
+            val = props.getProperty(P_SPACE_GROUP);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(P_SPACE_GROUP, val);
 
-            val = properties.getProperty(P_SPACE_NAME);
+            val = props.getProperty(P_SPACE_NAME);
             if (val != null && val.length() != 0)
                 getEnvProperties().put(P_SPACE_NAME, val);
 
@@ -818,7 +818,7 @@ public class SorcerEnv {
     }
 
     public File[] getSharedDirs() {
-        String filePath = properties.getProperty(S_SHARED_DIRS_FILE);
+        String filePath = props.getProperty(S_SHARED_DIRS_FILE);
         String[] paths;
 
         if (filePath != null) {
@@ -829,9 +829,9 @@ public class SorcerEnv {
                 logger.warn("Error while reading " + filePath, e);
                 paths = new String[]{};
             }
-            properties.put(S_SHARED_DIRS, StringUtils.join(paths, File.pathSeparator));
+            props.put(S_SHARED_DIRS, StringUtils.join(paths, File.pathSeparator));
         } else {
-            String sharedDirs = properties.getProperty(S_SHARED_DIRS);
+            String sharedDirs = props.getProperty(S_SHARED_DIRS);
             if (sharedDirs != null) {
                 paths = sharedDirs.split(File.pathSeparator);
             } else {
@@ -1097,7 +1097,7 @@ public class SorcerEnv {
 
     public static String getSuffixedName(String name, int suffixLength) {
         if (nameSuffixed()) {
-            String suffix = sorcerEnv.properties.getProperty(S_NAME_SUFFIX,
+            String suffix = sorcerEnv.props.getProperty(S_NAME_SUFFIX,
                     getDefaultNameSuffix(suffixLength));
             if (name.indexOf(suffix) > 0)
                 return name;
@@ -1210,14 +1210,26 @@ public class SorcerEnv {
 
     public static Properties loadProperties(InputStream inputStream)
             throws ConfigurationException {
-        Properties properties = new Properties();
+        Properties props = new Properties();
         try {
-            properties.load(inputStream);
+            props.load(inputStream);
         } catch (IOException e) {
             throw new ConfigurationException(e);
         }
-        sorcerEnv.reconcileProperties(properties);
-        return properties;
+        sorcerEnv.reconcileProperties(props);
+        return props;
+    }
+
+    public static Properties loadPropertiesNoException(String filename) {
+        logger.info("loading properties from " + filename);
+        logger.info("before loading, props = " + getProperties());
+        try {
+            return loadProperties(filename);
+        } catch (ConfigurationException e) {
+            logger.warn(e.toString());
+        }
+        logger.info("after loading, props = " + getProperties());
+        return getProperties();
     }
 
     public static URL getCodebase(URL root, String jar) {
@@ -1463,7 +1475,8 @@ public class SorcerEnv {
      * service context types from the default filename (node.types) or the
      * system property <code>sorcer.formats.file</code>.
      */
-    private void loadBasicEnvironment() {
+    //TODO Make it protected or private
+    public void loadBasicEnvironment() {
         // Try and load from path given in system properties
         String cntFile = null;
         String envFile = null;
@@ -1483,11 +1496,11 @@ public class SorcerEnv {
                 System.setProperty(S_KEY_SORCER_ENV, envPath);
                 sorcerEnvProps = loadPropertiesFromFile(envFile);
                 update(sorcerEnvProps);
-                properties.putAll(sorcerEnvProps);
+                props.putAll(sorcerEnvProps);
                 envFrom = "(Sorcer resource)";
             }
             logger.debug("SORCER env properties:\n"
-                    + GenericUtil.getPropertiesString(properties));
+                    + GenericUtil.getPropertiesString(props));
 
             cntFile = System.getProperty("sorcer.formats.file");
 
@@ -1509,11 +1522,11 @@ public class SorcerEnv {
                     + CONTEXT_DATA_FORMATS);
 
             logger.debug("* Sorcer provider accessor:"
-                    + properties.getProperty(S_SERVICE_ACCESSOR_PROVIDER_NAME));
+                    + props.getProperty(S_SERVICE_ACCESSOR_PROVIDER_NAME));
             // Repo directory - setting
-            properties = setRepoDir(properties);
-            prepareWebsterInterface(properties);
-            readShareConfiguration(properties);
+            props = setRepoDir(props);
+            prepareWebsterInterface(props);
+            readShareConfiguration(props);
         } catch (Throwable t) {
             logger.error(
                     SorcerEnv.class.getName(),
@@ -1522,8 +1535,8 @@ public class SorcerEnv {
         }
     }
 
-    private void readShareConfiguration(Properties properties) {
-        String configPath = properties.getProperty("sorcer.share.config.file");
+    private void readShareConfiguration(Properties props) {
+        String configPath = props.getProperty("sorcer.share.config.file");
         if (configPath == null || configPath.isEmpty())
             return;
         try {
@@ -1540,16 +1553,16 @@ public class SorcerEnv {
 
                 paths.add(line);
             }
-            properties.setProperty("sorcer.share.config", StringUtils.join(paths, File.pathSeparator));
+            props.setProperty("sorcer.share.config", StringUtils.join(paths, File.pathSeparator));
         } catch (IOException e) {
             logger.warn("Could not read share config file");
         }
     }
 
     private void load(String envFile, String sourceDesc) throws IOException, ConfigurationException {
-        properties.load(new FileInputStream(envFile));
+        props.load(new FileInputStream(envFile));
         envFrom = sourceDesc;
-        update(properties);
+        update(props);
         loadedEnvFile = envFile;
     }
 
@@ -1572,7 +1585,7 @@ public class SorcerEnv {
         try {
             // Try in user home directory first
             props.load((new FileInputStream(new File(filename))));
-            logger.debug("loaded properties from: " + filename);
+            logger.debug("loaded props from: " + filename);
 
         } catch (Exception e) {
             try {
@@ -1580,7 +1593,7 @@ public class SorcerEnv {
                 String home = System.getProperty(SORCER_HOME, System.getenv(E_SORCER_HOME));
                 File file = new File(home + "/configs/" + filename);
                 props.load((new FileInputStream(file)));
-                logger.debug("loaded properties from: " + file);
+                logger.debug("loaded props from: " + file);
             } catch (Exception ee) {
                 try {
                     // No file give, try as resource sorcer/util/sorcer.env
@@ -1689,7 +1702,7 @@ public class SorcerEnv {
             evalue = expandStringProperties(value, true, props);
             // try SORCER env properties
             if (evalue == null)
-                evalue = expandStringProperties(value, false, sorcerEnv.properties);
+                evalue = expandStringProperties(value, false, sorcerEnv.props);
             if (evalue == null || evalue.startsWith("${"))
                 evalue = expandStringProperties(value, false, props);
             if (value.equals(pattern) || (evalue!=null && evalue.equals(pattern))) {
@@ -1747,14 +1760,14 @@ public class SorcerEnv {
     private void loadDataNodeTypes(String filename) {
         try {
             // Try in local directory first
-            properties.load((new FileInputStream(new File(filename))));
+            props.load((new FileInputStream(new File(filename))));
 
         } catch (Throwable t1) {
             try {
                 // try to look for sorcer.env in SORCER_HOME/configs
                 String home = System.getProperty(SORCER_HOME, System.getenv(E_SORCER_HOME));
                 File file = new File(home + "/configs/" + filename);
-                properties.load((new FileInputStream(file)));
+                props.load((new FileInputStream(file)));
                 logger.debug("loaded data nodes from: " + file);
             } catch (Exception e) {
                 try {
@@ -1762,7 +1775,7 @@ public class SorcerEnv {
                     // sorcer/util/data.formats
                     InputStream stream = SorcerEnv.class.getResourceAsStream(filename);
                     if (stream != null)
-                        properties.load(stream);
+                        props.load(stream);
                     else
                         logger.error("could not load data node types from: "
                                 + filename);
@@ -1803,7 +1816,8 @@ public class SorcerEnv {
         return new File(getProperty(P_DATA_ROOT_DIR));
     }
 
-    private void overrideFromEnvironment(Map<String, String> env) {
+    //TODO Make it protected or private
+    public void overrideFromEnvironment(Map<String, String> env) {
         String portStr = env.get(E_WEBSTER_PORT);
         if (portStr != null && !portStr.isEmpty()) {
             setWebsterPortProperty(Integer.parseInt(portStr));
@@ -1814,50 +1828,50 @@ public class SorcerEnv {
     }
 
     public boolean isWebsterInternal() {
-        return Boolean.parseBoolean(properties.getProperty(SORCER_WEBSTER_INTERNAL, "false"));
+        return Boolean.parseBoolean(props.getProperty(SORCER_WEBSTER_INTERNAL, "false"));
     }
 
     public void setWebsterInternal(boolean internal) {
-        properties.setProperty(SORCER_WEBSTER_INTERNAL, Boolean.toString(internal));
+        props.setProperty(SORCER_WEBSTER_INTERNAL, Boolean.toString(internal));
     }
 
     public String getRequestorWebsterCodebase() {
-        return properties.getProperty(R_CODEBASE);
+        return props.getProperty(R_CODEBASE);
     }
 
     public void setRequestorWebsterCodebase(String codebase) {
-        properties.setProperty(R_CODEBASE, codebase);
+        props.setProperty(R_CODEBASE, codebase);
     }
 
     public void setWebsterInterfaceProperty(String interfaceProperty) {
-        properties.setProperty(P_WEBSTER_INTERFACE, interfaceProperty);
+        props.setProperty(P_WEBSTER_INTERFACE, interfaceProperty);
     }
 
     public void setWebsterPortProperty(int port) {
-        properties.setProperty(P_WEBSTER_PORT, Integer.toString(port));
+        props.setProperty(P_WEBSTER_PORT, Integer.toString(port));
     }
 
     public String getWebsterRootsString() {
-        return properties.getProperty(WEBSTER_ROOTS);
+        return props.getProperty(WEBSTER_ROOTS);
     }
 
     public void setWebsterRootsString(String roots) {
-        properties.setProperty(WEBSTER_ROOTS, roots);
+        props.setProperty(WEBSTER_ROOTS, roots);
     }
 
     public String getSorcerHome() {
-        return properties.getProperty(SORCER_HOME);
+        return props.getProperty(SORCER_HOME);
     }
 
     public void setSorcerHome(String sorcerHome) {
-        properties.setProperty(SORCER_HOME, sorcerHome);
+        props.setProperty(SORCER_HOME, sorcerHome);
     }
 
     /**
-     * copy all entries from provided map to SorcerEnv properties
+     * copy all entries from provided map to SorcerEnv props
      */
     public void load(Map<String, String> props) {
-        properties.putAll(props);
+        props.putAll(props);
     }
 
     public static SorcerEnv load(String fileName) {
@@ -1879,27 +1893,27 @@ public class SorcerEnv {
     }
 
     public String getSorcerExt() {
-        String sorcerExt = properties.getProperty(S_SORCER_EXT);
+        String sorcerExt = props.getProperty(S_SORCER_EXT);
         if (sorcerExt == null) {
             sorcerExt = System.getProperty(S_SORCER_EXT);
             if (sorcerExt == null)
                 sorcerExt = System.getenv(E_SORCER_EXT);
             if (sorcerExt == null)
                 sorcerExt = getSorcerHome();
-            properties.setProperty(S_SORCER_EXT, sorcerExt);
+            props.setProperty(S_SORCER_EXT, sorcerExt);
         }
         return sorcerExt;
     }
 
     public String getSorcerModelingLoc() {
-        String sorcerModel = properties.getProperty(S_SORCER_MODELING);
+        String sorcerModel = props.getProperty(S_SORCER_MODELING);
         if (sorcerModel == null) {
             sorcerModel = System.getProperty(S_SORCER_MODELING);
             if (sorcerModel == null)
                 sorcerModel = System.getenv(E_SORCER_MODELING);
             if (sorcerModel == null)
                 sorcerModel = getSorcerHome();
-            properties.setProperty(S_SORCER_MODELING, sorcerModel);
+            props.setProperty(S_SORCER_MODELING, sorcerModel);
         }
         return sorcerModel;
     }

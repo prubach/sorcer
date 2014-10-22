@@ -69,6 +69,7 @@ import org.slf4j.LoggerFactory;
 import sorcer.container.jeri.AbstractExporterFactory;
 import sorcer.container.jeri.ExporterFactories;
 import sorcer.core.*;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
@@ -1317,7 +1318,7 @@ public class ProviderDelegate {
 	 * @return data directory name
 	 */
 	public File getDataDir() {
-		return Sorcer.getDataDir();
+		return SorcerEnv.getDataDir();
 	}
 
 	/**
@@ -1596,7 +1597,7 @@ public class ProviderDelegate {
 		if (idPersistent) {
 			try {
 				this.setProviderUuid((ServiceID) ObjectLogger.restore(SorcerEnv
-						.getProperty(S_SERVICE_ID_FILENAME,
+                        .getProperty(S_SERVICE_ID_FILENAME,
                                 SorcerEnv.getServiceIdFilename())));
 			} catch (Exception e) { // first time if exception caught
 				e.printStackTrace();
@@ -2189,12 +2190,17 @@ public class ProviderDelegate {
 				// check the class resource
 				InputStream is = provider.getClass().getClassLoader().getResourceAsStream(
 						filename);
+
+                if (is == null) {
+                    is = provider.getClass().getClassLoader().getResourceAsStream("configs/" +
+                            filename);
+                }
 				// next check local resource
 				if (is == null) {
 					is = new FileInputStream(new File(filename));
 				}
 
-				if (is != null) {
+                if (is != null) {
 					props = Sorcer.loadProperties(is);
 
 					// copy loaded provider's properties to global Env

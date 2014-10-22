@@ -17,7 +17,7 @@ import java.rmi.MarshalledObject;
  * Date: 01.03.14
  * Created to move functionality that needs sos-platform to be outside sorcer-api
  */
-public class ObjectClonerAdv extends ObjectCloner {
+public class ObjectCloner extends ObjectClonerSimple {
 
     public static Object cloneWithNewIDs(Object o) {
         Object obj = null;

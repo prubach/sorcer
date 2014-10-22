@@ -280,6 +280,20 @@ public interface Signature extends Serializable,Comparable, Arg {
         }
     }
 
+    /**
+     * Used to indicate if signature is active.
+     */
+    public enum Active implements Arg {
+        YES, NO, TRUE, FALSE;
+        /* (non-Javadoc)
+         * @see sorcer.service.Arg#getName()
+         */
+        @Override
+        public String getName() {
+            return toString();
+        }
+    }
+
 	public enum Kind {
 		TASKER, JOBBER, SPACER, DISPATCHER, OPTIMIZER, EXPLORER, MODEL, MODEL_MANAGER
 	}

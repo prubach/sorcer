@@ -24,7 +24,7 @@ import sorcer.core.invoker.MethodInvoking;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.SignatureException;
-import sorcer.util.ObjectCloner;
+import sorcer.util.ObjectClonerSimple;
 //import sorcer.vfe.ServiceEvaluator;
 //import sorcer.vfe.evaluator.MethodEvaluator;
 
@@ -283,7 +283,7 @@ public class ObjectSignature extends ServiceSignature {
 			}
 			if (args != null) {
 				// clone the arguments for a new parametric model
-				Object[] clonedArgs = (Object[]) ObjectCloner.clone(args);
+				Object[] clonedArgs = (Object[]) ObjectClonerSimple.clone(args);
 				obj = m.invoke(null, clonedArgs);
 			} else {
 				obj = m.invoke(null);

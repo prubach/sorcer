@@ -75,10 +75,13 @@ import sorcer.core.proxy.Partnership;
 import sorcer.core.provider.container.IProviderServiceBuilder;
 import sorcer.core.service.IServiceBeanListener;
 import sorcer.service.*;
-import sorcer.util.*;
 
 import com.sun.jini.config.Config;
 import com.sun.jini.start.LifeCycle;
+import sorcer.util.ConfigurableThreadFactory;
+import sorcer.util.InjectionHelper;
+import sorcer.util.ObjectLogger;
+import sorcer.util.StringUtils;
 
 import static java.util.Collections.addAll;
 import static sorcer.core.SorcerConstants.*;
@@ -624,6 +627,10 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			initFailed(e);
 		}
 	}
+
+    public void initSpaceSupport() {
+        logger.warn("OLD initSpaceSupport method is called - ignoring");
+    }
 
 	/**
 	 * Log information about failing to initialize the service and rethrow the

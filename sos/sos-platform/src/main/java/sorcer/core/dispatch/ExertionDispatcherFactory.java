@@ -33,6 +33,7 @@ import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.loki.member.LokiMemberUtil;
+import sorcer.core.signature.ServiceSignature;
 import sorcer.service.*;
 import sorcer.service.monitor.MonitorUtil;
 
@@ -71,8 +72,9 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
         Dispatcher dispatcher = null;
         ProvisionManager provisionManager = null;
         List<ServiceDeployment> deployments = ((ServiceExertion)exertion).getDeployments();
-        if (deployments.size() > 0)
+        if (deployments.size() > 0 && (((ServiceSignature) exertion.getProcessSignature()).isProvisionable() || exertion.isProvisionable()))
             provisionManager = new ProvisionManager(exertion);
+
         try {
             if(exertion instanceof Job)
                 exertion = new ExertionSorter(exertion).getSortedJob();

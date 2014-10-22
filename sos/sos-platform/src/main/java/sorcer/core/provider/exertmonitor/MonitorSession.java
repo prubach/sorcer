@@ -30,7 +30,7 @@ import sorcer.core.monitor.MonitorEvent;
 import sorcer.core.monitor.MonitorableSession;
 import sorcer.core.provider.exertmonitor.lease.MonitorLandlord;
 import sorcer.service.*;
-import sorcer.util.ObjectCloner;
+import sorcer.util.ObjectClonerSimple;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -40,8 +40,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,7 +110,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 					"Assertion Failed: initialExertion cannot be NULL");
 
 		this.initialExertion = (ServiceExertion) ex;
-		runtimeExertion = (ServiceExertion) ObjectCloner.cloneAnnotated(ex);
+		runtimeExertion = (ServiceExertion) ObjectClonerSimple.cloneAnnotated(ex);
 		this.listener = listener;
 		init();
 		runtimeExertion.setStatus(Exec.INITIAL);

@@ -18,6 +18,7 @@ package sorcer.boot.rio;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
+import sorcer.boot.ConfigDeploymentDescriptorFactory;
 import sorcer.boot.IServiceDescriptorFactory;
 import sorcer.boot.OarServiceDescriptorFactory;
 import sorcer.boot.OpstringServiceDescriptorFactory;
@@ -34,5 +35,6 @@ public class BootRioModule extends AbstractModule {
         ), IServiceDescriptorFactory.class);
         descriptorFactories.addBinding().to(OpstringServiceDescriptorFactory.class);
         descriptorFactories.addBinding().to(OarServiceDescriptorFactory.class);
+        descriptorFactories.addBinding().to(ConfigDeploymentDescriptorFactory.class);
     }
 }

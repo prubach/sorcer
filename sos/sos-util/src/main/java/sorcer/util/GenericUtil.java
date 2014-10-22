@@ -1108,6 +1108,20 @@ public class GenericUtil implements Serializable {
         logger.info(sb.toString());
     }
 
+    public static void printArray(Object obj[], java.util.logging.Logger logger) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("\n");
+        for (int i = 0; i < obj.length; i++) {
+            // String msg = "GenericUtil: printArray: Index " + i + ":" +
+            // obj[i];
+            sb.append("GenericUtil: printArray: Index " + i + ":" + obj[i]
+                    + "\n");
+            // logger.info(msg);
+        }
+        logger.info(sb.toString());
+    }
+
+
     public static void printEnvVars() {
         Map<String, String> envMap = System.getenv();
         Iterator<String> it = envMap.keySet().iterator();
@@ -1122,6 +1136,15 @@ public class GenericUtil implements Serializable {
     }
 
     public static void printFile(File file, Logger logger) throws IOException {
+        if (logger == null) {
+            printFile(file);
+            return;
+        }
+        logger.info("printing file contents for: " + file);
+        printVect(getFileContents(file), logger);
+    }
+
+    public static void printFile(File file, java.util.logging.Logger logger) throws IOException {
         if (logger == null) {
             printFile(file);
             return;
@@ -1150,6 +1173,10 @@ public class GenericUtil implements Serializable {
     }
 
     public static void printVect(Vector<?> vect, Logger logger) {
+        printArray(vect2String(vect), logger);
+    }
+
+    public static void printVect(Vector<?> vect, java.util.logging.Logger logger) {
         printArray(vect2String(vect), logger);
     }
 
@@ -1744,41 +1771,6 @@ public class GenericUtil implements Serializable {
         return name;
     }
 
-
-/*
-    // this method exits the jvm if the file or directory is not readable; the exit is
-    // necessary for boot strapping providers since exceptions in provider constructors
-    // are simply caught and ignored...exit brings the provider down, which is good.
-    public static void checkFileExistsAndIsReadable(File file, Provider sp) {
-
-        try {
-
-            if(!file.exists()) {
-                System.out.println("***error: file does not exist = "
-                        + file.getAbsolutePath());
-                if (sp != null) sp.destroy();
-                throw new IOException("***error: file does not exist = "
-                        + file.getAbsolutePath());
-
-            }
-
-            if (!file.canRead()){
-                System.out.println("***error: file does not have read permission = "
-                        + file.getAbsolutePath());
-                if (sp != null) sp.destroy();
-                throw new IOException("***error: file does not have read permission = "
-                        + file.getAbsolutePath());
-            }
-
-        } catch (IOException e) {
-            System.out.println("***error: " + e.toString()
-                    + "; problem with file = " + file.getAbsolutePath());
-            e.printStackTrace();
-            System.exit(1);
-            throw new RuntimeException(e);
-        }
-    }
-*/
 
     public static int runShellScript(File scriptFile,
                                      Vector<String> scriptContents, File logFile, long timeout,
