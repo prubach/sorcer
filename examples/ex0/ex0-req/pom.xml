@@ -21,7 +21,7 @@
 	<parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>ex0</artifactId>
-        <version>1.0</version>
+        <version>1.1-SNAPSHOT</version>
     </parent>
 
 	<artifactId>ex0-req</artifactId>

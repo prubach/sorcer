@@ -30,7 +30,7 @@ public interface SorcerConstants {
     // S_ATTRIBUTE is variable name in System properties
     // E_ATTRIBUTE is variable name in the system Environment
 	/* service provider genetic properties */
-    public static final String SORCER_VERSION = "1.0";
+    public static final String SORCER_VERSION = "1.1-SNAPSHOT";
     // Rio default version
     public static final String RIO_VERSION = "5.0-M4-S8";
 	// SORCER global properties defined in sorcer.util.SorcerEnv.java

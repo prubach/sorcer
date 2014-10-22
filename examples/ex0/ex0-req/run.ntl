@@ -13,7 +13,7 @@
 //
 //
 //codebase mvn://org.sorcersoft.sorcer:ex0-api
-codebase artifact:org.sorcersoft.sorcer/ex0-api/1.0
+codebase artifact:org.sorcersoft.sorcer/ex0-api/1.1-SNAPSHOT
 
 // If you want to run the codebase from an external codeserver please add @computer:port to point to the
 // codeserver (webster) that serves the ex0-api.jar file.
