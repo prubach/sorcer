@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import static sorcer.core.SorcerConstants.*;
 
@@ -49,6 +50,7 @@ public class Sorcer {
     private static final String PROFILE = "P";
     public static final String MODE = "M";
     private static final String RIO = "rio";
+    private static final String SYS_PROPS = "D";
 
     private WaitMode waitMode;
 
@@ -71,10 +73,12 @@ public class Sorcer {
                 helpFormatter.printHelp(160,
                         "sorcer-boot [options] [service list files]\n"
                                 + "Service list file may be:\n" +
-                                "- a .config file with list of service descriptors,\n"
+                                "- a .config file with a sorcer.core.exertion.deployment block or a\n"
+                                + "list of service descriptors,\n"
                                 + "- an .opstring or .groovy Operational String file,\n"
                                 + "- an .oar or .jar file compliant with OAR specification,\n"
-                                + "- an :artifactId of a module that output is compliant with OAR specification (artifact*jar file is searched under $SORCER_HOME)",
+                                + "- an :artifactId of a module that output is compliant with OAR specification\n"
+                                + "(artifact*jar file is searched under current directory and $SORCER_HOME)",
                         "Start sorcer", options, null
                 );
                 return;
@@ -111,6 +115,13 @@ public class Sorcer {
         logs.setArgName("log-dir");
         options.addOption(logs);
 
+        Option sysProps = new Option(SYS_PROPS, true, "Add system properties to JVM in format key=value\n" +
+                "i.e. -Dprovider.properties=file.properties");
+        sysProps.setType(String.class);
+        sysProps.setArgs(1);
+        sysProps.setArgName("key=value");
+        options.addOption(sysProps);
+
         Option debug = new Option(DEBUG, true, "Add debug option to JVM");
         debug.setType(Boolean.class);
         debug.setArgs(1);
@@ -118,16 +129,18 @@ public class Sorcer {
         options.addOption(debug);
 
         //see sorcer.launcher.Profile
-        Option profile = new Option(PROFILE, "profile", true, "Profile, one of [sorcer, rio, mix] or a path");
+        Option profile = new Option(PROFILE, "profile", true, "Profile, one of [sorcer, rio, mix, node] or a path");
         profile.setArgs(1);
         profile.setType(String.class);
         profile.setArgName("profile");
         options.addOption(profile);
 
         String modeDesc = "Select start mode, one of:\n"
-                + Mode.preferDirect.paramValue + " - default, prefer current JVM, start in forked if debug is enabled or required environment variable is not set\n"
+                + Mode.preferDirect.paramValue + " - default, prefer current JVM, start in forked if debug is enabled\n" +
+                "or required environment variable is not set\n"
                 + Mode.forceDirect.paramValue + " - try current JVM, exit on failure\n"
-                + Mode.preferFork.paramValue + " - prefer new process, try in current JVM if cannot run a process (e.g. insufficient privileges)\n"
+                + Mode.preferFork.paramValue + " - prefer new process, try in current JVM if cannot run a process \n" +
+                "(e.g. insufficient privileges)\n"
                 + Mode.forceFork.paramValue + " try new process, exit on failure";
         Option mode = new Option(MODE, "mode", true, modeDesc);
         mode.setType(Boolean.class);
@@ -136,7 +149,8 @@ public class Sorcer {
         options.addOption(mode);
         options.addOption("h", "help", false, "Print this help");
 
-        Option rio = new Option(RIO, "List of opstrings to be started by the Rio Monitor (opstring) separated by the system path separator (" + File.pathSeparator + ")");
+        Option rio = new Option(RIO, "List of opstrings to be started by the Rio Monitor (opstring) separated by \n" +
+                "the system path separator (" + File.pathSeparator + ")");
         rio.setArgs(1);
         rio.setArgName("opstrings");
         rio.setType(String.class);
@@ -161,6 +175,17 @@ public class Sorcer {
         Integer debugPort = null;
         if (cmd.hasOption(DEBUG)) {
             debugPort = Integer.parseInt(cmd.getOptionValue(DEBUG));
+        }
+
+
+        Properties customSysProps = new Properties();
+        if (cmd.hasOption(SYS_PROPS)) {
+            for (String s : cmd.getOptionValues(SYS_PROPS)) {
+                String[] keyVal = s.split("=");
+                if (keyVal.length!=2)
+                    throw new IllegalArgumentException("Illegal system property passed: " + s );
+                customSysProps.setProperty(keyVal[0], keyVal[1]);
+            }
         }
 
         try {
@@ -213,6 +238,8 @@ public class Sorcer {
         File logDir = FileUtils.getFile(home, cmd.hasOption(LOGS) ? cmd.getOptionValue(LOGS) : "logs");
 
         launcher.setLogDir(logDir);
+
+        launcher.setCustomSystemProperties(customSysProps);
 
         @SuppressWarnings("unchecked")
         List<String> userConfigFiles = cmd.getArgList();

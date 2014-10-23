@@ -19,6 +19,7 @@ package sorcer.launcher;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Rafał Krupiński
@@ -45,5 +46,7 @@ public interface ILauncher {
     void removeSorcerListener(SorcerListener listener);
 
     void setRioConfigs(List<String> rioConfigs);
+
+    void setCustomSystemProperties(Properties customSystemProperties);
 
 }

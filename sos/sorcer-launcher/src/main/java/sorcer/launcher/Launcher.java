@@ -181,6 +181,8 @@ public abstract class Launcher implements ILauncher {
     protected Properties getProperties() {
         Properties overrides = new Properties(getDefaultProperties());
         overrides.putAll(System.getProperties());
+        if (properties!=null)
+            overrides.putAll(properties);
         if (log.isDebugEnabled())
             for (Object key : i(overrides.propertyNames()))
                 log.debug("{} = {}", key, overrides.getProperty((String) key));
@@ -283,6 +285,13 @@ public abstract class Launcher implements ILauncher {
     @Override
     public void setRioConfigs(List<String> rioConfigs) {
         this.rioConfigs = rioConfigs;
+    }
+
+    @Override
+    public void setCustomSystemProperties(Properties customSystemProperties) {
+        if (properties==null)
+            properties = new Properties();
+        properties.putAll(customSystemProperties);
     }
 
     private class SorcerListenerMultiplexer implements SorcerListener {
