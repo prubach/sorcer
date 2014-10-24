@@ -126,12 +126,33 @@ public class ProjectArtifactResolver implements ArtifactResolver {
         if (files.size() > 0) {
             File result = files.iterator().next();
             if (files.size() > 1) {
-                log.warn("Found {} files in {} possibly matching artifactId, using {}", files.size(), root, result);
+                // Trying to eliminate the ones that have sth additional in its name,
+                // i.e. looking for soap-client but found soap-client-req
+                List<File> fileList = new ArrayList<File>(files);
+                Collections.sort(fileList, new FileNameLengthComparator());
+                result = fileList.get(0);
+                log.warn("Found {} files in {} possibly matching artifactId, using the one with the shortest name: {}", files.size(), root, result);
                 log.debug("Files found: {}", files);
             }
             return result;
         }
         return null;
+    }
+}
+
+class FileNameLengthComparator implements Comparator<File>{
+    @Override
+    public int compare(File f1, File f2) {
+        if ((f1.getName()==null) && (f2.getName()==null)) return 0;
+        if (f1.getName()==null) return -1;
+        if (f2.getName()==null) return 1;
+
+        if (f1.getName().length()>f2.getName().length())
+            return 1;
+        else if (f1.getName().length()<f2.getName().length())
+            return -1;
+        else
+            return f1.getName().compareTo(f2.getName());
     }
 }
 

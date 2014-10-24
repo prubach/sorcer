@@ -283,6 +283,8 @@ public interface SorcerConstants {
 
 	public static final String S_VERSION_SORCER = "v.sorcer";
 
+    public static final String S_VERSION_SORCER_COM = "v.sorcer.com";
+
     public static final String S_VERSION_RIO = "v.rio";
 
     public static final String S_SORCER_LOCAL_HOSTADDR= "sorcer.local.hostaddress";

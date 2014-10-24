@@ -1432,6 +1432,28 @@ public class SorcerEnv {
         return getProperty(S_VERSION_SORCER, SORCER_VERSION);
     }
 
+    public static String getSorcerComVersion() {
+        String version = getProperty(S_VERSION_SORCER_COM);
+        if (version!=null)
+            return version;
+
+        File versionFile = new File(SorcerEnv.getExtDir(), "configs/versions.properties");
+        try {
+            FileInputStream input = new FileInputStream(versionFile);
+            Properties versionProps = new Properties();
+            versionProps.load(input);
+            String versionCom = versionProps.getProperty(S_VERSION_SORCER_COM);
+            if (versionCom!=null) {
+                sorcerEnv.props.setProperty(S_VERSION_SORCER_COM, versionCom);
+                return versionCom;
+            }
+        } catch (Exception e) {
+            logger.debug("Cannot load v.sorcer-com version from: {}, defaulting to SORCER version: {}", versionFile, getSorcerVersion());
+        }
+        sorcerEnv.props.setProperty(S_VERSION_SORCER_COM, getSorcerVersion());
+        return getSorcerVersion();
+    }
+
     public static URL getCodebaseRoot() {
         return getWebsterUrlURL();
     }

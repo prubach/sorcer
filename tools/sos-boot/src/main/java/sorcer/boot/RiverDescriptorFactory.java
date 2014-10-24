@@ -32,7 +32,7 @@ import static sorcer.core.SorcerConstants.START_PACKAGE;
 public class RiverDescriptorFactory implements IServiceDescriptorFactory {
     @Override
     public Collection<String> handledExtensions() {
-        return Arrays.asList("config");
+        return Arrays.asList("oldconfig");
     }
 
     @Override

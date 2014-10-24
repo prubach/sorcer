@@ -18,15 +18,18 @@ public class VersionResolver {
     // groupId_artifactId -> version
     protected Map<String, String> versions = new HashMap<String, String>();
     static PropertiesLoader propertiesLoader = new PropertiesLoader();
-    static File VERSIONS_PROPS_FILE = new File(SorcerEnv.getHomeDir(), "configs/groupversions.properties");
+    static File[] VERSIONS_PROPS_FILES = new File[] { new File(SorcerEnv.getHomeDir(), "configs/groupversions.properties"), new File(SorcerEnv.getExtDir(), "configs/groupversions.properties") };
 
     {
         versions = propertiesLoader.loadAsMap("META-INF/maven/groupversions.properties", Thread.currentThread()
                 .getContextClassLoader());
-        try {
-            versions.putAll(propertiesLoader.loadAsMap(VERSIONS_PROPS_FILE));
-        } catch (IOException e) {
-            log.warn("Could not load versions from {}", VERSIONS_PROPS_FILE, e);
+        for (File f : VERSIONS_PROPS_FILES) {
+            try {
+                if (f.exists())
+                    versions.putAll(propertiesLoader.loadAsMap(f));
+            } catch (IOException e) {
+                log.warn("Could not load versions from {}", f, e);
+            }
         }
     }
 

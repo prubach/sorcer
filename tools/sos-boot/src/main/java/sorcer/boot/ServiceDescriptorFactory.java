@@ -34,7 +34,7 @@ import java.util.Set;
  * @author Rafał Krupiński
  */
 public class ServiceDescriptorFactory {
-    private static final Logger log = LoggerFactory.getLogger(ServiceDestroyerFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(ServiceDescriptorFactory.class);
 
     public List<? extends ServiceDescriptor> create(File path) throws ConfigurationException {
         String ext = FilenameUtils.getExtension(path.getPath());

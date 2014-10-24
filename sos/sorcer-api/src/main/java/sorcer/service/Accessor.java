@@ -115,7 +115,7 @@ public class Accessor {
             types = serviceTypes;
         }
 
-        logger.info("getServiceTemplate >> \n serviceID: " + serviceID
+        logger.debug("getServiceTemplate >> \n serviceID: " + serviceID
                 + "\nproviderName: " + providerName + "\nserviceTypes: "
                 + StringUtils.arrayToString(serviceTypes)
                 + "\npublishedServiceTypes: "
