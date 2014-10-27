@@ -241,6 +241,7 @@
                         location="${mvn.repo}/org/codehaus/groovy/groovy-all/${v.groovy}/groovy-all-${v.groovy}.jar"/>
                 <pathelement location="${mvn.repo}/com/google/guava/14.0.1/guava-14.0.1.jar"/>
                 <pathelement location="${mvn.repo}/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar"/>
+                <pathelement location="${mvn.repo}/commons-io/commons-io/2.4/commons-io-2.4.jar"/>
                 <pathelement
                         location="${mvn.repo}/com/google/collections/google-collections/1.0/google-collections-1.0.jar"/>
                 <pathelement
