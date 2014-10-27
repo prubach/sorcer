@@ -26,14 +26,17 @@ import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.Dispatcher;
 import sorcer.core.SorcerEnv;
+import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.Concatenator;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
+import sorcer.core.provider.exertmonitor.MonitorSession;
 import sorcer.core.signature.NetSignature;
 import sorcer.ext.Provisioner;
 import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
+import sorcer.service.monitor.MonitorUtil;
 
 import static sorcer.service.Exec.*;
 
@@ -151,12 +154,20 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                         logger.info("Provisioning "+sig);
                         service = provisioner.provision(sig.getServiceType().getName(), sig.getProviderName(), sig.getVersion());
                     } catch (ProvisioningException pe) {
-                        String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +pe.getMessage();
-                        logger.warn(msg, pe);
+                        Throwable rootCause = pe;
+                        while (rootCause.getCause()!=null && rootCause.getCause()!=rootCause) {
+                            rootCause = rootCause.getCause();
+                        }
+                        String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +rootCause.getMessage();
+                        logger.warn(msg);
                         throw new ExertionException(msg, task);
                     } catch (RemoteException re) {
-                        String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +re.getMessage();
-                        logger.warn(msg, re);
+                        Throwable rootCause = re;
+                        while (rootCause.getCause()!=null && rootCause.getCause()!=rootCause) {
+                            rootCause = rootCause.getCause();
+                        }
+                        String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +rootCause.getMessage();
+                        logger.warn(msg);
                         throw new ExertionException(msg, task);
                     }
                 }
@@ -228,10 +239,20 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             }
             logger.debug("got result: {}", result);
         } catch (Exception re) {
-            System.out.println("+++++++++++++++Dispatcher failed for task, tried: " + tried + " : "
-                    + xrt.getName());
             logger.error("+++++++++++++++Dispatcher failed for task, tried: " + tried + " : "
                     + xrt.getName());
+            task.setStatus(State.FAILED.ordinal());
+
+            /*if (task.isMonitorable()) {
+                MonitoringSession mSession = MonitorUtil.getMonitoringSession(task);
+                if (mSession!=null){
+                    try {
+                        mSession.changed(task.getContext(), task.getControlContext(), Exec.FAILED);
+                    } catch (Exception ce) {
+                        logger.error("Problem reporting failed state of task: " + task.getName());
+                    }
+                }
+            } */
             task.reportException(re);
             throw new ExertionException("Dispatcher failed for task, tried: " + tried + " : "
                     + xrt.getName(), re);

@@ -319,7 +319,8 @@ public class ExertionDispatcher implements Exerter, Callable {
             if (result != null && result.getExceptions().size() > 0) {
                 for (ThrowableTrace et : result.getExceptions()) {
                     Throwable t = et.getThrowable();
-                    logger.warn("Got exception running {}", exertion.getName(), t);
+                    logger.error("Got exception running {} : , {}", exertion.getName(), t.getMessage());
+                    logger.debug("Exception details: {}", t);
                     if (t instanceof Error)
                         ((ServiceExertion) result).setStatus(Exec.ERROR);
                 }

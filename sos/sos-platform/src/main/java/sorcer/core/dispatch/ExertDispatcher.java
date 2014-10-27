@@ -118,7 +118,7 @@ abstract public class ExertDispatcher implements Dispatcher {
             doExec();
             afterExec(xrt);
         } catch (Exception e) {
-            logger.info("Exertion dispatcher thread killed by exception", e);
+            logger.warn("Exertion dispatcher thread killed by exception: {}", e.getMessage());
             xrt.setStatus(FAILED);
             state = FAILED;
             xrt.reportException(e);
