@@ -1847,7 +1847,12 @@ public class GenericUtil implements Serializable {
 
         if (isLinuxOrMac()) {
             logger.info("doing linux/mac system call...");
-            scriptCommand[0] = "sh";
+            if (wrapperScript.get(0)!=null && wrapperScript.get(0).contains("bash"))
+                scriptCommand[0] = "bash";
+            else
+                scriptCommand[0] = "sh";
+
+            // Workaround for systems that don't use bash as default.
             //scriptCommand[1] = scriptFile.getAbsolutePath();
             scriptCommand[1] = wrapperScriptFile.getAbsolutePath();
             scriptCommand[2] = " ";
