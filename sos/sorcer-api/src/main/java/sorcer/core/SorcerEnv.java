@@ -27,6 +27,8 @@ import java.net.UnknownHostException;
 import java.security.AccessControlException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Level;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1033,25 +1035,29 @@ public class SorcerEnv {
         }
     }
 
-    public static void setCodeBase(String[] jars) {
-        String url = getWebsterUrl();
+    public static void setCodeBase(String[] jars, String codebaseUrl) {
         String codebase = "";
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < jars.length - 1; i++) {
             if (jars[i].startsWith("artifact:"))
                 sb.append(jars[i]).append(" ");
             else
-                sb.append(url).append("/").append(jars[i]).append(" ");
+                sb.append(codebaseUrl).append("/").append(jars[i]).append(" ");
         }
         if (jars[jars.length - 1].startsWith("artifact:"))
             sb.append(jars[jars.length - 1]);
         else
-            sb.append(url).append("/").append(jars[jars.length - 1]);
+            sb.append(codebaseUrl).append("/").append(jars[jars.length - 1]);
         codebase = sb.toString();
         System.setProperty("java.rmi.server.codebase", codebase);
         if (logger.isDebugEnabled())
             logger.debug("Setting codebase 'java.rmi.server.codebase': "
                     + codebase);
+    }
+
+    public static void setCodeBase(String[] jars) {
+        String  url = getWebsterUrl();
+        setCodeBase(jars, url);
     }
 
     /**
