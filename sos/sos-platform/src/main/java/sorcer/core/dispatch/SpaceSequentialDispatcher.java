@@ -44,11 +44,11 @@ public class SpaceSequentialDispatcher extends SpaceParallelDispatcher {
 	}
 
     protected synchronized void waitForExertion(Exertion exertion) {
-        while (exertion.getIndex() - doneExertionIndex > -1) {
+        while (exertion.getIndex() - getDoneExertionIndex() > -1) {
             try {
-                logger.debug("Waiting for exertion " + exertion.getName() + " to finish index/done: " + exertion.getIndex() + "/" + doneExertionIndex);
+                logger.debug("Waiting for exertion " + exertion.getName() + " to finish index/done: " + exertion.getIndex() + "/" + getDoneExertionIndex());
                 wait();
-                logger.debug("Finished waiting for exertion to finish index/done: " + exertion.getIndex() + "/" + doneExertionIndex);
+                logger.debug("Finished waiting for exertion to finish index/done: " + exertion.getIndex() + "/" + getDoneExertionIndex());
             } catch (InterruptedException e) {
                 // continue
             }

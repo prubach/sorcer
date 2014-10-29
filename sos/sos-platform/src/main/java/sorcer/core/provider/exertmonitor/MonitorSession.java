@@ -368,10 +368,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	 * Rule 1: If any one of the child state is FAILED and all others are DONE,
 	 * marked ourself FAILED Rule 2: If all child are DONE, mark ourself as DONE
 	 * Rule 3: If any child is SUSPENDED and all other child are DONE, then we
-	 * are in USPENDED state
+	 * are in SUSPENDED state
 	 */
 	private void resetState() {
-		int failedCount = 0, suspendedCount = 0, doneCount = 0;
+		int failedCount = 0, suspendedCount = 0, doneCount = 0, inSpaceCount = 0, provisionCount = 0;
 		for (int i = 0; i < size(); i++) {
 			if (get(i).isFailed())
 				failedCount++;
@@ -379,6 +379,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 				suspendedCount++;
 			else if (get(i).isDone())
 				doneCount++;
+            else if (get(i).isInSpace())
+                inSpaceCount++;
+            else if (get(i).isProvision())
+                provisionCount++;
 			else if (get(i).isInitial())
                 logger.debug("Ignoring state INITIAL for: " + get(i).runtimeExertion.getName());
             else
@@ -403,6 +407,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
         }
 		else if (suspendedCount != 0 && doneCount + suspendedCount == size())
 			runtimeExertion.setStatus(Exec.SUSPENDED);
+        else if (inSpaceCount != 0 && doneCount + suspendedCount + inSpaceCount == size())
+            runtimeExertion.setStatus(Exec.INSPACE);
+        else if (provisionCount != 0 && doneCount + suspendedCount + inSpaceCount + provisionCount == size())
+            runtimeExertion.setStatus(Exec.PROVISION);
 
 	}
 
@@ -417,6 +425,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	public boolean isInSpace() {
 		return (runtimeExertion.getStatus() == Exec.INSPACE);
 	}
+
+    public boolean isProvision() {
+        return (runtimeExertion.getStatus() == Exec.PROVISION);
+    }
 
 	public boolean isRunning() {
 		return (runtimeExertion.getStatus() == Exec.RUNNING);
@@ -438,7 +450,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		return (runtimeExertion.getStatus() <= Exec.FAILED);
 	}
 
-	/**
+    /**
 	 * 
 	 * Searches if any SessionResource exists with this parent session with a
 	 * child session having the same value for the cookie.

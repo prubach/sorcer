@@ -29,7 +29,7 @@ Task f3 = task("f3",
 );
 
 job("f1",
-    job("f2", f4, f5),
+    job("f2", f4, f5, strategy(Access.PULL, Provision.YES, Monitor.NO)),
     f3,
 	pipe(out(f4, path("result/y1")), input(f3, path("arg/x5"))),
-	pipe(out(f5, path("result/y2")), input(f3, path("arg/x6"))));
+	pipe(out(f5, path("result/y2")), input(f3, path("arg/x6"))), strategy(Access.PULL, Provision.YES, Monitor.NO));

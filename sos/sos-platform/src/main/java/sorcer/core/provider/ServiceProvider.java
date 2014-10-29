@@ -1363,7 +1363,9 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	}
 
     protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
-        if (!(exertion instanceof Task))
+        List<Class> publishedIfaces = Arrays.asList(this.delegate.getPublishedServiceTypes());
+        if (!(exertion instanceof Task) && (!publishedIfaces.contains(Spacer.class))
+                && (!publishedIfaces.contains(Jobber.class)) && (!publishedIfaces.contains(Concatenator.class)))
             throw new ExertionException(new IllegalArgumentException("Unknown exertion type " + exertion));
         try {
             if (exertion.isMonitorable())

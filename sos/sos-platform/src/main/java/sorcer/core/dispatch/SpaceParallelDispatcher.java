@@ -49,7 +49,7 @@ import java.rmi.RemoteException;
 public class SpaceParallelDispatcher extends ExertDispatcher {
 
     protected JavaSpace05 space;
-    protected int doneExertionIndex = 0;
+    private int doneExertionIndex = 0;
     protected LokiMemberUtil loki;
 
     public SpaceParallelDispatcher(Exertion exertion,
@@ -72,6 +72,10 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
 
         this.loki = loki;
 	}
+
+    public int getDoneExertionIndex() {
+        return doneExertionIndex;
+    }
 
     @Override
     protected List<Exertion> getInputExertions() throws ContextException {
@@ -240,6 +244,7 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
     }
 
     protected synchronized void changeDoneExertionIndex(int index) {
+        logger.debug("[" + Thread.currentThread().getName() + "] - Updating changeDoneExertionIndex to: " + index+1);
         doneExertionIndex = index + 1;
         notifyAll();
     }
