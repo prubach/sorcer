@@ -36,6 +36,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static sorcer.core.SorcerConstants.E_RIO_HOME;
+import static sorcer.core.SorcerConstants.S_RIO_HOME;
+
 /**
  * SORCER class
  * User: prubach
@@ -74,9 +77,16 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
         primitiveTypes.put("void", void.class);
 
         String envSorcerHome = System.getenv(ENV_SORCER_HOME);
-        String sorcerHome = (envSorcerHome!=null && !envSorcerHome.isEmpty() ?
+        String sorcerHome = (envSorcerHome != null && !envSorcerHome.isEmpty() ?
                 envSorcerHome : System.getProperty(SORCER_HOME));
-        JavaSystemProperties.ensure("RIO_HOME", new File(sorcerHome, "lib/rio").getPath());
+
+        String rioHome = System.getenv(E_RIO_HOME);
+        if (rioHome == null || rioHome.isEmpty())
+            rioHome = System.getProperty(S_RIO_HOME, rioHome);
+        if (rioHome == null || rioHome.isEmpty())
+            rioHome = new File(sorcerHome, "lib/rio").getPath();
+
+        JavaSystemProperties.ensure(E_RIO_HOME, rioHome);
         try {
             resolver = SorcerResolver.getResolver();
         } catch (ResolverException e) {
@@ -102,7 +112,7 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
         logger.trace("Load class {} using codebase {}, resolved to {}", name, codebase, resolvedCodebase);
         try {
             Class primitive = primitiveTypes.get(name);
-            if (primitive!=null)
+            if (primitive != null)
                 return primitive;
             return loader.loadClass(resolvedCodebase, name, defaultLoader);
         } catch (Exception fe) {
@@ -202,7 +212,6 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
         }
         return cp;
     }
-
 
 
 }

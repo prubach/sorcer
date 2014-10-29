@@ -1,3 +1,4 @@
+import sorcer.core.SorcerEnv
 import sorcer.protocol.ProtocolHandlerRegistry;
 import sorcer.util.url.HandlerInstaller;
 
@@ -6,13 +7,21 @@ import sorcer.service.Context;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.context.PositionalContext;
-@Grab(group='org.sorcersoft.sorcer', module='sorcer-lib', version='[1.0-SNAPSHOT]')
+@Grab(group='org.sorcersoft.sorcer', module='sorcer-lib', version='[1.1-SNAPSHOT]')
 //@Grab(group='org.sorcer', module='webster', version='[4.2.8]')
 //@Grab(group='org.sorcer', module='sorcer-lib', version='[4.2.8]')
-@Grab(group='org.rioproject.resolver', module='resolver-api', version='[5.0-M4-S7]')
-//@Grab(group='org.rioproject.resolver', module='resolver-aether', version='[5.0-M4-S7]')
+@GrabResolver(name='sorcersoft', root='http://mvn.sorcersoft.com/content/groups/public/')
+@Grab(group='org.rioproject.resolver', module='resolver-api', version='[5.0-M4-S8]')
+//@Grab(group='org.rioproject.resolver', module='resolver-aether', version='[5.0-M4-S8]')
+@Grab(group='org.slf4j', module='slf4j-simple', version='1.7.5')
 import sorcer.core.requestor.ServiceRequestor
-import java.rmi.server.RMIClassLoader;
+
+@GrabConfig(systemClassLoader=true)
+@Grab(group='org.sorcersoft.sorcer', module='sorcer-rio-start', version='[1.1-SNAPSHOT]')
+import sorcer.rio.rmi.SorcerResolvingLoader;
+
+System.setProperty("org.rioproject.resolver.jar", new File(SorcerEnv.homeDir, "target/rio/lib/resolver/resolver-aether-5.0-M4-S8.jar").path)
+SorcerResolvingLoader.getClass().toString()
 
 ServiceRequestor.prepareEnvironment();
 def HandlerInstaller hInst = new HandlerInstaller(ProtocolHandlerRegistry.get());
@@ -25,7 +34,7 @@ def cdb = new String[1];
 cdb[0] = "org.sorcersoft.sorcer:ju-arithmetic-api";
 //cdb[0] = "org.sorcer:ju-arithmetic-beans:4.2.8";
 ServiceRequestor.prepareCodebase(cdb);
-@Grab(group='org.sorcersoft.sorcer', module='ju-arithmetic-api', version='[1.0-SNAPSHOT]')
+@Grab(group='org.sorcersoft.sorcer', module='ju-arithmetic-api', version='[1.1-SNAPSHOT]')
 //@Grab(group='org.sorcer', module='ju-arithmetic-beans', version='[4.2.8]')
 NetSignature sig = new NetSignature("add", junit.sorcer.core.provider.Adder.class);
 Context ctx = new PositionalContext("add");
@@ -37,5 +46,5 @@ Task task = new NetTask("ADD", sig);
 task.setContext(ctx);
 result=task.exert();
 Context outctx = result.getContext();
-println(outCtx);
+println(outctx);
 //context.respName = outctx.getValue0("out/value");
