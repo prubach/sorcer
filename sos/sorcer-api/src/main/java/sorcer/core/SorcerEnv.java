@@ -97,6 +97,14 @@ public class SorcerEnv {
     }
 
     static {
+        try {
+            loadEnvironment();
+        } catch (ConfigurationException ce) {
+            logger.error(ce.getMessage());
+        }
+    }
+
+    protected static void loadEnvironment() throws ConfigurationException{
         sorcerEnv = new SorcerEnv();
         sorcerEnv.loadBasicEnvironment();
         sorcerEnv.overrideFromEnvironment(System.getenv());
@@ -1504,7 +1512,7 @@ public class SorcerEnv {
      * system property <code>sorcer.formats.file</code>.
      */
     //TODO Make it protected or private
-    public void loadBasicEnvironment() {
+    public void loadBasicEnvironment() throws ConfigurationException {
         // Try and load from path given in system properties
         String cntFile = null;
         String envFile = null;
@@ -1555,11 +1563,9 @@ public class SorcerEnv {
             props = setRepoDir(props);
             prepareWebsterInterface(props);
             readShareConfiguration(props);
-        } catch (Throwable t) {
-            logger.error(
-                    SorcerEnv.class.getName(),
-                    "Unable to find/load SORCER environment configuration files",
-                    t);
+        } catch (Exception t) {
+            throw new ConfigurationException(
+                    "Unable to find/load SORCER environment configuration files", t);
         }
     }
 
