@@ -19,6 +19,7 @@ package sorcer.core.requestor;
 
 import junitx.framework.FileAssert;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.service.ConfigurationException;
 import sorcer.service.Context;
@@ -138,7 +139,10 @@ import static org.junit.Assert.assertTrue;
     }
 
 	public String getProperty(String key) {
-		return tester.getProps().getProperty(key);
+        if (tester.getProps()!=null && tester.getProps().getProperty(key)!=null)
+            return tester.getProps().getProperty(key);
+        else
+            return SorcerEnv.getProperty(key);
 	}
 
 	public Object setProperty(String key, String value) {
@@ -146,7 +150,9 @@ import static org.junit.Assert.assertTrue;
 	}
 	
 	public String getProperty(String property, String defaultValue) {
-		return tester.getProps().getProperty(property, defaultValue);
+        String result = getProperty(property);
+        if (result!=null) return result;
+        else return defaultValue;
 	}
 	
 	/**

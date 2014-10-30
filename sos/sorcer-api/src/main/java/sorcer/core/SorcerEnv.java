@@ -801,7 +801,8 @@ public class SorcerEnv {
      * @return a HTTP document root directory
      */
     public static File getDocRootDir() {
-        return new File(System.getProperty(DOC_ROOT_DIR, new File(getHomeDir(), "data").getPath()));
+        return new File(System.getProperty(DOC_ROOT_DIR,
+                new File(((System.getenv(E_ENG_HOME)!=null) ? new File(System.getenv(E_ENG_HOME)) : getHomeDir()), "data").getPath()));
     }
 
     public static File getDataFile(String filename) {

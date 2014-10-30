@@ -158,9 +158,15 @@ class FileNameLengthComparator implements Comparator<File>{
 
 class ArtifactIdFileFilter extends AbstractFileFilter {
     private String artifactId;
+    private String type;
 
-    public ArtifactIdFileFilter(String artifactId) {
-        this.artifactId = artifactId;
+    public ArtifactIdFileFilter(String input) {
+        String[] inputPart = input.split(":");
+        this.artifactId = inputPart[0];
+        if (inputPart.length>1)
+            this.type = "." + inputPart[1];
+        else
+            this.type = ".jar";
     }
 
     @Override
@@ -168,7 +174,7 @@ class ArtifactIdFileFilter extends AbstractFileFilter {
         String parent = dir.getName();
         String grandParent = dir.getParentFile().getName();
         return
-                new File(dir, name).isFile() && name.startsWith(artifactId + "-") && name.endsWith(".jar") && (
+                new File(dir, name).isFile() && name.startsWith(artifactId + "-") && name.endsWith(type) && (
                         //check development structure
                         "target".equals(parent)
                                 //check repository just in case
@@ -177,12 +183,13 @@ class ArtifactIdFileFilter extends AbstractFileFilter {
                         || (
                             //check gradle development structure
                             "libs".equals(parent)
+                            || "config".equals(parent)
                                     //check repository just in case
-                                    || "build".equals(grandParent)
+                            || "build".equals(grandParent)
                         )
                 )
                 //check distribution structure
-                || "lib".equals(grandParent) && (artifactId + ".jar").equals(name)
+                || "lib".equals(grandParent) && (artifactId + type).equals(name)
                 ;
     }
 }

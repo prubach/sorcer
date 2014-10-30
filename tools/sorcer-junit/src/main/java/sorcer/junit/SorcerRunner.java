@@ -47,6 +47,7 @@ import java.util.Set;
 
 import static sorcer.core.SorcerConstants.CODEBASE_SEPARATOR;
 import static sorcer.core.SorcerConstants.SORCER_HOME;
+import static sorcer.core.SorcerConstants.E_SORCER_HOME;
 import static sorcer.util.JavaSystemProperties.RMI_SERVER_CLASS_LOADER;
 
 /**
@@ -59,7 +60,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
     private SorcerServiceConfiguration configuration;
 
     static {
-        String homePath = System.getProperty(SORCER_HOME);
+        String homePath = System.getProperty(SORCER_HOME, System.getenv(E_SORCER_HOME));
         if (homePath != null)
             home = new File(homePath);
 

@@ -206,6 +206,13 @@ lateInit ( ) {
 
     fi
 
+    # Determine the Webster PUT directory
+    if [ -n "$ENG_HOME" ] ; then
+        WEBSTER_DATA_DIR="$ENG_HOME"/data
+    else
+        WEBSTER_DATA_DIR="$SORCER_HOME"/data
+    fi
+
     # For Darwin, use classes.jar for TOOLS_JAR
     TOOLS_JAR="$JAVA_HOME/lib/tools.jar"
     #if $darwin; then
@@ -241,7 +248,9 @@ lateInit ( ) {
 		-Dtools.jar=$TOOLS_JAR \
 		-Dorg.rioproject.resolver.jar=$MVN_REPO/org/rioproject/resolver/resolver-aether/$V_RIO/resolver-aether-$V_RIO.jar \
 		-DRIO_HOME=$rioHome\
-		-Dsorcer.home=$SORCER_HOME"
+		-Dsorcer.home=$SORCER_HOME\
+		-Dwebster.tmp.dir=$WEBSTER_DATA_DIR\
+        -Dwebster.put.dir=$WEBSTER_DATA_DIR"
 
 
 	LOG_CP="$MVN_REPO/org/slf4j/slf4j-api/$V_SLF4J/slf4j-api-$V_SLF4J.jar:\
@@ -406,7 +415,7 @@ $MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
     echo "##"   
     echo "##############################################################################"
     echo " "
-    # echo $BOOT_CLASSPATH
+    # echo $JAVA_OPTS
 
     # Start the Profiler or the JVM
     if $useprofiler ; then
@@ -414,7 +423,6 @@ $MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
     else
         exec "$JAVACMD" $JAVA_OPTS \
         	-Djava.security.policy=$SORCER_HOME/configs/sorcer.policy \
-            -Dwebster.put.dir="$SORCER_HOME"/data \
             -classpath "$BOOT_CLASSPATH" \
             -Dprogram.name="$PROGNAME" \
             $STARTER_MAIN_CLASS \
@@ -519,8 +527,6 @@ else
 	    -Djava.rmi.server.RMIClassLoaderSpi=sorcer.rio.rmi.SorcerResolvingLoader \
         -Djava.rmi.server.useCodebaseOnly=false \
         -Dwebster.internal="true" \
-        -Dwebster.tmp.dir="$SORCER_HOME"/data \
-        -Dwebster.put.dir="$SORCER_HOME"/data \
         -Dprogram.name="$PROGNAME" \
         -Dsorcer.home="$SORCER_HOME" \
         -Dtools.jar="$TOOLS_JAR" \
