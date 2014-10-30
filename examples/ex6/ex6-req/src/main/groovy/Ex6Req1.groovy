@@ -1,5 +1,5 @@
-import sorcer.core.SorcerEnv
-import sorcer.protocol.ProtocolHandlerRegistry;
+import sorcer.protocol.ProtocolHandlerRegistry
+import sorcer.resolver.Resolver;
 import sorcer.util.url.HandlerInstaller;
 
 import sorcer.service.Task;
@@ -16,12 +16,8 @@ import sorcer.core.context.PositionalContext;
 @Grab(group='org.slf4j', module='slf4j-simple', version='1.7.5')
 import sorcer.core.requestor.ServiceRequestor
 
-@GrabConfig(systemClassLoader=true)
-@Grab(group='org.sorcersoft.sorcer', module='sorcer-rio-start', version='[1.1-SNAPSHOT]')
-import sorcer.rio.rmi.SorcerResolvingLoader;
-
-System.setProperty("org.rioproject.resolver.jar", new File(SorcerEnv.homeDir, "target/rio/lib/resolver/resolver-aether-5.0-M4-S8.jar").path)
-SorcerResolvingLoader.getClass().toString()
+String sorcerRioStart = Resolver.resolveAbsolute("org.sorcersoft.sorcer:sorcer-rio-start:1.1-SNAPSHOT")
+ClassLoader.systemClassLoader.addURL(new File(sorcerRioStart).toURI().toURL());
 
 ServiceRequestor.prepareEnvironment();
 def HandlerInstaller hInst = new HandlerInstaller(ProtocolHandlerRegistry.get());
