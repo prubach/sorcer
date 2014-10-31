@@ -76,7 +76,7 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
         String envSorcerHome = System.getenv(ENV_SORCER_HOME);
         String sorcerHome = (envSorcerHome!=null && !envSorcerHome.isEmpty() ?
                 envSorcerHome : System.getProperty(SORCER_HOME));
-        JavaSystemProperties.ensure("RIO_HOME", new File(sorcerHome, "lib/rio").getPath());
+        JavaSystemProperties.ensure("RIO_HOME", (System.getenv("RIO_HOME")!=null ? System.getenv("RIO_HOME") : new File(sorcerHome, "lib/rio").getPath()));
         try {
             resolver = SorcerResolver.getResolver();
         } catch (ResolverException e) {
