@@ -7,6 +7,14 @@
 
 ### $Id$ ###
 
+if [ "x$SORCER_HOME" = "x" ];
+then
+     echo "Error, SORCER_HOME not set"
+     return
+fi
+
+. "$SORCER_HOME/bin/common-run"
+
 DIRNAME=`dirname $0`
 
 # OS specific support (must be 'true' or 'false').
@@ -66,7 +74,12 @@ cd $DIRNAME
 echo ================================
 echo =
 echo = SOAPUI_HOME = $SOAPUI_HOME
+echo = SOAPUI_CLASSPATH = $SOAPUI_CLASSPATH
 echo =
 echo ================================
 
-java $JAVA_OPTS -cp $SOAPUI_CLASSPATH com.eviware.soapui.SoapUI "$@"
+SORCER_BOOT_CP=$MVN_REPO/org/sorcersoft/sorcer/sorcer-lib/$V_SORCER/sorcer-lib-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/ex0-api/$V_SORCER/ex0-api-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/ex0-api/$V_SORCER/ex0-api-$V_SORCER.jar:\
+
+java $JAVA_OPTS -cp $SOAPUI_CLASSPATH:$SORCER_BOOT_CP com.eviware.soapui.SoapUI "$@"

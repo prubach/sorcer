@@ -309,6 +309,37 @@ $MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar"
         esac
 
     fi
+
+SORCER_BOOT_CP="$LOG_CP:$JINI_CLASSPATH:\
+$MVN_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar:\
+$MVN_REPO/asm/asm/1.5.3/asm-1.5.3.jar:\
+$MVN_REPO/com/google/guava/guava/16.0.1/guava-16.0.1.jar:\
+$MVN_REPO/com/google/inject/guice/4.0-beta4/guice-4.0-beta4.jar:\
+$MVN_REPO/com/google/inject/extensions/guice-multibindings/4.0-beta4/guice-multibindings-4.0-beta4.jar:\
+$MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar:\
+$MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\
+$MVN_REPO/cglib/cglib/2.1_3/cglib-2.1_3.jar:\
+$MVN_REPO/javax/inject/javax.inject/1/javax.inject-1.jar:\
+$MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
+$MVN_REPO/org/apache/river/start/$V_JINI/start-$V_JINI.jar:\
+$MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
+$MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-proxy/$V_RIO/rio-proxy-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
+$MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-container/$V_SORCER/sorcer-container-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-launcher/$V_SORCER/sorcer-launcher-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-spi/$V_SORCER/sorcer-spi-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar"
+
     return
 }
 
@@ -349,35 +380,7 @@ createSorcerRioUICp ( ) {
 }
 
 startSos ( ) {
-     BOOT_CLASSPATH="$LOG_CP:$JINI_CLASSPATH:\
-$MVN_REPO/org/apache/river/start/$V_JINI/start-$V_JINI.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-spi/$V_SORCER/sorcer-spi-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-container/$V_SORCER/sorcer-container-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-launcher/$V_SORCER/sorcer-launcher-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
-$MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
-$MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.jar:\
-$MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
-$MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
-$MVN_REPO/com/google/guava/guava/16.0.1/guava-16.0.1.jar:\
-$MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
-$MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar:\
-$MVN_REPO/com/google/inject/guice/4.0-beta4/guice-4.0-beta4.jar:\
-$MVN_REPO/com/google/inject/extensions/guice-multibindings/4.0-beta4/guice-multibindings-4.0-beta4.jar:\
-$MVN_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar:\
-$MVN_REPO/javax/inject/javax.inject/1/javax.inject-1.jar:\
-$MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\
-$MVN_REPO/asm/asm/1.5.3/asm-1.5.3.jar:\
-$MVN_REPO/cglib/cglib/2.1_3/cglib-2.1_3.jar:\
-$MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
-$MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
-$MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
-$MVN_REPO/org/rioproject/rio-proxy/$V_RIO/rio-proxy-$V_RIO.jar:\
-$MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
+     BOOT_CLASSPATH=$SORCER_BOOT_CP
 
     # Determine webster url
 
@@ -426,29 +429,29 @@ $MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
 startShell ( ) {
 SR_CP=$(createSorcerRioCp)
       	SHELL_CLASSPATH="$LOG_CP:$JINI_CLASSPATH:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
-$MVN_REPO/org/rioproject/webster/$V_RIO/webster-$V_RIO.jar:\
+$MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar":\
+$MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\
+$MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
+$MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
+$MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar:\
+$MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
-$MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/dbp-api/$V_SORCER/dbp-api-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/logger-api/$V_SORCER/logger-api-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-spi/$V_SORCER/sorcer-spi-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
-$MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
-$MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
-$MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
-$MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar:\
+$MVN_REPO/org/rioproject/webster/$V_RIO/webster-$V_RIO.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/dbp-api/$V_SORCER/dbp-api-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/logger-api/$V_SORCER/logger-api-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-launcher-base/$V_SORCER/sorcer-launcher-base-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-launcher/$V_SORCER/sorcer-launcher-$V_SORCER.jar:\
-$MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar"
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-spi/$V_SORCER/sorcer-spi-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar
 
 
     #shift
