@@ -35,6 +35,7 @@ import static sorcer.util.Collections.toMap;
  * @author Rafał Krupiński
  */
 public class JavaProcessBuilder {
+    private final String PROJECT_ID = "project.id";
     protected Logger log = LoggerFactory.getLogger(getClass());
     protected String name;
     protected Properties properties;
@@ -151,8 +152,10 @@ public class JavaProcessBuilder {
 
     private List<String> _D(Properties d) {
         List<String> result = new ArrayList<String>(d.size());
+        if (d.stringPropertyNames().contains(PROJECT_ID))
+            result.add(_D(PROJECT_ID, d.getProperty(PROJECT_ID)));
         for (String key : d.stringPropertyNames())
-            result.add(_D(key, d.getProperty(key)));
+            if (!key.equals(PROJECT_ID)) result.add(_D(key, d.getProperty(key)));
         return result;
     }
 
