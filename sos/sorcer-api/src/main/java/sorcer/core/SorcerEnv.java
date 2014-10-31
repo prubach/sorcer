@@ -796,6 +796,14 @@ public class SorcerEnv {
     }
 
     /**
+     * Returns provider's
+     * @return data directory path
+     */
+    public static String getDataDirPath() {
+        return getDataDir().getAbsolutePath();
+    }
+
+    /**
      * Returns a directory for provider's HTTP document root directory.
      *
      * @return a HTTP document root directory
@@ -943,15 +951,15 @@ public class SorcerEnv {
         logger.info("scratchFile = " + scratchFile.getAbsolutePath());
         //logger.info("scratchDir = " + scratchDir);
 
-        logger.info("DOC_ROOT_DIR = " + System.getProperty(DOC_ROOT_DIR));
+        logger.info("DOC_ROOT_DIR = " + getDocRootDir());
         logger.info("substring = "
-                + path.substring(System.getProperty(DOC_ROOT_DIR).length() + 1));
+                + path.substring(getDocRootDir().getAbsolutePath().length() + 1));
         //if (index < 0) {
         //    throw new MalformedURLException("Scratch file: " + path
         //            + " is not in: " + scratchDir);
         //}
         String url = dataUrl + File.separator
-                + path.substring(System.getProperty(DOC_ROOT_DIR).length() + 1);
+                + path.substring(getDocRootDir().getAbsolutePath().length() + 1);
         url = url.replaceAll("\\\\+", "/");
         logger.info("url = " + url);
 
