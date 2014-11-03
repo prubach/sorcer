@@ -20,7 +20,7 @@
 	<property name="j2" value="org.sorcersoft.sorcer:sos-platform" />
 
 	<property name="requestor.webster.codebase" value="${j1} ${j2}" />
-    <property name="webster.internal" value="true" />
+    <property name="sorcer.webster.internal" value="true" />
 
 </project>
 

@@ -474,7 +474,7 @@
                             <equals arg1="${prv.debug}" arg2="true"/>
                             <ac:then>
                                 <ac:if>
-                                    <isset property="webster.internal"/>
+                                    <isset property="sorcer.webster.internal"/>
                                     <ac:then>
                                         <echo message="Running in debug"/>
 
@@ -491,7 +491,7 @@
                                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
                                             <sysproperty key="requestor.webster.codebase"
                                                          value="${requestor.webster.codebase}"/>
-                                            <sysproperty key="webster.internal" value="${webster.internal}"/>
+                                            <sysproperty key="sorcer.webster.internal" value="${sorcer.webster.internal}"/>
                                             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
                                             <arg value="${requestor.run.args}"/>
                                         </java>
@@ -518,7 +518,7 @@
                             </ac:then>
                             <ac:else>
                                 <ac:if>
-                                    <isset property="webster.internal"/>
+                                    <isset property="sorcer.webster.internal"/>
                                     <ac:then>
                                         <java classname="${requestor.class}" fork="yes">
 
@@ -532,7 +532,7 @@
                                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
                                             <sysproperty key="requestor.webster.codebase"
                                                          value="${requestor.webster.codebase}"/>
-                                            <sysproperty key="webster.internal" value="${webster.internal}"/>
+                                            <sysproperty key="sorcer.webster.internal" value="${sorcer.webster.internal}"/>
                                             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
                                             <arg value="${requestor.run.args}"/>
                                         </java>
@@ -563,7 +563,7 @@
                     </ac:then>
                     <ac:else>
                         <ac:if>
-                            <isset property="webster.internal"/>
+                            <isset property="sorcer.webster.internal"/>
                             <ac:then>
                                 <java classname="${requestor.class}" fork="yes">
 <!--
@@ -580,7 +580,7 @@
                                     <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
                                     <sysproperty key="requestor.webster.codebase"
                                                  value="${requestor.webster.codebase}"/>
-                                    <sysproperty key="webster.internal" value="${webster.internal}"/>
+                                    <sysproperty key="sorcer.webster.internal" value="${sorcer.webster.internal}"/>
                                     <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
                                 </java>
                             </ac:then>

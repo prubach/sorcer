@@ -28,6 +28,8 @@ import org.rioproject.tools.webster.Webster;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.GenericUtil;
 import sorcer.util.JavaSystemProperties;
+import static sorcer.core.SorcerConstants.SORCER_WEBSTER_INTERNAL;
+import static sorcer.core.SorcerConstants.E_SORCER_HOME;
 
 import static sorcer.util.ArtifactCoordinates.coords;
 
@@ -307,18 +309,17 @@ abstract public class
     // It is required by scilab script that invokes exertions from scilab
 
     public static void prepareEnvironment() {
-        System.setProperty("webster.internal", "true");
+        System.setProperty(SORCER_WEBSTER_INTERNAL, "true");
         prepareBasicEnvironment();
     }
 
     protected static void prepareBasicEnvironment(){
-        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.url|org.rioproject.url");
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
-        System.setProperty("java.rmi.server.RMIClassLoaderSpi", "sorcer.rio.rmi.SorcerResolvingLoader");
+        System.setProperty(JavaSystemProperties.RMI_SERVER_USE_CODEBASE_ONLY, "false");
+        System.setProperty(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.url|org.rioproject.url");
+        System.setProperty(JavaSystemProperties.SECURITY_POLICY, System.getenv(E_SORCER_HOME) + "/configs/sorcer.policy");
+        System.setProperty(JavaSystemProperties.RMI_SERVER_CLASS_LOADER, "sorcer.rio.rmi.SorcerResolvingLoader");
         System.setProperty("org.rioproject.resolver.jar", SorcerEnv.getProperty("sorcer.local.repo.location") +
                 "/org/rioproject/resolver/resolver-aether/" + SorcerEnv.getRioVersion() + "/resolver-aether-" + SorcerEnv.getRioVersion() + ".jar");
-        //System.setProperty("java.util.logging.config.file", System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
         System.setSecurityManager(new SecurityManager());
     }
 }

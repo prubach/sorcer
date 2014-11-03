@@ -1519,8 +1519,7 @@ public class SorcerEnv {
      * service context types from the default filename (node.types) or the
      * system property <code>sorcer.formats.file</code>.
      */
-    //TODO Make it protected or private
-    public void loadBasicEnvironment() throws ConfigurationException {
+    private void loadBasicEnvironment() throws ConfigurationException {
         // Try and load from path given in system properties
         String cntFile = null;
         String envFile = null;
@@ -1610,6 +1609,7 @@ public class SorcerEnv {
 
     // STATIC
     public static Properties loadProperties(String filename) throws ConfigurationException {
+        loadEnvironment();
         return getEnvironment().loadPropertiesFromFile(filename);
     }
 
@@ -1621,7 +1621,7 @@ public class SorcerEnv {
      * @throws IOException
      * @throws ConfigurationException
      */
-    public Properties loadPropertiesFromFile(String filename)
+    public static Properties loadPropertiesFromFile(String filename)
             throws ConfigurationException {
         Properties props = new Properties();
         try {
@@ -1642,9 +1642,24 @@ public class SorcerEnv {
                     InputStream stream = SorcerEnv.class.getResourceAsStream(filename);
                     if (stream != null)
                         props.load(stream);
-                    else
-                        logger.error("could not load properties as Sorcer resource file>"
-                                + filename + "<");
+                    else {
+                        ClassLoader resourceLoader = Thread.currentThread().getContextClassLoader();
+                        URL resourceURL = resourceLoader.getResource(filename);
+                        String fn = "configs/" + filename;
+                        if (resourceURL==null) resourceURL = resourceLoader.getResource(fn);
+                        if(resourceURL!=null) {
+                            logger.info("Loaded from " + resourceURL.toExternalForm());
+                            InputStream rs = resourceURL.openStream();
+                            logger.info("* loaded properties from resource as stream: " + fn);
+                            props.load(rs);
+                            rs.close();
+                            logger.info("* Loading properties from using: " + rs);
+                        } else {
+                            logger.error("could not load properties as Sorcer resource file>"
+                                    + filename + "<");
+                            throw new ConfigurationException("No resource stream available for: " + fn + " nor from: " + filename);
+                        }
+                    }
                 } catch (Throwable t2) {
                     throw new ConfigurationException(e);
                 }
@@ -1654,7 +1669,7 @@ public class SorcerEnv {
         return props;
     }
 
-    private void reconcileProperties(Properties props)
+    private static void reconcileProperties(Properties props)
             throws ConfigurationException {
 
         update(props);
@@ -1712,7 +1727,7 @@ public class SorcerEnv {
      * @param props
      * @throws ConfigurationException
      */
-    private void update(Properties props)
+    private static void update(Properties props)
             throws ConfigurationException {
         Enumeration<?> e = props.propertyNames();
         String key, value, evalue = null;

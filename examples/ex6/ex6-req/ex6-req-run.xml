@@ -52,7 +52,7 @@
             <env key="RIO_HOME" value="${rio.home}"/>
 			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/req.policy" />
 			<sysproperty key="requestor.webster.codebase" value="${j1} ${j2}" />
-            <sysproperty key="webster.internal" value="true"/>
+            <sysproperty key="sorcer.webster.internal" value="true"/>
             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.url|org.rioproject.url" />
             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="sorcer.rio.rmi.SorcerResolvingLoader" />

@@ -57,7 +57,12 @@ public class OpstringServiceDescriptor extends ResolvingServiceDescriptor {
         String artifact = serviceElement.getComponentBundle().getArtifact();
         try {
             Set<URI> result = new HashSet<URI>();
-            Collections.addAll(result, SorcerResolverHelper.toURIs(resolver.getClassPathFor(artifact, serviceElement.getRemoteRepositories())));
+            if (artifact!=null)
+                Collections.addAll(result, SorcerResolverHelper.toURIs(resolver.getClassPathFor(artifact, serviceElement.getRemoteRepositories())));
+            else {
+                for (String jar : serviceElement.getComponentBundle().getJARNames())
+                    result.add(new File(jar).toURI());
+            }
             return result;
         } catch (URISyntaxException e) {
             throw new IllegalStateException("Malformed URI", e);
