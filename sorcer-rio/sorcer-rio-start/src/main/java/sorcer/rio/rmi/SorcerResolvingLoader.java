@@ -186,20 +186,20 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
             rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
         }
         //TODO Resolver error
-        String[] cp;
-        try {
-            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
-                    artifactURLConfiguration.getRepositories());
-        } catch (Exception e) {
-            logger.warn("Trying again to resolve: {}", artifactURLConfiguration.getArtifact());
-            logger.debug("Resolver error", e);
-            /*for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {
-                rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
-                rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
-            }*/
-            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
-                    artifactURLConfiguration.getRepositories());
+        String[] cp = null;
+        int tries = 0;
+        while (tries < 5 && (cp==null || cp.length==0)) {
+            try {
+                cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
+                        artifactURLConfiguration.getRepositories());
+            } catch (Exception e) {
+                logger.warn("Failed to resolve at {} attempt: {}", tries, artifactURLConfiguration.getArtifact());
+                logger.debug("Resolver error", e);
+            }
+            tries++;
         }
+        if (cp==null || cp.length==0)
+            throw new ResolverException("Failed to resolve: " + artifactURLConfiguration.getArtifact() + " after 5 attempts" );
         return cp;
     }
 
