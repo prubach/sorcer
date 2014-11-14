@@ -492,6 +492,7 @@ private Exertion f1SEQpull() throws Exception {
 		ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 		for (int i = 0; i < tally; i++) {
 			task = getTask();
+			task.getContext().putValue("sleep", 100l);
 			task.getControlContext().setAccessType(Access.PULL);
             task.getControlContext().setProvisionable(false);
 			task.setName("f5-" + i);
@@ -502,7 +503,7 @@ private Exertion f1SEQpull() throws Exception {
 		}
 		pool.shutdown();
 		for (int i = 0; i < tally; i++) {
-			logger.info("got future value for: " + fList.get(i).get().getName());
+			logger.info("got value for: " + fList.get(i).get().getName() + ": " + fList.get(i).get().getContext().get("result/y"));
 		}
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end - start) + " ms.");

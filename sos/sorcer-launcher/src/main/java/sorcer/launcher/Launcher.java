@@ -128,7 +128,7 @@ public abstract class Launcher implements ILauncher {
         else
             System.out.println("OS Architecture not detected, jna.library.path not set!");
 
-        JavaSystemProperties.ensure(S_JNA_LIB_PATH, home.getPath() + nativeLibPath);
+        LibraryPathHelper.getLibraryPath().add(home.getPath() + nativeLibPath);
 
         environment = getEnvironment();
         properties = getProperties();

@@ -225,7 +225,13 @@ public class Arithmometer implements Serializable {
             throws ContextException {
         PositionalContext cxt = (PositionalContext) context;
         try {
-            Thread.sleep(10000);
+            if (context.get("sleep")!=null) {
+                Long sleepTime = (Long)context.get("sleep");
+                if (sleepTime!=null) {
+                    logger.info("Sleeping (ms): " + sleepTime);
+                    Thread.sleep(sleepTime);
+                }
+            }
             //logger.info("selector: " + ((ServiceContext)context).getCurrentSelector());
             // get sorted list of input values
             List<Double> inputs = (List<Double>)Contexts.getNamedInValues(context);
@@ -233,6 +239,7 @@ public class Arithmometer implements Serializable {
                 inputs = (List<Double>)Contexts.getPrefixedInValues(context);
                 logger.info("prefixed inputs: \n" + inputs);
             }
+
             //logger.info("named inputs: \n" + inputs);
             if (inputs == null || inputs.size() == 0)
                 inputs = (List<Double>)cxt.getInValues();
