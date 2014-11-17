@@ -248,7 +248,6 @@
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-spi/${v.sorcer}/sorcer-spi-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-container/${v.sorcer}/sorcer-container-${v.sorcer}.jar"/>
-                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-rio-lib/${v.sorcer}/sorcer-rio-lib-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-rio-start/${v.sorcer}/sorcer-rio-start-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/net/jini/jsk-resources/${v.jini}/jsk-resources-${v.jini}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar"/>

@@ -275,11 +275,10 @@ public class ExertionDispatcher implements Exerter, Callable {
             provider = (Service) Accessor.getService(signature);
             if (provider == null && exertion.isProvisionable() && signature instanceof NetSignature) {
                 try {
-                    Provisioner provisioner = Accessor.getService(Provisioner.class);
-                    if (provisioner != null) {
-                        logger.debug("Provisioning {}", signature);
-                        provider = provisioner.provision(signature.getServiceType().getName(), signature.getName(), ((NetSignature) signature).getVersion());
-                    }
+
+                    Provisioner provisioner = ServiceDirectoryProvisioner.getProvisioner();
+                    logger.debug("Provisioning {}", signature);
+                    provider = provisioner.provision(signature.getServiceType().getName(), signature.getName(), ((NetSignature) signature).getVersion());
                 } catch (ProvisioningException pe) {
                     logger.warn("Provider not available and not provisioned", pe);
                     exertion.setStatus(Exec.FAILED);

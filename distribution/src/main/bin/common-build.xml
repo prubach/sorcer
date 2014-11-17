@@ -119,7 +119,6 @@ SUPPORT for LEGACY service providers built using Ant scripts - not recommended f
 		<pathelement location="${sorcer.lib}/dbp-prv.jar" />
         <pathelement location="${sorcer.lib}/sorcer-resolver.jar" />
         <pathelement location="${sorcer.lib}/sorcer-rio-start.jar" />
-        <pathelement location="${sorcer.lib}/sorcer-rio-lib.jar" />
 	</path>
 	
 	<path id="rio.path">

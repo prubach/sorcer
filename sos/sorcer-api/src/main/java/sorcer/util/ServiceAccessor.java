@@ -78,7 +78,7 @@ public class ServiceAccessor implements DynamicAccessor {
 
 	protected static long WAIT_FOR = SorcerEnv.getLookupWaitTime();
 
-    protected final static int LUS_REAPEAT = 3;
+    protected final static int LUS_REAPEAT = 6;
 
 	private DiscoveryManagement ldManager = null;
 

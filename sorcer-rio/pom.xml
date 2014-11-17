@@ -31,7 +31,6 @@
 
     <modules>
         <module>sorcer-rio-config</module>
-        <module>sorcer-rio-lib</module>
         <module>sorcer-rio-start</module>
         <module>sorcer-rio-cli</module>
         <module>sorcer-rio-resolver</module>

@@ -311,7 +311,7 @@ class OptionalResolver implements ConfigResolver {
     @SuppressWarnings("unchecked")
     protected OptionalResolver(String name, Class[] argTypes, Object... ctorArgs) throws Exception {
         Class<ArtifactResolver> resolverType = (Class<ArtifactResolver>) Class.forName(name);
-        resolver = resolverType.getConstructor(argTypes).newInstance(ctorArgs);
+        resolver = (ArtifactResolver) resolverType.getConstructor(argTypes).newInstance(ctorArgs);
     }
 
     @Override

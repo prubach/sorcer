@@ -148,28 +148,26 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             // service
             Service service = (Service) Accessor.getService(sig);
             if (service == null && task.isProvisionable()) {
-                Provisioner provisioner = Accessor.getService(Provisioner.class);
-                if (provisioner != null) {
-                    try {
-                        logger.info("Provisioning "+sig);
-                        service = provisioner.provision(sig.getServiceType().getName(), sig.getProviderName(), sig.getVersion());
-                    } catch (ProvisioningException pe) {
-                        Throwable rootCause = pe;
-                        while (rootCause.getCause()!=null && rootCause.getCause()!=rootCause) {
-                            rootCause = rootCause.getCause();
-                        }
-                        String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +rootCause.getMessage();
-                        logger.warn(msg);
-                        throw new ExertionException(msg, task);
-                    } catch (RemoteException re) {
-                        Throwable rootCause = re;
-                        while (rootCause.getCause()!=null && rootCause.getCause()!=rootCause) {
-                            rootCause = rootCause.getCause();
-                        }
-                        String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +rootCause.getMessage();
-                        logger.warn(msg);
-                        throw new ExertionException(msg, task);
+                Provisioner provisioner = ServiceDirectoryProvisioner.getProvisioner();
+                try {
+                    logger.info("Provisioning "+sig);
+                    service = provisioner.provision(sig.getServiceType().getName(), sig.getProviderName(), sig.getVersion());
+                } catch (ProvisioningException pe) {
+                    Throwable rootCause = pe;
+                    while (rootCause.getCause()!=null && rootCause.getCause()!=rootCause) {
+                        rootCause = rootCause.getCause();
                     }
+                    String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +rootCause.getMessage();
+                    logger.warn(msg);
+                    throw new ExertionException(msg, task);
+                } catch (RemoteException re) {
+                    Throwable rootCause = re;
+                    while (rootCause.getCause()!=null && rootCause.getCause()!=rootCause) {
+                        rootCause = rootCause.getCause();
+                    }
+                    String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +rootCause.getMessage();
+                    logger.warn(msg);
+                    throw new ExertionException(msg, task);
                 }
             }
             if (service == null) {

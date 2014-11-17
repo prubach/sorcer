@@ -41,6 +41,7 @@ import static sorcer.util.StringUtils.tName;
 public class ProviderProvisionManager {
 	private static final Logger logger = LoggerFactory.getLogger(ProviderProvisionManager.class.getName());
 	protected final Set<SignatureElement> servicesToProvision = new LinkedHashSet<SignatureElement>();
+    private Provisioner provisioner = null;
     private static ProviderProvisionManager instance = null;
     private static final int MAX_ATTEMPTS = 2;
     boolean keepGoing = true;
@@ -54,6 +55,7 @@ public class ProviderProvisionManager {
 
 	
 	protected ProviderProvisionManager() {
+        provisioner = ServiceDirectoryProvisioner.getProvisioner();
         ThreadGroup provGroup = new ThreadGroup("spacer-provisioning");
         provGroup.setDaemon(true);
         provGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
@@ -84,7 +86,6 @@ public class ProviderProvisionManager {
     protected class ProvisionThread implements Runnable {
 
         public void run() {
-            Provisioner provisioner = Accessor.getService(Provisioner.class);
             while (keepGoing) {
                 if (!servicesToProvision.isEmpty()) {
                     LinkedHashSet<SignatureElement> copy ;
@@ -103,23 +104,19 @@ public class ProviderProvisionManager {
                         Service service = (Service) Accessor.getService(sigEl.getSignature());
                         if (service == null ) {
                             sigEl.incrementProvisionAttempts();
-                            if (provisioner != null) {
-                                try {
-                                    logger.info("Provisioning: "+ sigEl.getSignature());
-                                    service = provisioner.provision(sigEl.getServiceType(), sigEl.getProviderName(), sigEl.getVersion());
-                                    if (service!=null) sigsToRemove.add(sigEl);
-                                } catch (ProvisioningException pe) {
-                                    logger.error("Problem provisioning: " +pe.getMessage());
-                                } catch (RemoteException re) {
-                                    provisioner = Accessor.getService(Provisioner.class);
-                                    String msg = "Problem provisioning "+sigEl.getSignature().getServiceType()
-                                            + " (" + sigEl.getSignature().getProviderName() + ")"
-                                            + " " +re.getMessage();
-                                    logger.error(msg);
-                                }
-                            } else
+                            try {
+                                logger.info("Provisioning: "+ sigEl.getSignature());
+                                service = provisioner.provision(sigEl.getServiceType(), sigEl.getProviderName(), sigEl.getVersion());
+                                if (service!=null) sigsToRemove.add(sigEl);
+                            } catch (ProvisioningException pe) {
+                                logger.error("Problem provisioning: " +pe.getMessage());
+                            } catch (RemoteException re) {
                                 provisioner = Accessor.getService(Provisioner.class);
-
+                                String msg = "Problem provisioning "+sigEl.getSignature().getServiceType()
+                                        + " (" + sigEl.getSignature().getProviderName() + ")"
+                                        + " " +re.getMessage();
+                                logger.error(msg);
+                            }
                             if (service == null && sigEl.getProvisionAttempts() > MAX_ATTEMPTS) {
                                 String logMsg = "Provisioning for " + sigEl.getServiceType() + "(" + sigEl.getProviderName()
                                         + ") tried: " + sigEl.getProvisionAttempts() +" times, provisioning will not be reattempted";

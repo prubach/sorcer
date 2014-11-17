@@ -63,11 +63,6 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-rio-lib</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-junit</artifactId>
             <version>${project.version}</version>
         </dependency>

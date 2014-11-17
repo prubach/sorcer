@@ -32,9 +32,8 @@ def tasker = "ServiceTasker"
 def remoteLogger = "RemoteLoggerManager";
 def databaseProvider = "DatabaseProvider";
 def almanac = "Almanac";
-def bazaar = "Bazaar";
 
-for (def service : [exertMonitor, cataloger, concatenator, jobber, spacer, tasker, remoteLogger, databaseProvider, almanac, bazaar]){
+for (def service : [exertMonitor, cataloger, concatenator, jobber, spacer, tasker, remoteLogger, databaseProvider, almanac]){
     mkAppender(service);
 }
 
@@ -90,7 +89,6 @@ logger("sorcer.core.provider.cataloger", info, [cataloger], false)
 
 //commercial
 logger("com.sorcersoft.almanac", info, [almanac])
-logger("com.sorcersoft.bazaar", info, [bazaar])
 
 //logger("sorcer.core.security", OFF)
 logger("sorcer.test", DEBUG)
@@ -99,7 +97,9 @@ logger("sorcer.arithmetic", DEBUG)
 
 //logger("sorcer.core.provider.logger", DEBUG)
 //logger("sorcer.platform.logger", DEBUG)
-//logger("sorcer.core.dispatch", DEBUG)
+logger("sorcer.core.dispatch", DEBUG)
+
+//logger("sorcer.util", DEBUG)
 
 logger("sorcer.core.invoker.MethodInvoker", INFO)
 //logger("sorcer.modeling.vfe", DEBUG)

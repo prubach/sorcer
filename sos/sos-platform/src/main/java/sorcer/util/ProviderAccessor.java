@@ -284,10 +284,13 @@ public class ProviderAccessor extends ServiceAccessor implements
         assert minMatches <= maxMatches;
 
         if(!Arrays.asList(template.serviceTypes).contains(Cataloger.class)){
+			logger.debug("Looking for cataloger");
             Cataloger cataloger = getLocalCataloger();
             if (cataloger != null) {
+				logger.debug("Found cataloger, doing lookup: " + template.toString());
                 try {
                     ServiceMatches matches = cataloger.lookup(template, maxMatches);
+					logger.debug("Got services: " + matches.totalMatches);
                     ServiceItem[] matching = Filters.matching(matches.items, filter);
                     if (matching.length > 0) return matching;
                 } catch (RemoteException e) {
@@ -295,6 +298,7 @@ public class ProviderAccessor extends ServiceAccessor implements
                 }
             }
         }
+		logger.debug("Trying without cataloger");
         return super.getServiceItems(template, minMatches, maxMatches, filter, groups);
     }
 }
