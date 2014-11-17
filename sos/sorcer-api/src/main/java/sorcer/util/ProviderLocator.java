@@ -55,7 +55,7 @@ public class ProviderLocator implements DynamicAccessor {
 
 	static final long WAIT_FOR = SorcerEnv.getLookupWaitTime();
 
-	static final int MAX_TRIES = 5;
+	static final int MAX_TRIES = 12;
 
     final private static Logger log = LoggerFactory.getLogger(ProviderLocator.class);
 

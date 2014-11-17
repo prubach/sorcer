@@ -138,7 +138,7 @@ public class ProviderProvisionManager {
                     }
                 }
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                 }
             }
@@ -168,7 +168,7 @@ public class ProviderProvisionManager {
                         + ee.describe() + "\n to: " + space);
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.error(this.getClass().getName(), "faileExertionInSpace", e);
+                logger.error(this.getClass().getName(), "failExertionInSpace", e);
                 throw new ExertionException("Problem writing exertion back to space");
             }
         }
