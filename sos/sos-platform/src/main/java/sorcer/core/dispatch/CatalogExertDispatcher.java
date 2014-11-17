@@ -160,14 +160,6 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                     String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +rootCause.getMessage();
                     logger.warn(msg);
                     throw new ExertionException(msg, task);
-                } catch (RemoteException re) {
-                    Throwable rootCause = re;
-                    while (rootCause.getCause()!=null && rootCause.getCause()!=rootCause) {
-                        rootCause = rootCause.getCause();
-                    }
-                    String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +rootCause.getMessage();
-                    logger.warn(msg);
-                    throw new ExertionException(msg, task);
                 }
             }
             if (service == null) {

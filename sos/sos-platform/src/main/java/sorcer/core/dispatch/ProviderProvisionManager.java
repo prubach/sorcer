@@ -66,9 +66,8 @@ public class ProviderProvisionManager {
 
     public void add(Exertion exertion, SpaceParallelDispatcher spaceExertDispatcher) {
         NetSignature sig = (NetSignature) exertion.getProcessSignature();
-        Service service = (Service) Accessor.getService(sig);
         // A hack to disable provisioning spacer itself
-        if (service==null && !sig.getServiceType().getName().equals(Spacer.class.getName())) {
+        if (!sig.getServiceType().getName().equals(Spacer.class.getName())) {
             synchronized (servicesToProvision) {
                 servicesToProvision.add(
                         new SignatureElement(sig.getServiceType().getName(), sig.getProviderName(),
@@ -109,12 +108,9 @@ public class ProviderProvisionManager {
                                 service = provisioner.provision(sigEl.getServiceType(), sigEl.getProviderName(), sigEl.getVersion());
                                 if (service!=null) sigsToRemove.add(sigEl);
                             } catch (ProvisioningException pe) {
-                                logger.error("Problem provisioning: " +pe.getMessage());
-                            } catch (RemoteException re) {
-                                provisioner = Accessor.getService(Provisioner.class);
                                 String msg = "Problem provisioning "+sigEl.getSignature().getServiceType()
                                         + " (" + sigEl.getSignature().getProviderName() + ")"
-                                        + " " +re.getMessage();
+                                        + " " +pe.getMessage();
                                 logger.error(msg);
                             }
                             if (service == null && sigEl.getProvisionAttempts() > MAX_ATTEMPTS) {

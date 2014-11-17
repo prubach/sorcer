@@ -26,8 +26,8 @@ import java.rmi.RemoteException;
  * @author Rafał Krupiński
  */
 public interface Provisioner {
-    <T> T provision(String type, String name, String version) throws ProvisioningException, RemoteException;
+    <T> T provision(String type, String name, String version) throws ProvisioningException;
 
-    void unProvision(ServiceID service) throws ProvisioningException, RemoteException;
+    void unProvision(ServiceID service) throws ProvisioningException;
 
 }

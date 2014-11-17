@@ -66,7 +66,7 @@ public class ServiceDirectoryProvisioner implements Provisioner {
         return instance;
     }
 
-    public <T> T provision(String typeName, String name, String version) throws ProvisioningException, RemoteException {
+    public <T> T provision(String typeName, String name, String version) throws ProvisioningException {
         logger.warn("called provision {} {} {}", typeName, version, name);
         OperationalString operationalString = null;
         if (srvDirectory == null) srvDirectory = getServiceDirectory();
@@ -75,8 +75,14 @@ public class ServiceDirectoryProvisioner implements Provisioner {
             operationalString = srvDirectory.getOpString(typeName, version, name);
         } catch (RemoteException re) {
             srvDirectory = getServiceDirectory();
-            if (srvDirectory!=null)
-                operationalString = srvDirectory.getOpString(typeName, version, name);
+            if (srvDirectory!=null)           {
+                try {
+                    operationalString = srvDirectory.getOpString(typeName, version, name);
+                } catch (RemoteException ree) {
+                    throw new ProvisioningException(ree.getMessage());
+                }
+            }
+
         }
         if (operationalString == null) {
             String msg = "Service " + typeName + " " + name + " " + version + " not installed in the Almanac database";
@@ -143,7 +149,7 @@ public class ServiceDirectoryProvisioner implements Provisioner {
             throw new ProvisioningException("Timed out waiting for the provisioned service to appear: " + typeName + " " + name + " " + version);
     }
 
-    public void unProvision(ServiceID serviceId) throws ProvisioningException, RemoteException {
+    public void unProvision(ServiceID serviceId) throws ProvisioningException {
         ServiceItem serviceItem = Accessor.getServiceItem(new ServiceTemplate(serviceId, null, null), null);
         OperationalStringEntry opStringEntry = AttributesUtil.getFirstByType(serviceItem.attributeSets, OperationalStringEntry.class);
         if (opStringEntry == null) throw new IllegalArgumentException("Service was not provisioned");
@@ -155,6 +161,7 @@ public class ServiceDirectoryProvisioner implements Provisioner {
                 return;
             } catch (OperationalStringException ignored) {
                 //deploy admin does not know our service, try another one
+            } catch (RemoteException e) {
             }
         }
         throw new ProvisioningException("No DeployAdmin is able to undeploy service " + serviceId);
