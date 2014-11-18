@@ -55,7 +55,7 @@ public class ProviderLocator implements DynamicAccessor {
 
 	static final long WAIT_FOR = SorcerEnv.getLookupWaitTime();
 
-	static final int MAX_TRIES = 12;
+	static final int MAX_TRIES = 15;
 
     final private static Logger log = LoggerFactory.getLogger(ProviderLocator.class);
 
@@ -223,12 +223,17 @@ public class ProviderLocator implements DynamicAccessor {
                 //SorcerDiscoveryListener listener = new SorcerDiscoveryListener(template, minMatches, maxMatches, filter);
                 //disco.addDiscoveryListener(listener);
                 //result.addAll(listener.get(WAIT_FOR, TimeUnit.MILLISECONDS));
-                Thread.sleep(WAIT_FOR*MAX_TRIES);
-                for (ServiceRegistrar registrar : disco.getRegistrars()) {
-                    ServiceMatches matches = registrar.lookup(template, maxMatches);
-                    result.addAll(Arrays.asList(matches.items));
-                    if (result.size() >= maxMatches) break;
-                }
+                //
+				int tries = 0;
+                while (tries<MAX_TRIES && result.size() < maxMatches) {
+					tries++;
+					Thread.sleep(WAIT_FOR);
+					for (ServiceRegistrar registrar : disco.getRegistrars()) {
+						ServiceMatches matches = registrar.lookup(template, maxMatches);
+						result.addAll(Arrays.asList(matches.items));
+						if (result.size() >= maxMatches) break;
+					}
+				}
             } catch (IOException e) {
                 log.debug("Communication error", e);
             } catch (InterruptedException ignored) {
