@@ -37,6 +37,7 @@ import sorcer.jini.lookup.AttributesUtil;
 import sorcer.resolver.SorcerResolver;
 import sorcer.service.Accessor;
 import sorcer.service.ServiceDirectory;
+import sorcer.util.SorcerEnv;
 import sorcer.util.rio.OpStringUtil;
 
 import java.rmi.RemoteException;
@@ -52,10 +53,21 @@ public class ServiceDirectoryProvisioner implements Provisioner {
 
     private static ServiceDirectoryProvisioner instance = null;
 
-    // Set default undeploy option. Undeploy after 2 minutes of inactivity
-    private static final int UNDEPLOY_IDLE_TIME = 30;
+    // Set default undeploy option. Undeploy after 60 seconds of inactivity
+    private static final int UNDEPLOY_DEFAULT_IDLE_TIME = 60;
+
+    private int undeployIdleTime = UNDEPLOY_DEFAULT_IDLE_TIME;
+
 
     public ServiceDirectoryProvisioner() {
+        String propIdleTime = SorcerEnv.getProperty("provisioning.idle.time");
+        if (propIdleTime!=null) {
+            try {
+                undeployIdleTime = Integer.parseInt(propIdleTime);
+            } catch (NumberFormatException ne) {
+                logger.warn("Could not parse property: provisioing.idle.time: " + propIdleTime + " using default idle time of 60 seconds");
+            }
+        }
         //srvDirectory = getServiceDirectory();
         //provisionMonitor = Accessor.getService(ProvisionMonitor.class);
     }
@@ -92,7 +104,7 @@ public class ServiceDirectoryProvisioner implements Provisioner {
         logger.debug("Got opString to provision: {}", operationalString.getName());
         T service = null;
 
-        ((OpString)operationalString).setUndeployOption(getUndeployOption(UNDEPLOY_IDLE_TIME));
+        if (undeployIdleTime>0) ((OpString)operationalString).setUndeployOption(getUndeployOption(undeployIdleTime));
         try {
             DeploymentResult deploymentResult = getDeployAdmin().deploy(operationalString);
             StringBuilder deployErrors = new StringBuilder();

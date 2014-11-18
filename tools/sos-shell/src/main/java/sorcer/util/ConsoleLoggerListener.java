@@ -35,7 +35,7 @@ public class ConsoleLoggerListener implements RemoteEventListener, Serializable 
         // Print everything to console as if it was a local log
         String exId = le.getMDCPropertyMap().get(RemoteLogger.KEY_EXERTION_ID);
         String prvId = le.getMDCPropertyMap().get(RemoteLogger.KEY_PROVIDER_ID);
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:MM:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         out.print(le.getLevel() + "  " + sdf.format(le.getTimeStamp()) +
                 " ["+ (exId!=null ? exId.substring(0,8) : "NO EXERT ID") + "@" + (prvId!=null ? prvId.substring(0,8) : "NO PRV ID") +"] ");
         out.print(" " + le.getLoggerName() + " -" );

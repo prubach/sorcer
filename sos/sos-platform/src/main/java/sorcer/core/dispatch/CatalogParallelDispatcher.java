@@ -37,9 +37,8 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
             Set<Context> sharedContexts,
             boolean isSpawned, 
             Provider provider,
-            ProvisionManager provisionManager,
-            ProviderProvisionManager providerProvisionManager) {
-		super(job, sharedContexts, isSpawned, provider, provisionManager, providerProvisionManager);
+            ProvisionManager provisionManager) {
+		super(job, sharedContexts, isSpawned, provider, provisionManager);
 	}
 
     @Override

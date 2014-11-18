@@ -271,20 +271,21 @@ public class ExertionDispatcher implements Exerter, Callable {
             if (!exertion.isJob()
                     && exertion.getControlContext().getAccessType() == Access.PULL) {
                 signature = new NetSignature("service", Spacer.class, Sorcer.getActualSpacerName());
-            }
-            provider = (Service) Accessor.getService(signature);
-            if (provider == null && exertion.isProvisionable() && signature instanceof NetSignature) {
-                try {
-
-                    Provisioner provisioner = ServiceDirectoryProvisioner.getProvisioner();
-                    logger.debug("Provisioning {}", signature);
-                    provider = provisioner.provision(signature.getServiceType().getName(), signature.getName(), ((NetSignature) signature).getVersion());
-                } catch (ProvisioningException pe) {
-                    logger.warn("Provider not available and not provisioned", pe);
-                    exertion.setStatus(Exec.FAILED);
-                    exertion.reportException(new RuntimeException(
-                            "Cannot find provider and provisioning returned error: " + pe.getMessage()));
-                    return exertion;
+                provider = (Service) Accessor.getService(signature);
+            } else {
+                provider = (Service) Accessor.getService(signature);
+                if (provider == null && exertion.isProvisionable() && signature instanceof NetSignature) {
+                    try {
+                        logger.debug("Provisioning {}", signature);
+                        provider = ServiceDirectoryProvisioner.getProvisioner().provision(signature.getServiceType().getName(),
+                                signature.getName(), ((NetSignature) signature).getVersion());
+                    } catch (ProvisioningException pe) {
+                        logger.warn("Provider not available and not provisioned", pe);
+                        exertion.setStatus(Exec.FAILED);
+                        exertion.reportException(new RuntimeException(
+                                "Cannot find provider and provisioning returned error: " + pe.getMessage()));
+                        return exertion;
+                    }
                 }
             }
         }

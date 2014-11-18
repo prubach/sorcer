@@ -72,7 +72,6 @@ abstract public class ExertDispatcher implements Dispatcher {
             = new HashMap<Uuid, Dispatcher>();
 
 	protected ThreadGroup disatchGroup;
-	protected ProviderProvisionManager providerProvisionManager;
     protected ProvisionManager provisionManager;
 
     public static Map<Uuid, Dispatcher> getDispatchers() {
@@ -94,8 +93,7 @@ abstract public class ExertDispatcher implements Dispatcher {
                            Set<Context> sharedContexts,
                            boolean isSpawned,
                            Provider provider,
-                           ProvisionManager provisionManager,
-                           ProviderProvisionManager providerProvisionManager) {
+                           ProvisionManager provisionManager) {
         ServiceExertion sxrt = (ServiceExertion)exertion;
 		this.xrt = sxrt;
         this.subject = sxrt.getSubject();
@@ -103,7 +101,6 @@ abstract public class ExertDispatcher implements Dispatcher {
         this.isMonitored = sxrt.isMonitorable();
         this.provider = provider;
         this.provisionManager = provisionManager;
-        this.providerProvisionManager = providerProvisionManager;
     }
 
     public void exec() {

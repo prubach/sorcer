@@ -35,9 +35,8 @@ public class SpaceTaskDispatcher extends SpaceParallelDispatcher {
             final Set<Context> sharedContexts,
             final boolean isSpawned, 
             final LokiMemberUtil myMemberUtil,
-            final ProvisionManager provisionManager,
-            final ProviderProvisionManager providerProvisionManager) throws ContextException, ExertionException {
-        super(task, sharedContexts, isSpawned, myMemberUtil, null, provisionManager, providerProvisionManager);
+            final ProvisionManager provisionManager) throws ContextException, ExertionException {
+        super(task, sharedContexts, isSpawned, myMemberUtil, null, provisionManager);
 	}
 
     @Override

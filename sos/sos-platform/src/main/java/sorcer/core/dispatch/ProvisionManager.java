@@ -46,7 +46,7 @@ import sorcer.service.Exertion;
 import static sorcer.container.jeri.ExporterFactories.EXPORTER;
 
 /**
- * The {@code ProviderProvisionManager} handles the dynamic creation of {@link OperationalString}s created
+ * The {@code ProvisionManager} handles the dynamic creation of {@link OperationalString}s created
  * from {@link Exertion}s.
  *
  * @author Dennis Reedy

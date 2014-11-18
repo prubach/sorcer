@@ -35,9 +35,8 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
             Set<Context> sharedContext,
             boolean isSpawned, 
             Provider provider,
-            ProvisionManager provisionManager,
-            ProviderProvisionManager providerProvisionManager) {
-		super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
+            ProvisionManager provisionManager) {
+		super(job, sharedContext, isSpawned, provider, provisionManager);
 	}
 
     protected void doExec() throws ExertionException,

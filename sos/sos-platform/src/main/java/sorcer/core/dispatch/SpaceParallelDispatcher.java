@@ -57,9 +57,8 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
            boolean isSpawned,
            LokiMemberUtil loki,
            Provider provider,
-           ProvisionManager provisionManager,
-           ProviderProvisionManager providerProvisionManager) throws ExertionException, ContextException {
-        super(exertion, sharedContexts, isSpawned, provider, provisionManager, providerProvisionManager);
+           ProvisionManager provisionManager) throws ExertionException, ContextException {
+        super(exertion, sharedContexts, isSpawned, provider, provisionManager);
 
         space = SpaceAccessor.getSpace();
         if (space == null) {
@@ -268,7 +267,7 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
     }
 
     private void provisionProviderForExertion(Exertion exertion) throws ProvisioningException {
-        providerProvisionManager.add(exertion, this);
+        ProviderProvisionManager.provision(exertion, this);
     }
 
     protected void writeEnvelop(Exertion exertion) throws

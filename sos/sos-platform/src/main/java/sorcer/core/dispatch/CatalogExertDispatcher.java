@@ -45,9 +45,8 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                                   Set<Context> sharedContext,
                                   boolean isSpawned,
                                   Provider provider,
-                                  ProvisionManager provisionManager,
-                                  ProviderProvisionManager providerProvisionManager) {
-        super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
+                                  ProvisionManager provisionManager) {
+        super(job, sharedContext, isSpawned, provider, provisionManager);
     }
 
     protected Exertion execExertion(Exertion ex) throws SignatureException,

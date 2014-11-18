@@ -46,9 +46,8 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
 
 	public CatalogBlockDispatcher(Exertion block, Set<Context> sharedContext,
 			boolean isSpawned, Provider provider,
-            ProvisionManager provisionManager,
-			ProviderProvisionManager providerProvisionManager) {
-		super(block, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
+            ProvisionManager provisionManager) {
+		super(block, sharedContext, isSpawned, provider, provisionManager);
 	}
 
 

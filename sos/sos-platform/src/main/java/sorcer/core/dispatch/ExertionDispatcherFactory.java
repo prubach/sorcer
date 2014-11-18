@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
  * Copyright 2013, 2014 Sorcersoft.com S.A.
@@ -46,7 +46,6 @@ import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
 public class ExertionDispatcherFactory implements DispatcherFactory {
     public static Cataloger catalog; // The service catalog object
     private final static Logger logger = LoggerFactory.getLogger(ExertionDispatcherFactory.class.getName());
-    private ProviderProvisionManager providerProvisionManager = ProviderProvisionManager.getInstance();
 
     private LokiMemberUtil loki;
 
@@ -85,8 +84,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
 						                                  sharedContexts,
 						                                  isSpawned,
 						                                  provider,
-                         provisionManager,
-                         providerProvisionManager);
+                         provisionManager);
 			} else if (isSpaceSequential(exertion)) {
 				logger.info("Running Space Sequential Dispatcher...");
 				dispatcher = new SpaceSequentialDispatcher(exertion,
@@ -94,8 +92,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
 						                                  isSpawned,
 						                                  loki,
 						                                  provider,
-                        provisionManager,
-                        providerProvisionManager);
+                        provisionManager);
 			}
             if (dispatcher==null && exertion instanceof Job) {
                 Job job = (Job) exertion;
@@ -106,24 +103,21 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                             isSpawned,
                             loki,
                             provider,
-                            provisionManager,
-                            providerProvisionManager);
+                            provisionManager);
                 } else if (Jobs.isCatalogParallel(job)) {
                     logger.info("Running Catalog Parallel Dispatcher...");
                     dispatcher = new CatalogParallelDispatcher(job,
                             sharedContexts,
                             isSpawned,
                             provider,
-                            provisionManager,
-                            providerProvisionManager);
+                            provisionManager);
                 } else if (Jobs.isCatalogSequential(job)) {
                     logger.info("Running Catalog Sequential Dispatcher...");
                     dispatcher = new CatalogSequentialDispatcher(job,
                             sharedContexts,
                             isSpawned,
                             provider,
-                            provisionManager,
-                            providerProvisionManager);
+                            provisionManager);
                 }
             }
             assert dispatcher != null;
@@ -191,8 +185,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                     new HashSet<Context>(),
                     false,
                     loki,
-                    provisionManager,
-                    providerProvisionManager);
+                    provisionManager);
         } catch (ContextException e) {
             throw new DispatcherException(
                     "Failed to create the exertion dispatcher for job: "+ task.getName(), e);

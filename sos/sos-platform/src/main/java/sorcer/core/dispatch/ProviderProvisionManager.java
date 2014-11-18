@@ -40,102 +40,66 @@ import static sorcer.util.StringUtils.tName;
  */
 public class ProviderProvisionManager {
 	private static final Logger logger = LoggerFactory.getLogger(ProviderProvisionManager.class.getName());
-	protected final Set<SignatureElement> servicesToProvision = new LinkedHashSet<SignatureElement>();
-    private Provisioner provisioner = null;
     private static ProviderProvisionManager instance = null;
-    private static final int MAX_ATTEMPTS = 2;
-    boolean keepGoing = true;
+    private static final int MAX_ATTEMPTS = 3;
 
 
-    public static ProviderProvisionManager getInstance() {
+    public static void provision(Exertion exertion, SpaceParallelDispatcher spaceExertDispatcher) {
+        getInstance().doProvision(exertion, spaceExertDispatcher);
+    }
+
+    private static ProviderProvisionManager getInstance() {
         if (instance==null)
             instance = new ProviderProvisionManager();
         return instance;
     }
 
-	
-	protected ProviderProvisionManager() {
-        provisioner = ServiceDirectoryProvisioner.getProvisioner();
-        ThreadGroup provGroup = new ThreadGroup("spacer-provisioning");
-        provGroup.setDaemon(true);
-        provGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
-        Thread pThread = new Thread(provGroup, new ProvisionThread(), tName("Provisioner"));
-        pThread.start();
-	}
-
-
-    public void add(Exertion exertion, SpaceParallelDispatcher spaceExertDispatcher) {
+    private void doProvision(Exertion exertion, SpaceParallelDispatcher spaceExertDispatcher) {
         NetSignature sig = (NetSignature) exertion.getProcessSignature();
         // A hack to disable provisioning spacer itself
         if (!sig.getServiceType().getName().equals(Spacer.class.getName())) {
-            synchronized (servicesToProvision) {
-                servicesToProvision.add(
-                        new SignatureElement(sig.getServiceType().getName(), sig.getProviderName(),
-                                sig.getVersion(), sig, exertion, spaceExertDispatcher)
-                );
-            }
+            ThreadGroup provGroup = new ThreadGroup("spacer-provisioning");
+            provGroup.setDaemon(true);
+            provGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
+            Thread pThread = new Thread(provGroup, new ProvisionThread(
+                    new SignatureElement(sig.getServiceType().getName(), sig.getProviderName(),
+                            sig.getVersion(), sig, exertion, spaceExertDispatcher)
+            ), tName("Provisioner-" + exertion.getName()));
+            pThread.start();
         }
     }
 
-    public void destroy() {
-        keepGoing = false;
-    }
+    private class ProvisionThread implements Runnable {
 
+        private SignatureElement srvToProvision;
 
-    protected class ProvisionThread implements Runnable {
+        public ProvisionThread(SignatureElement sigEl) {
+            this.srvToProvision = sigEl;
+        }
 
         public void run() {
-            while (keepGoing) {
-                if (!servicesToProvision.isEmpty()) {
-                    LinkedHashSet<SignatureElement> copy ;
-                    synchronized (servicesToProvision){
-                        copy = new LinkedHashSet<SignatureElement>(servicesToProvision);
-                    }
-                    Iterator<SignatureElement> it = copy.iterator();
-                    Set<SignatureElement> sigsToRemove = new LinkedHashSet<SignatureElement>();
-                    logger.debug("Services to provision from Spacer/Jobber: "+ servicesToProvision.size());
-
-                    while (it.hasNext()) {
-                        SignatureElement sigEl = it.next();
-
-                        // Catalog lookup or use Lookup Service for the particular
-                        // service
-                        Service service = (Service) Accessor.getService(sigEl.getSignature());
-                        if (service == null ) {
-                            sigEl.incrementProvisionAttempts();
-                            try {
-                                logger.info("Provisioning: "+ sigEl.getSignature());
-                                service = provisioner.provision(sigEl.getServiceType(), sigEl.getProviderName(), sigEl.getVersion());
-                                if (service!=null) sigsToRemove.add(sigEl);
-                            } catch (ProvisioningException pe) {
-                                String msg = "Problem provisioning "+sigEl.getSignature().getServiceType()
-                                        + " (" + sigEl.getSignature().getProviderName() + ")"
-                                        + " " +pe.getMessage();
-                                logger.error(msg);
-                            }
-                            if (service == null && sigEl.getProvisionAttempts() > MAX_ATTEMPTS) {
-                                String logMsg = "Provisioning for " + sigEl.getServiceType() + "(" + sigEl.getProviderName()
-                                        + ") tried: " + sigEl.getProvisionAttempts() +" times, provisioning will not be reattempted";
-                                logger.error(logMsg);
-                                try {
-                                    failExertionInSpace(sigEl, new ProvisioningException(logMsg));
-                                    sigsToRemove.add(sigEl);
-                                } catch (ExertionException ile) {
-                                    logger.error("Problem trying to remove exception after reattempting to provision");
-                                }
-                            }
-                        } else
-                            sigsToRemove.add(sigEl);
-                    }
-                    if (!sigsToRemove.isEmpty()) {
-                        synchronized (servicesToProvision) {
-                            servicesToProvision.removeAll(sigsToRemove);
-                        }
-                    }
-                }
+            Service service = (Service) Accessor.getService(srvToProvision.getSignature());
+            while (service==null && srvToProvision.getProvisionAttempts() < MAX_ATTEMPTS) {
+                srvToProvision.incrementProvisionAttempts();
                 try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
+                    logger.info("Provisioning: " + srvToProvision.getSignature());
+                    service = ServiceDirectoryProvisioner.getProvisioner().provision(srvToProvision.getServiceType(),
+                            srvToProvision.getProviderName(), srvToProvision.getVersion());
+                } catch (ProvisioningException pe) {
+                    String msg = "Problem provisioning " + srvToProvision.getSignature().getServiceType()
+                            + " (" + srvToProvision.getSignature().getProviderName() + ")"
+                            + " " + pe.getMessage();
+                    logger.error(msg);
+                }
+            }
+            if (service == null ) {
+                String logMsg = "Provisioning for " + srvToProvision.getServiceType() + "(" + srvToProvision.getProviderName()
+                        + ") tried: " + srvToProvision.getProvisionAttempts() +" times, provisioning will not be reattempted";
+                logger.error(logMsg);
+                try {
+                    failExertionInSpace(srvToProvision, new ProvisioningException(logMsg));
+                } catch (ExertionException ile) {
+                    logger.error("Problem trying to remove exertion from space after reattempting to provision");
                 }
             }
         }
@@ -154,7 +118,6 @@ public class ProviderProvisionManager {
             ((ServiceExertion)result.exertion).setStatus(Exec.FAILED);
             ((ServiceExertion)result.exertion).reportException(exc);
             try {
-
                 JavaSpace05 space = SpaceAccessor.getSpace();
                 if (space == null) {
                     throw new ExertionException("NO exertion space available!");
@@ -175,7 +138,7 @@ public class ProviderProvisionManager {
         String providerName;
         String version;
         Signature signature;
-        int provisionAttempts=0;
+        int provisionAttempts = 0;
         Exertion exertion;
         SpaceParallelDispatcher spaceExertDispatcher;
 
