@@ -242,7 +242,7 @@
 
 	<distributionManagement>
 		<site>
-			<id>hashnot</id>
+			<id>sorcersoft</id>
 			<url>file://${siteDeployDir}</url>
 		</site>
 	</distributionManagement>
