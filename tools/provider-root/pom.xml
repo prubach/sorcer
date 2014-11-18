@@ -101,7 +101,7 @@
 
     <distributionManagement>
         <site>
-            <id>hashnot</id>
+            <id>sorcersoft</id>
             <url>file://${siteDeployDir}</url>
         </site>
     </distributionManagement>
@@ -161,7 +161,7 @@
     </build>
     <repositories>
         <repository>
-            <id>hashnot</id>
+            <id>sorcersoft</id>
             <url>http://mvn.sorcersoft.com/content/groups/public</url>
             <releases>
                 <enabled>true</enabled>
