@@ -74,6 +74,8 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	static transient final int EVENT_TASK_POOL_MAX = 5;
 
+	static transient final long INITIAL_TIMEOUT = Long.MAX_VALUE;
+
 	private Uuid cookie;
 
 	private ServiceExertion initialExertion;
@@ -117,7 +119,8 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 		// Set the epiration for the root Resource
 		// get the lease and stick it
-		setTimeout(Long.MAX_VALUE);
+		//setTimeout(Long.MAX_VALUE);
+		setTimeout(INITIAL_TIMEOUT);
 		if (mLandlord != null) {
 			setExpiration(mLandlord.getExpiration(duration));
 			lease = mLandlord.newLease(this);
@@ -256,15 +259,17 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		return lease;
 	}
 
-	public void update(Context<?> ctx, IControlContext controlContext) {
+	public void update(Context<?> ctx, IControlContext controlContext, int aspect) {
 		if (ctx == null)
 			throw new NullPointerException(
 					"Assertion Failed: ctx cannot be NULL");
-
+		logger.info("Updating state of exertion: " + runtimeExertion.getName() + ": " + Exec.State.name(aspect));
         if (runtimeExertion instanceof ServiceExertion) {
+			if (aspect!=runtimeExertion.getStatus())
+				runtimeExertion.setStatus(aspect);
             runtimeExertion.setContext(ctx);
             runtimeExertion.setControlContext((ControlContext)controlContext);
-        }
+		}
 		persist();
 	}
 
@@ -273,11 +278,12 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		if (ctx == null)
 			throw new NullPointerException("Assertion Failed: ctx cannot be null");
 
-		if (!isRunning()) {
+		if (!isRunning() && !isUpdated()) {
+		//if (!isRunning()) {
 			logger.error(
-					"Trying to call done on a non running resource" + this);
+					"Trying to call done on a non running resource" + this + " state: " + Exec.State.name(getState()));
 			throw new MonitorException("Exertion " + runtimeExertion.getName() + " not running, state="
-					+ getState());
+					+ Exec.State.name(getState()));
 		}
 
 		logger.info(
@@ -300,11 +306,11 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			throw new NullPointerException(
 					"Assertion Failed: ctx cannot be NULL");
 
-		if (!isRunning()) {
+		if (!isRunning() && !isInSpace()  && !isProvision()) {
 			logger.error(
 					"Trying to call failed on a non running resource" + this);
 			throw new MonitorException("Exertion " + runtimeExertion.getName() + " not running . state="
-					+ getState());
+					+ Exec.State.name(getState()));
 		}
 
 		runtimeExertion.setStatus(Exec.FAILED);
@@ -389,7 +395,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 				logger.error("State not accounted for while resetting state"
 								+ get(i).runtimeExertion.getName()
 								+ " state="
-								+ get(i).getState());
+								+ Exec.State.name(get(i).getState()));
 
 		}
 		logger.debug("failed count=" + failedCount + " suspended count="
@@ -407,10 +413,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
         }
 		else if (suspendedCount != 0 && doneCount + suspendedCount == size())
 			runtimeExertion.setStatus(Exec.SUSPENDED);
-        else if (inSpaceCount != 0 && doneCount + suspendedCount + inSpaceCount == size())
-            runtimeExertion.setStatus(Exec.INSPACE);
-        else if (provisionCount != 0 && doneCount + suspendedCount + inSpaceCount + provisionCount == size())
-            runtimeExertion.setStatus(Exec.PROVISION);
+        //else if (inSpaceCount != 0 && doneCount + suspendedCount + inSpaceCount == size())
+        //    runtimeExertion.setStatus(Exec.INSPACE);
+        //else if (provisionCount != 0 && doneCount + suspendedCount + inSpaceCount + provisionCount == size())
+        //    runtimeExertion.setStatus(Exec.PROVISION);
 
 	}
 
@@ -432,6 +438,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	public boolean isRunning() {
 		return (runtimeExertion.getStatus() == Exec.RUNNING);
+	}
+
+	public boolean isUpdated() {
+		return (runtimeExertion.getStatus() == Exec.UPDATED);
 	}
 
 	public boolean isDone() {

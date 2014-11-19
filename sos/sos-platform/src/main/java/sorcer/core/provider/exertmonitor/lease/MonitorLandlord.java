@@ -232,7 +232,8 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
             String name = (((MonitorSession)resource).getRuntimeExertion()!=null ?
                     ((MonitorSession)resource).getRuntimeExertion().getName() : " NOT EXERTION");
             SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
-            logger.info("Checking lease: " + name + " " + sdf.format(resource.getExpiration()));
+            logger.info("Checking lease: " + name + " " + sdf.format(Math.min(resource.getTimeout(), resource.getExpiration()))
+			+ (resource.getExpiration()<resource.getTimeout() ? " E" : " T"));
 
 			if (resource.getExpiration() < now) {
 				logger.info( "Lease cancelled for resource ="

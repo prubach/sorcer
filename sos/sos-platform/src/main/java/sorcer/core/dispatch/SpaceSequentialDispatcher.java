@@ -37,17 +37,15 @@ public class SpaceSequentialDispatcher extends SpaceParallelDispatcher {
 
     protected void dispatchExertion(Exertion exertion) throws ExertionException, SignatureException {
         super.dispatchExertion(exertion);
-        logger.debug("waiting for exertion {}, id={}...", exertion.getIndex(),
-                exertion.getId());
-			waitForExertion(exertion);
+		waitForExertion(exertion);
 	}
 
     protected synchronized void waitForExertion(Exertion exertion) {
         while (exertion.getIndex() - getDoneExertionIndex() > -1) {
             try {
-                logger.debug("Waiting for exertion " + exertion.getName() + " to finish index/done: " + exertion.getIndex() + "/" + getDoneExertionIndex());
+                logger.debug("Waiting for exertion: " + exertion.getName() + " to finish index/done: " + exertion.getIndex() + "/" + getDoneExertionIndex());
                 wait();
-                logger.debug("Finished waiting for exertion to finish index/done: " + exertion.getIndex() + "/" + getDoneExertionIndex());
+                logger.debug("Finished waiting for exertion: " + exertion.getName() + " to finish index/done: " + exertion.getIndex() + "/" + getDoneExertionIndex());
             } catch (InterruptedException e) {
                 // continue
             }

@@ -287,7 +287,7 @@ public class Task extends ServiceExertion {
 				+ name);
 		sb.append(" task ID: ").append(getId()).append("\n  process sig: ")
 				.append(getProcessSignature());
-		sb.append("\n  status: ").append(getStatus());
+		sb.append("\n  status: ").append(Exec.State.name(getStatus()));
 		String time = getControlContext().getExecTime();
 		if (time != null && time.length() > 0)
 			sb.append("\n  exec time: ").append(time);

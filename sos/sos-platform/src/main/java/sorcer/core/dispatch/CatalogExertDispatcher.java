@@ -147,10 +147,18 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             // service
             Service service = (Service) Accessor.getService(sig);
             if (service == null && task.isProvisionable()) {
-                Provisioner provisioner = ServiceDirectoryProvisioner.getProvisioner();
+                MonitoringSession monSession = MonitorUtil.getMonitoringSession(task);
+                if (task.isMonitorable() && monSession!=null) {
+                    logger.debug("Notifying monitor about Provisioning of exertion: " + task.getName());
+                    try {
+                        monSession.changed(task.getContext(), task.getControlContext(), Exec.State.PROVISION.ordinal());
+                    } catch (Exception ce) {
+                        logger.warn("Unable to notify monitor about Provisioning of exertion: " + task.getName() + " " + ce.getMessage());
+                    }
+                }
                 try {
                     logger.info("Provisioning "+sig);
-                    service = provisioner.provision(sig.getServiceType().getName(), sig.getProviderName(), sig.getVersion());
+                    service = ServiceDirectoryProvisioner.getProvisioner().provision(sig.getServiceType().getName(), sig.getProviderName(), sig.getVersion());
                 } catch (ProvisioningException pe) {
                     Throwable rootCause = pe;
                     while (rootCause.getCause()!=null && rootCause.getCause()!=rootCause) {
@@ -204,16 +212,13 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
                     } catch (Exception re) {
                         if (tried >= maxTries) {
-                            System.out.println("+++++++++++++++Problem exerting task, already tried " + tried + " times for: " + xrt.getName() + " " + re.getMessage());
                             logger.error("+++++++++++++++Problem exerting task, already tried " + tried + " times for: " + xrt.getName() + " " + re.getMessage());
                             throw re;
                         }
                         else {
-                            System.out.println("+++++++++++++++Problem exerting task, retrying " + tried + " time: " + xrt.getName() + " " + re.getMessage());
                             logger.info("Problem exerting task, retrying " + tried + " time: " + xrt.getName() + " " + re.getMessage());
                             service = (Service) Accessor.getService(sig);
                             try {
-                                System.out.println("+++++++++++++++Got service: " + ((Provider)service).getProviderID());
                                 logger.info("+++++++++++++++Got service: " + ((Provider)service).getProviderID());
                             } catch (Exception e) {
                                 System.out.println("+++++++++++++++The service we got is not valid");

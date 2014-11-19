@@ -126,7 +126,7 @@ public class ProviderProvisionManager {
                 logger.debug("===========================> written failure envelop: "
                         + ee.describe() + "\n to: " + space);
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
                 logger.error(this.getClass().getName(), "failExertionInSpace", e);
                 throw new ExertionException("Problem writing exertion back to space");
             }

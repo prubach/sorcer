@@ -36,7 +36,6 @@ import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.SpaceTaker;
-import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
 import sorcer.service.monitor.MonitorUtil;
 import sorcer.service.space.SpaceAccessor;
@@ -117,9 +116,6 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
             logger.debug("generateTasks ==> SPACE EXECUTE EXERTION: "
                     + exertion.getName());
             xrt.setStatus(INSPACE);
-        } catch (ProvisioningException pe) {
-            xrt.setStatus(FAILED);
-            throw new ExertionException(pe.getLocalizedMessage());
         } catch (RemoteException re) {
 			logger.warn("Space not reachable....resetting space", re);
 			space = SpaceAccessor.getSpace();
@@ -266,12 +262,12 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
         ((ServiceExertion) exertion).setStatus(RUNNING);
     }
 
-    private void provisionProviderForExertion(Exertion exertion) throws ProvisioningException {
+    private void provisionProviderForExertion(Exertion exertion) {
         ProviderProvisionManager.provision(exertion, this);
     }
 
     protected void writeEnvelop(Exertion exertion) throws
-            ExertionException, SignatureException, RemoteException, ProvisioningException {
+            ExertionException, SignatureException, RemoteException {
         // setSubject before exertion is dropped
         space = SpaceAccessor.getSpace();
         if (space == null) {
@@ -341,6 +337,17 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
         if (exertion != xrt)
             ((NetJob) xrt).setExertionAt(exertion,
                     exertion.getIndex());
+
+        // notify monitor about failure
+        MonitoringSession monSession = MonitorUtil.getMonitoringSession(exertion);
+        if (exertion.isMonitorable() && monSession!=null) {
+            logger.debug("Notifying monitor about failure of exertion: " + exertion.getName());
+            try {
+                monSession.changed(exertion.getContext(), exertion.getControlContext(), exertion.getStatus());
+            } catch (Exception ce) {
+                logger.warn("Unable to notify monitor about failure of exertion: " + exertion.getName() + " " + ce.getMessage());
+            }
+        }
     }
 
     private void cleanRemainingFailedExertions(Uuid id) {
@@ -365,9 +372,6 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
         logger.info("executeMasterExertion ==============> SPACE EXECUTE MASTER EXERTION");
         try {
             writeEnvelop(masterXrt);
-        } catch (ProvisioningException pe) {
-            masterXrt.setStatus(FAILED);
-            throw new ExertionException(pe.getLocalizedMessage());
         } catch (RemoteException re) {
             re.printStackTrace();
             logger.warn("Space died....resetting space");

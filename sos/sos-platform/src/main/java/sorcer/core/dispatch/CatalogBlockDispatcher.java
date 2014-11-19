@@ -77,9 +77,9 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
         super.afterExec(result);
         try {
             postUpdate(result);
-            MonitoringSession monSession = MonitorUtil.getMonitoringSession(result);
             //TODO Not very nice
-            /*if (result.isBlock() && result.isMonitorable() && monSession!=null) {
+            /*MonitoringSession monSession = MonitorUtil.getMonitoringSession(result);
+            if (result.isBlock() && result.isMonitorable() && monSession!=null) {
                 boolean isFailed = false;
                 for (Exertion xrt : result.getAllExertions()) {
                     if (xrt.getStatus()==Exec.FAILED || xrt.getStatus()==Exec.ERROR) {

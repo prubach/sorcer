@@ -25,6 +25,7 @@ import net.jini.core.lookup.ServiceItem;
 import net.jini.id.Uuid;
 import sorcer.core.monitor.MonitorUIManagement;
 import sorcer.core.monitor.MonitoringManagement;
+import sorcer.core.provider.Provider;
 import sorcer.jini.lookup.AttributesUtil;
 import sorcer.service.ContextException;
 import sorcer.service.Exec.State;
@@ -232,6 +233,11 @@ public class EmxCmd extends ShellCmd {
 	private void printMonitoredExertions(State xetType)
 			throws RemoteException, MonitorException {
 		if (emxMonitors == null || emxMonitors.length == 0) {
+			findMonitors();
+		}
+		try {
+			((Provider)emxMonitors[selectedMonitor]).getProviderName();
+		} catch (Exception e) {
 			findMonitors();
 		}
 		Map<Uuid, ExertionInfo> all;

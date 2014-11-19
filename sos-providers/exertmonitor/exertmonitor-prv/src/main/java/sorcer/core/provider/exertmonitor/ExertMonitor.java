@@ -277,7 +277,7 @@ public class ExertMonitor extends ServiceProvider implements
 	 *             if there is a communication error
 	 */
 
-	private void update(Uuid cookie, Context ctx, IControlContext controlContext) throws RemoteException,
+	private void update(int aspect, Uuid cookie, Context ctx, IControlContext controlContext) throws RemoteException,
 			MonitorException {
 		// Get the SessionResource corresponding to this cookie
 		MonitorSession resource = findSessionResource(cookie);
@@ -285,7 +285,7 @@ public class ExertMonitor extends ServiceProvider implements
 			throw new MonitorException("There exists no such session for: "
 					+ cookie);
 
-		resource.update(ctx, controlContext);
+		resource.update(ctx, controlContext, aspect);
 	}
 
 	/**
@@ -362,6 +362,7 @@ public class ExertMonitor extends ServiceProvider implements
 			MonitorException {
 		Map<Uuid, ExertionInfo> table = new HashMap<Uuid, ExertionInfo>();
 		try {
+			if (resources==null) return table;
 			Iterator<UuidKey> ki = resources.keySet().iterator();
 			UuidKey key;
 			while (ki.hasNext()) {
@@ -449,8 +450,8 @@ public class ExertMonitor extends ServiceProvider implements
 	@Override
 	public void update(Uuid cookie, Context ctx, IControlContext controlContext, int aspect)
 			throws RemoteException, MonitorException {
-		if (aspect==Exec.UPDATED) {
-			update(cookie, ctx, controlContext);
+		if (aspect==Exec.UPDATED || aspect==Exec.PROVISION) {
+			update(aspect, cookie, ctx, controlContext);
 		} else if (aspect==Exec.DONE) {
 			done(cookie, ctx, controlContext);
 		} else if (aspect== Exec.FAILED) {

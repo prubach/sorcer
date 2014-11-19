@@ -68,8 +68,6 @@ public class ServiceDirectoryProvisioner implements Provisioner {
                 logger.warn("Could not parse property: provisioing.idle.time: " + propIdleTime + " using default idle time of 60 seconds");
             }
         }
-        //srvDirectory = getServiceDirectory();
-        //provisionMonitor = Accessor.getService(ProvisionMonitor.class);
     }
 
     public static Provisioner getProvisioner() {
@@ -103,7 +101,7 @@ public class ServiceDirectoryProvisioner implements Provisioner {
         }
         logger.debug("Got opString to provision: {}", operationalString.getName());
         T service = null;
-
+        logger.debug("UndeployIdleTime: {}", undeployIdleTime);
         if (undeployIdleTime>0) ((OpString)operationalString).setUndeployOption(getUndeployOption(undeployIdleTime));
         try {
             DeploymentResult deploymentResult = getDeployAdmin().deploy(operationalString);
@@ -115,19 +113,15 @@ public class ServiceDirectoryProvisioner implements Provisioner {
             }
             if (!deployErrors.toString().isEmpty())
                 throw new ProvisioningException(deployErrors.toString());
-            //deploymentResult.getOperationalStringManager().
-            int tries = 0;
 
             Pair<ServiceElement, ClassBundle> classSource = findBundleWithClass(operationalString, typeName, version);
             if (classSource == null)
                 throw new ProvisioningException("OperationalString " + name + " doesn't contain definition for " + typeName + "@" + version);
-            //logger.debug("Checking if service is up");
             Class type = OpStringUtil.loadClass(classSource.getRight(), classSource.getLeft(), SorcerResolver.getResolver());
-            //logger.debug("Looking for service type: " + type.getName());
+            int tries = 0;
             while (tries < 8 && service == null) {
                 Thread.sleep(100);
-                Entry[] entries = new Entry[]{new OperationalStringEntry(operationalString.getName())};
-                //logger.debug("Accessor looking for: " + type.getName());
+                Entry[] entries = new Entry[]{ new OperationalStringEntry(operationalString.getName()) };
                 service = (T) Accessor.getService(null, new Class[]{type}, entries );
                 tries++;
             }
@@ -140,7 +134,7 @@ public class ServiceDirectoryProvisioner implements Provisioner {
                     //deploymentResult.getOperationalStringManager().redeploy(sEl, null, false, 0, null);
                     logger.warn("trying to redeploy {} {} {}", typeName, version, name);
                     while (tries < 15 && service == null) {
-                        Thread.sleep(200);
+                        Thread.sleep(100);
                         service = (T) Accessor.getService(null, new Class[]{type}, new Entry[]{new OperationalStringEntry(operationalString.getName())});
                         tries++;
                     }

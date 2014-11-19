@@ -40,7 +40,7 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
     final private static Logger log = LoggerFactory.getLogger(MonitoringControlFlowManager.class);
 
     public static final long LEASE_RENEWAL_PERIOD = 1 * 1000 * 30L;
-    public static final long DEFAULT_TIMEOUT_PERIOD = 1 * 1000 * 60L;
+    public static final long DEFAULT_TIMEOUT_PERIOD = 1 * 1000 * 90L;
 
     private MonitorSessionManagement sessionMonitor;
 
@@ -132,7 +132,7 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
     private Exertion register(Exertion exertion) throws RemoteException {
 
         ServiceExertion registeredExertion = (ServiceExertion) (sessionMonitor.register(null,
-                exertion, LEASE_RENEWAL_PERIOD));
+                exertion, DEFAULT_TIMEOUT_PERIOD));
         MonitoringSession session = getMonitoringSession(registeredExertion);
         log.debug("Session for the exertion = {}", session);
         log.debug("Lease to be renewed for duration = {}",
