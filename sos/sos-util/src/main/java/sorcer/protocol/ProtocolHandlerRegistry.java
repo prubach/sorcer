@@ -15,6 +15,9 @@ package sorcer.protocol;
  * limitations under the License.
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
@@ -25,6 +28,8 @@ import java.util.Map;
  * @author Rafał Krupiński
  */
 public class ProtocolHandlerRegistry implements URLStreamHandlerFactory {
+    final protected static Logger log = LoggerFactory.getLogger(ProtocolHandlerRegistry.class);
+
     private Map<String, URLStreamHandler> handlers = new HashMap<String, URLStreamHandler>();
 
     @Override
@@ -33,6 +38,7 @@ public class ProtocolHandlerRegistry implements URLStreamHandlerFactory {
     }
 
     public void register(String protocol, URLStreamHandler handler) {
+        log.info("Registering protocol handler {}", protocol);
         handlers.put(protocol, handler);
     }
 

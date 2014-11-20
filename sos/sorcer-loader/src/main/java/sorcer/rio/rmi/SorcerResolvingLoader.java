@@ -106,7 +106,7 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
                 return primitive;
             return loader.loadClass(resolvedCodebase, name, defaultLoader);
         } catch (Exception fe) {
-            logger.warn("Problem loading class: " + name + " from: " + resolvedCodebase + " " + fe.getMessage() + " - trying again");
+            logger.warn("Problem loading class: {} from: \"{}\" cause: {} (retrying)", name, resolvedCodebase, fe.getMessage());
             logger.debug("Resolver error", fe);
             return loader.loadClass(resolvedCodebase, name, defaultLoader);
         }

@@ -39,7 +39,7 @@ ServiceDescriptor[] getPlatformServices() {
                     null,
                     policy,
                     Booter.resolveClasspath([
-                            "org.sorcersoft.sorcer:sorcer-rio-resolver",
+                            "org.sorcersoft.sorcer:sorcer-boot-resolver",
                             "org.rioproject.resolver:resolver-aether"
                     ] as String[]),
                     "org.sorcersoft.sorcer.resolver.RioResolverActivator"

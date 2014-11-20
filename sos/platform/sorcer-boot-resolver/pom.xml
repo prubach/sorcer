@@ -18,40 +18,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>sorcer-rio</artifactId>
-        <groupId>org.sorcersoft.sorcer</groupId>
-        <version>1.1-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>sorcer-rio-start</artifactId>
-    <name>SORCER :: Rio :: start</name>
+    <parent>
+        <groupId>org.sorcersoft.sorcer</groupId>
+        <artifactId>sos</artifactId>
+        <version>1.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>sorcer-boot-resolver</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-rio-resolver</artifactId>
-            <version>${project.version}</version>
+            <artifactId>sos-boot</artifactId>
+            <version>${v.sorcer}</version>
         </dependency>
         <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-start</artifactId>
+            <groupId>org.rioproject.resolver</groupId>
+            <artifactId>resolver-api</artifactId>
             <version>${v.rio}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-util</artifactId>
-            <version>${project.version}</version>
+            <artifactId>sorcer-rio-resolver</artifactId>
+            <version>${v.sorcer}</version>
         </dependency>
         <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-spi</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
     </dependencies>
+
 </project>

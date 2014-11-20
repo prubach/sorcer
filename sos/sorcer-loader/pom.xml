@@ -19,39 +19,39 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>sorcer-rio</artifactId>
+        <artifactId>sos</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
         <version>1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>sorcer-rio-start</artifactId>
-    <name>SORCER :: Rio :: start</name>
+    <artifactId>sorcer-loader</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>org.rioproject.resolver</groupId>
+            <artifactId>resolver-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-rio-resolver</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-start</artifactId>
-            <version>${v.rio}</version>
-        </dependency>
-        <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-util</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-spi</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
     </dependencies>
 </project>

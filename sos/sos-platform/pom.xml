@@ -29,6 +29,24 @@
 			<version>${project.version}</version>
 		</dependency>
         <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sorcer-loader</artifactId>
+			<version>${project.version}</version>
+            <scope>runtime</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sorcer-rio-resolver</artifactId>
+			<version>${project.version}</version>
+            <!-- apparently rio uses old version of plexus utils which breaks ExertionSorter compilation -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.rioproject.resolver</groupId>
+                    <artifactId>resolver-aether</artifactId>
+                </exclusion>
+            </exclusions>
+		</dependency>
+        <dependency>
             <groupId>net.jini</groupId>
             <artifactId>jsk-platform</artifactId>
         </dependency>
