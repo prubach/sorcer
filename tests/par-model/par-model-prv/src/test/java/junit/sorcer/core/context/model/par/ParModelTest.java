@@ -32,9 +32,9 @@ import static sorcer.po.operator.invoke;
 import static sorcer.po.operator.invoker;
 import static sorcer.po.operator.loop;
 import static sorcer.po.operator.methodInvoker;
-import static sorcer.po.operator.model;
+import static sorcer.po.operator.parModel;
 import static sorcer.po.operator.par;
-import static sorcer.po.operator.parContext;
+import static sorcer.po.operator.parModel;
 import static sorcer.po.operator.pars;
 import static sorcer.po.operator.persistent;
 import static sorcer.po.operator.pipe;
@@ -75,6 +75,7 @@ import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.junit.SorcerServiceConfiguration;
+import sorcer.po.operator;
 import sorcer.resolver.Resolver;
 import sorcer.service.*;
 
@@ -99,7 +100,7 @@ public class ParModelTest {
 	@Test
 	public void adderParTest() throws RemoteException,
 			ContextException {
-		ParModel pm = model("par-model");
+		ParModel pm = operator.parModel("par-parModel");
 		add(pm, par("x", 10.0), par("y", 20.0));
 		add(pm, invoker("add", "x + y", pars("x", "y")));
 
@@ -175,7 +176,7 @@ public class ParModelTest {
 	@Test
 	public void dslParModelTest() throws RemoteException,
 			ContextException {
-		ParModel pm = model(par("x", 10.0), par("y", 20.0),
+		ParModel pm = parModel(par("x", 10.0), par("y", 20.0),
 				par("add", invoker("x + y", pars("x", "y"))));
 
 		assertEquals(value(pm, "x"), 10.0);
@@ -189,7 +190,7 @@ public class ParModelTest {
 	@Test
 	public void mutateParContextTest() throws RemoteException,
 			ContextException { 
-		ParModel pm = model(par("x", 10.0), par("y", 20.0),
+		ParModel pm = parModel(par("x", 10.0), par("y", 20.0),
 				par("add", invoker("x + y", pars("x", "y"))));
 		
 		Par x = par(pm, "x");
@@ -235,7 +236,7 @@ public class ParModelTest {
 		Par y2 = par("y2", invoker("x * y1", pars("x", "y1")));
 		Par y1 = par("y1", invoker("x1 * 5", par("x1")));
 		
-		ParModel pc = parContext(y1, y2, y3);		
+		ParModel pc = parModel(y1, y2, y3);
 		// any dependent values or pars can be updated or added any time
 		put(pc, "x", 10.0);
 		put(pc, "x1", 20.0);
@@ -392,7 +393,7 @@ public class ParModelTest {
 		set(x2, 55.0);
 		assertEquals(value(x2), 55.0);
 		
-		ParModel pc = parContext(x1, x2);
+		ParModel pc = parModel(x1, x2);
 		assertEquals(value(pc, "x1"), 45.0);
 		assertEquals(value(pc, "x2"), 55.0);
 	}
@@ -445,7 +446,7 @@ public class ParModelTest {
 		assertEquals(value(j1p), 1000.0);
 		
 		// map pars are aliased pars
-		ParModel pc = parContext(x1p, x2p, j1p);
+		ParModel pc = parModel(x1p, x2p, j1p);
 		logger.info("y value: " + value(pc, "y"));
 	}
 	
@@ -745,7 +746,7 @@ public class ParModelTest {
 	@Ignore
 	@Test
 	public void runnableAttachment() throws RemoteException, ContextException {
-		ParModel pm = model();
+		ParModel pm = parModel();
 		final Par x = par("x", 10.0);
 		final Par y = par("y", 20.0);
 		Par z = par("z", invoker("x + y", x, y));
@@ -777,7 +778,7 @@ public class ParModelTest {
 	
 	@Test
 	public void callableAttachment() throws  RemoteException, ContextException {
-		final ParModel pm = model();
+		final ParModel pm = parModel();
 		final Par<Double> x = par("x", 10.0);
 		final Par<Double> y = par("y", 20.0);
 		Par z = par("z", invoker("x + y", x, y));
@@ -802,7 +803,7 @@ public class ParModelTest {
     @Ignore("Disabled due to bug - after merger of Mike's changes from 23.08.2014")
 	@Test
 	public void callableAttachmentWithArgs() throws RemoteException, ContextException {
-		final ParModel pm = model();
+		final ParModel pm = parModel();
 		final Par<Double> x = par("x", 10.0);
 		final Par<Double> y = par("y", 20.0);
 		Par z = par("z", invoker("x + y", x, y));

@@ -1343,7 +1343,7 @@ public class operator {
 		return new InEntry(path, value, 0);
 	}
 
-	public static InEntry dbInput(String path, Object value) {
+    public static InEntry dbInput(String path, Object value) {
 		return new InEntry(path, value, true, 0);
 	}
 

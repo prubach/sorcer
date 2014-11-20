@@ -15,10 +15,8 @@ import static sorcer.eo.operator.task;
 import static sorcer.eo.operator.value;
 import static sorcer.eo.operator.xrt;
 import static sorcer.po.operator.add;
-import static sorcer.po.operator.model;
 import static sorcer.po.operator.put;
 
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,16 +27,13 @@ import junit.sorcer.core.provider.SubtractorImpl;
 
 import org.junit.Test;
 
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import sorcer.core.SorcerEnv;
 import sorcer.core.context.model.par.ParModel;
 import sorcer.core.exertion.AltExertion;
 import sorcer.core.exertion.OptExertion;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.junit.ExportCodebase;
-import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
+import sorcer.po.operator;
 import sorcer.service.Condition;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
@@ -92,7 +87,7 @@ public class ConditionalTaskTest {
 
 	@Test
 	public void altExertionTest() throws RemoteException, ContextException, SignatureException, ExertionException {
-		ParModel pm = model("par-model");
+		ParModel pm = operator.parModel("par-model");
 		pm.putValue("x1", 30.0);
 		pm.putValue("y1", 20.0);
 		pm.putValue("x2", 50.0);

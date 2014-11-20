@@ -25,16 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import sorcer.co.tuple.AnnotatedEntry;
-import sorcer.co.tuple.Entry;
-import sorcer.co.tuple.FidelityEntry;
-import sorcer.co.tuple.StrategyEntry;
-import sorcer.co.tuple.Tuple1;
-import sorcer.co.tuple.Tuple2;
-import sorcer.co.tuple.Tuple3;
-import sorcer.co.tuple.Tuple4;
-import sorcer.co.tuple.Tuple5;
-import sorcer.co.tuple.Tuple6;
+import sorcer.co.tuple.*;
 import sorcer.core.context.ListContext;
 import sorcer.service.Arg;
 import sorcer.service.ContextException;
@@ -308,4 +299,27 @@ public class operator {
 			super(initialCapacity);
 		}
 	}
+
+	public static <T> Entry<T> ent(String path, T value) {
+		return new Entry<T>(path, value);
+	}
+
+	// Compat for SORCER 5.0.0-SNAPSHOT {
+	public static InEntry inEnt(String path, Object value) {
+		return sorcer.eo.operator.in(path, value);
+	}
+
+	public static InEntry inEnt(String path) {
+		return sorcer.eo.operator.in(path);
+	}
+
+	public static OutEntry outEnt(String path) {
+		return sorcer.eo.operator.out(path);
+	}
+
+	public static OutEntry outEnt(String path, Object value) {
+		return sorcer.eo.operator.out(path, value);
+	}
+
+	//  }
 }

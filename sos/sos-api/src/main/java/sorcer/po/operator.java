@@ -97,14 +97,14 @@ public class operator {
 		return parameter;
 	}
 	
-	public static ParModel model(String name, Identifiable... Objects)
+	public static ParModel parModel(String name, Identifiable... Objects)
 			throws RemoteException, ContextException {
 		ParModel pm = new ParModel(name);
 		pm.add(Objects);
 		return pm;
 	}
 	
-	public static ParModel model(Identifiable... Objects)
+	public static ParModel parModel(Identifiable... Objects)
 			throws RemoteException, ContextException {
 		ParModel pm = new ParModel();
 		pm.add(Objects);
@@ -153,11 +153,6 @@ public class operator {
 	public static void clearPars(Object invoker) throws EvaluationException {
 		if (invoker instanceof ServiceInvoker)
 			((ServiceInvoker)invoker).clearPars();
-	}
-	
-	public static ParModel parContext(Identifiable... objects)
-			throws ContextException, RemoteException {
-		return new ParModel(objects);
 	}
 	
 	public static Context result(Context model, String parname)

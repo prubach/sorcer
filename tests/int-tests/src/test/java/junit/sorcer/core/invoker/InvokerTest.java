@@ -23,7 +23,7 @@ import static sorcer.po.operator.invoke;
 import static sorcer.po.operator.invoker;
 import static sorcer.po.operator.loop;
 import static sorcer.po.operator.methodInvoker;
-import static sorcer.po.operator.model;
+import static sorcer.po.operator.parModel;
 import static sorcer.po.operator.next;
 import static sorcer.po.operator.opt;
 import static sorcer.po.operator.par;
@@ -60,7 +60,7 @@ import sorcer.core.invoker.*;
 import sorcer.core.provider.rendezvous.ServiceJobber;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerRunner;
-import sorcer.provider.boot.AbstractServiceDescriptor;
+import sorcer.po.operator;
 import sorcer.resolver.Resolver;
 import sorcer.service.Condition;
 import sorcer.service.Context;
@@ -129,7 +129,7 @@ public class InvokerTest {
 	@Test
 	public void groovyInvokerTest() throws RemoteException, ContextException,
 			SignatureException, ExertionException {
-		ParModel pm = model("par-model");
+		ParModel pm = operator.parModel("par-model");
 		add(pm, par("x", 10.0), par("y", 20.0));
 		add(pm, invoker("expr", "x + y + 30", pars("x", "y")));
 		logger.info("invoke value: " + invoke(pm, "expr"));
@@ -206,7 +206,7 @@ public class InvokerTest {
         assertNotNull(j1.getReturnPath());
 		assertEquals("j1/t3/result/y", j1.getReturnPath().path);
 
-		ParModel pm = model("par-model");
+		ParModel pm = operator.parModel("par-model");
 		add(pm, par("x1p", "arg/x1", c4), par("x2p", "arg/x2", c4), j1);
 		// setting context parameters in a job
 		set(pm, "x1p", 10.0);
@@ -267,7 +267,7 @@ public class InvokerTest {
 				pipe(out(t4, "result/y"), in(t3, "arg/x1")),
 				pipe(out(t5, "result/y"), in(t3, "arg/x2")));
 
-		ParModel pm = model("par-model");
+		ParModel pm = operator.parModel("par-model");
 		add(pm, par("x1p", "arg/x1", c4), par("x2p", "arg/x2", c4), j1);
 		// setting context parameters in a job
 		set(pm, "x1p", 10.0);
@@ -291,7 +291,7 @@ public class InvokerTest {
         CmdInvoker cmd = cmdInvoker("volume", cmdToInvoke);
 
 		par("multiply", invoker("x * y", pars("x", "y")));
-		ParModel pm = add(model(), par("x", 10.0), par("y"), par(cmd),
+		ParModel pm = add(parModel(), par("x", 10.0), par("y"), par(cmd),
 				par("add", invoker("x + y", pars("x", "y"))));
 
 		CmdResult result = (CmdResult) invoke(pm, "volume");
@@ -372,7 +372,7 @@ public class InvokerTest {
 
 	@Test
 	public void polOptInvokerTest() throws RemoteException, ContextException {
-		ParModel pm = model("par-model");
+		ParModel pm = operator.parModel("par-model");
 		add(pm,
 				par("x", 10.0),
 				par("y", 20.0),
@@ -450,7 +450,7 @@ public class InvokerTest {
 
 	@Test
 	public void polAltInvokerTest() throws RemoteException, ContextException {
-		ParModel pm = model("par-model");
+		ParModel pm = operator.parModel("par-model");
 		// add(pm, entry("x", 10.0), entry("y", 20.0), par("x2", 50.0),
 		// par("y2", 40.0), par("x3", 50.0), par("y3", 60.0));
 		add(pm, par("x", 10.0), par("y", 20.0), par("x2", 50.0),
@@ -493,7 +493,7 @@ public class InvokerTest {
     @Ignore("Ignored due to stange errors - probably race condition")
 	@Test
 	public void loopInvokerTest() throws RemoteException, ContextException {
-		final ParModel pm = model("par-model");
+		final ParModel pm = operator.parModel("par-model");
 		add(pm, entry("x", 1));
 		add(pm, par("y", invoker("x + 1", pars("x"))));
 
@@ -526,7 +526,7 @@ public class InvokerTest {
 
 	@Test
 	public void incrementorBy1Test() throws RemoteException, ContextException {
-		ParModel pm = model("par-model");
+		ParModel pm = operator.parModel("par-model");
 		add(pm, entry("x", 1));
 		add(pm, par("y", invoker("x + 1", pars("x"))));
 		add(pm, inc("y++", invoker(pm, "y")));
@@ -539,7 +539,7 @@ public class InvokerTest {
 
 	@Test
 	public void incrementorBy2Test() throws RemoteException, ContextException {
-		ParModel pm = model("par-model");
+		ParModel pm = operator.parModel("par-model");
 		add(pm, entry("x", 1));
 		add(pm, par("y", invoker("x + 1", pars("x"))));
 		add(pm, inc("y++2", invoker(pm, "y"), 2));
@@ -553,7 +553,7 @@ public class InvokerTest {
 	@Test
 	public void incrementorDoubleTest() throws RemoteException,
 			ContextException {
-		ParModel pm = model("par-model");
+		ParModel pm = operator.parModel("par-model");
 		add(pm, entry("x", 1.0));
 		add(pm, par("y", invoker("x + 1.2", pars("x"))));
 		add(pm, inc("y++2.1", invoker(pm, "y"), 2.1));
