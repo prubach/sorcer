@@ -46,8 +46,24 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-loader</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-rio-start</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-rio-resolver</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.rioproject.resolver</groupId>
+                    <artifactId>resolver-aether</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>net.jini</groupId>
@@ -74,8 +90,18 @@
             <version>${v.rio}</version>
         </dependency>
         <dependency>
+            <groupId>org.rioproject.monitor</groupId>
+            <artifactId>monitor-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
             <groupId>org.rioproject.resolver</groupId>
             <artifactId>resolver-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-lib</artifactId>
             <version>${v.rio}</version>
         </dependency>
     </dependencies>
@@ -99,11 +125,11 @@
                                     <exclude>org.sorcersoft.lockmgr:lockmgr-api:jar:</exclude>
                                     <exclude>org.jgroups:jgroups:jar:</exclude>
 
-                                    <exclude>org.rioproject:rio-lib:jar:</exclude>
+                                    <!--<exclude>org.rioproject:rio-lib:jar:</exclude>-->
                                     <exclude>org.rioproject:rio-logging-support:jar:</exclude>
                                     <exclude>org.rioproject:rio-proxy:jar:</exclude>
                                     <exclude>org.rioproject:rio-start:jar:</exclude>
-
+                                    <exclude>org.rioproject.resolver:resolver-aether</exclude>
                                     <exclude>net.jini:jsk-dl:jar:</exclude>
                                     <exclude>net.jini:jsk-resources:jar:</exclude>
                                     <exclude>org.apache.river:start:jar:</exclude>

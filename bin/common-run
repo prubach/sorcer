@@ -455,6 +455,7 @@ $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.ja
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-resolver/$V_SORCER/sorcer-rio-resolver-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-loader/$V_SORCER/sorcer-loader-$V_SORCER.jar:\
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/monitor/monitor-api/$V_RIO/monitor-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\

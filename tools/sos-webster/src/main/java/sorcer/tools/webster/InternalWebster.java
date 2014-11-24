@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.rioproject.tools.webster.Webster;
 
 import static sorcer.core.SorcerConstants.CODEBASE_JARS;
 import static sorcer.core.SorcerConstants.CODEBASE_SEPARATOR;
@@ -133,7 +132,8 @@ public class InternalWebster {
         }
 
         String address = System.getProperty(S_WEBSTER_INTERFACE);
-        Webster webster = new Webster(port, roots, address);
+        Webster webster = new Webster(port, roots, address, minThreads, maxThreads, true);
+        //Webster webster = new Webster(port, roots, address);
         //, minThreads, maxThreads, true);
         port = webster.getPort();
         if (logger.isDebugEnabled())
