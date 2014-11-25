@@ -277,11 +277,20 @@ abstract public class
                     codebase.add(resolve(artCord));
                 }
 
-            logger.debug("ServiceRequestor generated codebase: " + codebase.toString());
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            for (String st : codebase) {
+                if (i>0)
+                    sb.append(" ").append(st);
+                else
+                    sb.append(st);
+                i++;
+            }
+            logger.debug("ServiceRequestor generated codebase: " + sb.toString());
             if (isWebsterInt)
-                System.setProperty(SorcerConstants.CODEBASE_JARS, codebase.toString());
+                System.setProperty(SorcerConstants.CODEBASE_JARS, sb.toString());
             else
-                System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, codebase.toString());
+                System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, sb.toString());
 
             codebaseJars = codebase.toArray(new String[codebase.size()]);
         }
