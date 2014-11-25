@@ -110,7 +110,7 @@ logger("sorcer.resolver.ProjectArtifactResolver", DEBUG)
 logger("sorcer.launcher.SorcerLauncher", DEBUG)
 */
 
-logger("sorcer.boot", DEBUG)
+//logger("sorcer.boot", DEBUG)
 
 //logger("sorcer.core.service", debug)
 //logger("sorcer.tools.webster.start.WebsterStarter", debug)
@@ -215,7 +215,7 @@ def mkAppender(String service) {
     return service;
 }
 
-private String getLogDir() {
+String getLogDir() {
     System.getProperty("RIO_LOG_DIR", new File(
             System.getProperty("sorcer.home", System.getProperty("iGrid.home", System.getenv("SORCER_HOME"))), "logs").path)
 }
