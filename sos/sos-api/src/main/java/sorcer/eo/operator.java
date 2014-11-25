@@ -691,6 +691,11 @@ public class operator {
 		return component.getProcessSignature();
 	}
 
+    public static Signature sig(String operation, Class serviceType)
+            throws SignatureException {
+        return sig(operation, serviceType, new Arg[] {});
+    }
+
     public static ObjectSignature sig(String operation, Object object)
             throws SignatureException {
         return sig(operation, object, (String) null, null, null);
