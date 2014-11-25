@@ -191,7 +191,7 @@ public class TaskTest {
         //logger.info("objTask value: " + value(objTask));
         assertEquals("Wrong value for 500.0", value(objTask), 500.0);
 
-        ObjectTask objTask2 = (ObjectTask)task("t4", sig("multiply", new Multiply(), double[].class),
+        ObjectTask objTask2 = (ObjectTask)task("t4", sig("multiply", new Multiply(), new Class[] {double[].class}),
                 context(args(new double[] {10.0, 50.0}), result("result/y")));
         //logger.info("objTask2 value: " + value(objTask2));
         assertEquals("Wrong value for 500.0", value(objTask2), 500.0);
@@ -293,7 +293,7 @@ public class TaskTest {
 
 	@Test
 	public void t4_TaskTest() throws Exception {
-		Task t4 = task("t4", sig("multiply", new Multiply(), double[].class),
+		Task t4 = task("t4", sig("multiply", new Multiply(), new Class[] {double[].class }),
 				context(args(new Object[]{new double[]{10.0, 50.0}}), result("result/y")));
 
 		//logger.info("t4: " + value(t4));

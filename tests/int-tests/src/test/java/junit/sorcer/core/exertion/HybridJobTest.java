@@ -76,7 +76,7 @@ public class HybridJobTest {
 		// context("multiply", in(path("arg/x1"), 10.0), in("path(arg/x2"), 50.0),
 		// out(path("result/y"), null)));
 
-		Task t4 = task("t4", sig("multiply", new Multiply(), double[].class),
+		Task t4 = task("t4", sig("multiply", new Multiply(), new Class[] {double[].class}),
 				context("multiply", args(new double[] { 10.0, 50.0 }), result("result/y")));
 		// name("t4", t4);
 
@@ -143,7 +143,7 @@ public class HybridJobTest {
 		// context("multiply", in(path(arg, x1), 10.0), in(path(arg, x2), 50.0),
 		// out(path(result, y), null)));
 
-		Task t4 = task("t4", sig("multiply", new Multiply(), double[].class),
+		Task t4 = task("t4", sig("multiply", new Multiply(), new Class[] { double[].class }),
 				context("multiply", args(new double[] { 10.0, 50.0 }), result("result/y")));
 		// name("t4", t4);
 

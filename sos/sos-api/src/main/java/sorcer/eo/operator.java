@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.Transaction;
+import sorcer.core.provider.*;
 import sorcer.util.Loop;
 import sorcer.co.tuple.*;
 import sorcer.core.ComponentFidelityInfo;
@@ -39,10 +40,6 @@ import sorcer.core.context.model.par.Par;
 import sorcer.core.context.model.par.ParModel;
 import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.exertion.*;
-import sorcer.core.provider.DatabaseStorer;
-import sorcer.core.provider.Jobber;
-import sorcer.core.provider.Provider;
-import sorcer.core.provider.Spacer;
 import sorcer.core.signature.*;
 import sorcer.service.*;
 import sorcer.service.Signature.Kind;
@@ -68,19 +65,23 @@ public class operator {
     protected static final Logger logger = LoggerFactory.getLogger(operator.class
             .getName());
 
-    public static String path(List<String> attributes) {
-        if (attributes.size() == 0)
-            return null;
-        if (attributes.size() > 1) {
-            StringBuilder spr = new StringBuilder();
-            for (int i = 0; i < attributes.size() - 1; i++) {
-                spr.append(attributes.get(i)).append(SorcerConstants.CPS);
-            }
-            spr.append(attributes.get(attributes.size() - 1));
-            return spr.toString();
-        }
-        return attributes.get(0);
-    }
+	public static void requestTime(Exertion exertion) {
+		((ServiceExertion)exertion).setExecTimeRequested(true);
+	}
+	
+	public static String path(List<String> attributes) {
+		if (attributes.size() == 0)
+			return null;
+		if (attributes.size() > 1) {
+			StringBuilder spr = new StringBuilder();
+			for (int i = 0; i < attributes.size() - 1; i++) {
+				spr.append(attributes.get(i)).append(SorcerConstants.CPS);
+			}
+			spr.append(attributes.get(attributes.size() - 1));
+			return spr.toString();
+		}
+		return attributes.get(0);
+	}
 
     public static Object revalue(Evaluation evaluation, String path,
                                  Arg... entries) throws ContextException {
@@ -513,14 +514,19 @@ public class operator {
         return evaluation.substitute(entries);
     }
 
-    public static Signature sig(Class<?> serviceType, String providerName,
-                                Object... parameters) throws SignatureException {
+/*    public static Signature sig(Class<?> serviceType, String providerName,
+                                Arg... parameters) throws SignatureException {
         return sig(null, serviceType, null, Sorcer.getActualName(providerName),
                 parameters);
-    }
+    }*/
+
+	public static Signature sig(String operation, Class serviceType,  Arg... args)
+			throws SignatureException {
+        return sig(operation, serviceType, (Version)null, null, args);
+	}
 
     public static Signature sig(String operation, Class<?> serviceType,
-                                String providerName, Object... parameters)
+                                String providerName, Arg... parameters)
             throws SignatureException {
         return sig(operation, serviceType, null, providerName, parameters);
     }
@@ -532,14 +538,21 @@ public class operator {
     }
 
     public static Signature sig(String operation, Class<?> serviceType,
-                                Version version, String providerName, Object... parameters)
+                                Version version, String providerName, Arg... parameters)
             throws SignatureException {
+		if (providerName==null && parameters != null) {
+			for (Object o : parameters) {
+				if (o instanceof ProviderName)
+					providerName = Sorcer.getActualName(((ProviderName)o).getName());
+			}
+		}
         Signature sig = null;
         if (serviceType.isInterface()) {
             sig = new NetSignature(operation, serviceType, (version!=null ? version.getVersion() : null),
                     (providerName != null ? Sorcer.getActualName(providerName) : null));
         } else {
             sig = new ObjectSignature(operation, serviceType);
+			sig.setProviderName(providerName);
         }
         if (parameters.length > 0) {
             Provision p = null;
@@ -565,25 +578,33 @@ public class operator {
         return sig;
     }
 
-    public static Signature sig(String operation, Class<?> serviceType,
-                                String version)
-            throws SignatureException {
-        return sig(operation, serviceType, version, (String)null, Type.SRV);
-    }
+	public static ProviderName prvName(String name) {
+		return new ProviderName(name);
+	}
+	
+	public static String actualName(String name) {
+		return 	Sorcer.getActualName(name);
+	}
 
     public static Signature sig(String operation, Class<?> serviceType,
-                                String providerName, ServiceDeployment deployment, Object... parameters)
+                                String prvName)
+            throws SignatureException {
+        return sig(operation, serviceType, (Version)null, prvName, Type.SRV);
+    }
+
+    /*public static Signature sig(String operation, Class<?> serviceType,
+                                String providerName, ServiceDeployment deployment, Arg... parameters)
             throws SignatureException {
         return sig(operation, serviceType, null, providerName, deployment, parameters);
-    }
-
+    }*/
+/*
     public static Signature sig(String operation, Class<?> serviceType, Version version,
-                                String providerName, ServiceDeployment deployment, Object... parameters)
+                                String providerName, ServiceDeployment deployment, Arg... parameters)
             throws SignatureException {
         Signature signature = sig(operation, serviceType, version, providerName, parameters);
         signature.setDeployment(deployment);
         return signature;
-    }
+    }*/
 
     public static Signature sig(String selector) throws SignatureException {
 		return new ServiceSignature(selector);
@@ -605,18 +626,18 @@ public class operator {
 			Type type) throws SignatureException {
 		return sig(operation, serviceType, (Version)null, (String) null, type);
 	}
-
+/*
 	public static Signature sig(String operation, Class<?> serviceType,
 			Provision type) throws SignatureException {
 		return sig(operation, serviceType, (Version)null, (String) null, type);
-	}
+	}*/
 
-	public static Signature sig(String operation, Class<?> serviceType,
+/*	public static Signature sig(String operation, Class<?> serviceType,
 			Provision type, ServiceDeployment deployment) throws SignatureException {
 		Signature signature = sig(operation, serviceType, (String) null, type);
 		((ServiceSignature)signature).setDeployment(deployment);
 		return signature;
-	}
+	}*/
 	
 	public static Signature sig(String operation, Class<?> serviceType,
 			List<net.jini.core.entry.Entry> attributes)
@@ -670,6 +691,51 @@ public class operator {
 		return component.getProcessSignature();
 	}
 
+    public static ObjectSignature sig(String operation, Object object)
+            throws SignatureException {
+        return sig(operation, object, (String) null, null, null);
+    }
+
+    public static ObjectSignature sig(String operation, Object object,
+                                      Class[] types, Object... args) throws SignatureException {
+        if (args == null || args.length == 0)
+            return sig(operation, object, (String)null, types);
+        else
+            return sig(operation, object, (String)null, types, args);
+    }
+
+    public static ObjectSignature sig(String operation, Object object, String initOperation,
+                                      Class[] types) throws SignatureException {
+        try {
+            if (object instanceof Class && ((Class) object).isInterface()) {
+                if (initOperation != null)
+                    return new NetSignature(operation, (Class) object, Sorcer.getActualName(initOperation));
+                else
+                    return new NetSignature(operation, (Class) object);
+            } else if (object instanceof Class) {
+                return new ObjectSignature(operation, object, initOperation,
+                        types == null || types.length == 0 ? null : types);
+            } else {
+                return new ObjectSignature(operation, object,
+                        types == null || types.length == 0 ? null : types);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SignatureException(e);
+        }
+    }
+
+    public static ObjectSignature sig(String selector, Object object, String initSelector,
+                                      Class[] types, Object[] args) throws SignatureException {
+        try {
+            return new ObjectSignature(selector, object, initSelector, types, args);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SignatureException(e);
+        }
+    }
+
+
     public static <T> Task task(String name, T... elems)
             throws ExertionException {
         return TaskFactory.task(name, elems);
@@ -713,12 +779,6 @@ public class operator {
         return new EvaluationTask(signature, context);
     }
 
-    public static ObjectSignature sig(String operation, Object object, ServiceDeployment deployment,
-                                      Class... types) throws SignatureException {
-        ObjectSignature signature = sig(operation, object, types);
-        signature.setDeployment(deployment);
-        return signature;
-    }
 
 	public static FidelityInfo sFi(String name) {
 		return new FidelityInfo(name);
@@ -753,7 +813,7 @@ public class operator {
 	public static ServiceFidelity sFi(String name, Signature... signatures) {
 		return new ServiceFidelity(name, signatures);		
 	}
-	
+/*
 	public static ObjectSignature sig(String operation, Object object,
 			Class... types) throws SignatureException {
 		try {
@@ -767,9 +827,9 @@ public class operator {
 			e.printStackTrace();
 			throw new SignatureException(e);
 		}
-	}
+	}*/
 
-	public static ObjectSignature sig(String selector, Object object,
+/*	public static ObjectSignature sig(String selector, Object object,
 			Class<?>[] types, Object[] args) throws SignatureException {
 		try {
 			return new ObjectSignature(selector, object, types, args);
@@ -777,7 +837,7 @@ public class operator {
 			e.printStackTrace();
 			throw new SignatureException(e);
 		}
-	}
+	}*/
 
 	public static ObjectTask task(ObjectSignature signature)
 			throws SignatureException {
