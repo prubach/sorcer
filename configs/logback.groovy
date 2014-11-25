@@ -215,7 +215,7 @@ def mkAppender(String service) {
     return service;
 }
 
-private String getLogDir() {
+String getLogDir() {
     System.getProperty("RIO_LOG_DIR", new File(
             System.getProperty("sorcer.home", System.getProperty("iGrid.home", System.getenv("SORCER_HOME"))), "logs").path)
 }

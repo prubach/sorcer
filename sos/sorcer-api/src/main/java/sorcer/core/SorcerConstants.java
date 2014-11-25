@@ -1238,6 +1238,7 @@ public interface SorcerConstants {
     String MDC_SORCER_REMOTE_CALL = "SORCER-REMOTE-CALL";
     String MDC_EXERTION_ID = "xrtId";
     String MDC_PROVIDER_ID = "prvId";
+    String MDC_PROVIDER_NAME = "prvName";
     String START_PACKAGE = "com.sun.jini.start";
     String DEPLOYMENT_PACKAGE = "sorcer.core.exertion.deployment";
     String REMOTE_LOGGER_INTERFACE = "RemoteLogger";
