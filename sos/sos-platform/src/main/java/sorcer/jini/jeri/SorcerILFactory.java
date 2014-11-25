@@ -233,8 +233,11 @@ public class SorcerILFactory extends BasicILFactory {
         private void setupLogging(Remote impl, Object[] args) {
             if(remoteLogging)
                 MDC.put(MDC_SORCER_REMOTE_CALL, MDC_SORCER_REMOTE_CALL);
-            if (impl instanceof Identifiable)
-                MDC.put(MDC_PROVIDER_ID, ((Identifiable) impl).getId().toString());
+            if (impl instanceof Identifiable) {
+				Identifiable identifiable = (Identifiable) impl;
+				MDC.put(MDC_PROVIDER_ID, identifiable.getId().toString());
+				MDC.put(MDC_PROVIDER_NAME, identifiable.getName());
+			}
             if (args.length > 0 && args[0] instanceof Exertion) {
                 Exertion xrt = ((Exertion) args[0]);
                 if (xrt != null && xrt.getId() != null)
@@ -243,6 +246,7 @@ public class SorcerILFactory extends BasicILFactory {
         }
 
         private void cleanLogging() {
+			MDC.remove(MDC_PROVIDER_NAME);
             MDC.remove(MDC_SORCER_REMOTE_CALL);
             MDC.remove(MDC_EXERTION_ID);
             MDC.remove(MDC_PROVIDER_ID);
