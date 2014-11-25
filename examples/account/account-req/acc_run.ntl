@@ -38,11 +38,11 @@ import sorcer.core.SorcerEnv;
 
 
 
-Task t2 = task("Deposit-Account-1", sig("makeDeposit", ServiceAccount.class, "1.1-SNAPSHOT", "Account1"),
+Task t2 = task("Deposit-Account-1", sig("makeDeposit", ServiceAccount.class, version("1.1-SNAPSHOT"), "Account1"),
         context("deposit", input(path(ServiceAccount.DEPOSIT + "/" + ServiceAccount.AMOUNT), new Money(10000)),
          out(path("balance/amount1"), Context.none), null));
 
-Task t1 = task("Withdrawal-Account-2", sig("makeWithdrawal", ServiceAccount.class, "1.1-SNAPSHOT", "Account2"),
+Task t1 = task("Withdrawal-Account-2", sig("makeWithdrawal", ServiceAccount.class, version("1.1-SNAPSHOT"), "Account2"),
         context("withdrawal", input(path(ServiceAccount.WITHDRAWAL + "/" + ServiceAccount.AMOUNT), new Money(10000)),
          out(path("balance/amount1"), Context.none), null));
          //out(path(ServiceAccount.BALANCE + "/" + ServiceAccount.AMOUNT), null), null));

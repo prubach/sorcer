@@ -82,7 +82,7 @@ public class ParModelServicesTest {
 		// the provider in ex6/bin parmodel-prv-run.xml
         // Signature - actualName...
 		Task pmt = task(sig("invoke", Invocation.class,
-               null, "ParModel Service"),
+               "ParModel Service"),
 				context(entry("par", "expr"), result("invoke/result")));
 		
 //		logger.info("result: " + value(pmt));
@@ -96,7 +96,7 @@ public class ParModelServicesTest {
 	public void parNetVarModelServiceTest() throws RemoteException, ContextException, 
 			ExertionException, SignatureException {
 		// the provider in ex6/bin varparmodel-prv-run.xml
-		Task pmt = task(sig("invoke", Invocation.class, null, "ParModel Service"),
+		Task pmt = task(sig("invoke", Invocation.class, "ParModel Service"),
 				context(entry("par", "expr"), result("invoke/result")));
 
 //		logger.info("result: " + value(pmt));

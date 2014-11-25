@@ -526,11 +526,17 @@ public class operator {
     }
 
     public static Signature sig(String operation, Class<?> serviceType,
-                                String version, String providerName, Object... parameters)
+                                Version version)
+            throws SignatureException {
+        return sig(operation, serviceType, version, null);
+    }
+
+    public static Signature sig(String operation, Class<?> serviceType,
+                                Version version, String providerName, Object... parameters)
             throws SignatureException {
         Signature sig = null;
         if (serviceType.isInterface()) {
-            sig = new NetSignature(operation, serviceType, version,
+            sig = new NetSignature(operation, serviceType, (version!=null ? version.getVersion() : null),
                     (providerName != null ? Sorcer.getActualName(providerName) : null));
         } else {
             sig = new ObjectSignature(operation, serviceType);
@@ -547,6 +553,8 @@ public class operator {
                     ((ServiceSignature)sig).setProvisionable((Provision) o);
                 } else if (o instanceof ReturnPath) {
                     sig.setReturnPath((ReturnPath) o);
+                } else if (o instanceof Version && sig instanceof NetSignature) {
+                    ((NetSignature)sig).setVersion(((Version)o).getVersion());
                 } else if (o instanceof ServiceDeployment) {
                     if (p != null)
                         ((ServiceDeployment)o).setProvisionable(p);
@@ -569,7 +577,7 @@ public class operator {
         return sig(operation, serviceType, null, providerName, deployment, parameters);
     }
 
-    public static Signature sig(String operation, Class<?> serviceType, String version,
+    public static Signature sig(String operation, Class<?> serviceType, Version version,
                                 String providerName, ServiceDeployment deployment, Object... parameters)
             throws SignatureException {
         Signature signature = sig(operation, serviceType, version, providerName, parameters);
@@ -595,12 +603,12 @@ public class operator {
 	
 	public static Signature sig(String operation, Class<?> serviceType,
 			Type type) throws SignatureException {
-		return sig(operation, serviceType, null, (String) null, type);
+		return sig(operation, serviceType, (Version)null, (String) null, type);
 	}
 
 	public static Signature sig(String operation, Class<?> serviceType,
 			Provision type) throws SignatureException {
-		return sig(operation, serviceType, null, (String) null, type);
+		return sig(operation, serviceType, (Version)null, (String) null, type);
 	}
 
 	public static Signature sig(String operation, Class<?> serviceType,
@@ -2255,6 +2263,22 @@ public class operator {
 		}
 		return block;
 	}
+
+    public static Version version(String ver) {
+        return new Version(ver);
+    }
+
+    public static class Version {
+        final String version;
+
+        public Version(final String version) {
+            this.version = version;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+    }
 	
     private static String getWarningBanner(String message) {
         StringBuilder builder = new StringBuilder();

@@ -59,7 +59,7 @@ public class ObjectStoreTest {
 		
 		Task objectStoreTask = task(
 				"objectStore",
-				sig("contextStore", DatabaseStorer.class, null, Sorcer.getActualDatabaseStorerName()),
+				sig("contextStore", DatabaseStorer.class, Sorcer.getActualDatabaseStorerName()),
 					SdbUtil.getStoreContext(data));
 		
 		//objectStoreTask = exert(objectStoreTask);
@@ -79,7 +79,7 @@ public class ObjectStoreTest {
 		
 		Task objectStoreTask = task(
 				"objectStore",
-				sig("contextStore", DatabaseStorer.class, null, Sorcer.getActualDatabaseStorerName()),
+				sig("contextStore", DatabaseStorer.class, Sorcer.getActualDatabaseStorerName()),
 				SdbUtil.getStoreContext(data));
 		
 		//objectStoreTask = exert(objectStoreTask);
@@ -113,7 +113,7 @@ public class ObjectStoreTest {
 		store(data);
 		Task objectRetrieveTask = task(
 				"retrieve",
-				sig("contextRetrieve", DatabaseStorer.class, null, Sorcer.getActualDatabaseStorerName()),
+				sig("contextRetrieve", DatabaseStorer.class, Sorcer.getActualDatabaseStorerName()),
 					SdbUtil.getRetrieveContext(uuid, DatabaseStorer.Store.context));
 				
 		objectRetrieveTask = exert(objectRetrieveTask);
@@ -133,7 +133,7 @@ public class ObjectStoreTest {
 		String storageName = Sorcer.getActualName(Sorcer.getDatabaseStorerName());
 		Task objectStoreTask = task(
 				"store",
-				sig("contextStore", DatabaseStorer.class, null, storageName),
+				sig("contextStore", DatabaseStorer.class, storageName),
 				SdbUtil.getStoreContext(data));
 	
 		objectStoreTask = exert(objectStoreTask);
@@ -144,7 +144,7 @@ public class ObjectStoreTest {
         //retrieve task to be executed for updatedData in the previous task
         Task objectRetrieveTask = task(
                 "retrieve",
-                sig("contextRetrieve", DatabaseStorer.class, null,
+                sig("contextRetrieve", DatabaseStorer.class,
                         Sorcer.getActualDatabaseStorerName()),
                 SdbUtil.getRetrieveContext(objUuid, DatabaseStorer.Store.context));
 
@@ -162,7 +162,7 @@ public class ObjectStoreTest {
 		//updated task to be executed for updatedData
 		Task objectUpdateTask = task(
 				"update",
-				sig("contextUpdate", DatabaseStorer.class, null, Sorcer.getActualDatabaseStorerName()),
+				sig("contextUpdate", DatabaseStorer.class, Sorcer.getActualDatabaseStorerName()),
                 SdbUtil.getUpdateContext(ctxRtr, objUuid));
 		
 		objectUpdateTask = exert(objectUpdateTask);
@@ -172,7 +172,7 @@ public class ObjectStoreTest {
 		//retrieve task to be executed for updatedData in the previous task
 		objectRetrieveTask = task(
 				"retrieve",
-				sig("contextRetrieve", DatabaseStorer.class, null,
+				sig("contextRetrieve", DatabaseStorer.class,
                         Sorcer.getActualDatabaseStorerName()),
                 SdbUtil.getRetrieveContext(objUuid, DatabaseStorer.Store.context));
 		

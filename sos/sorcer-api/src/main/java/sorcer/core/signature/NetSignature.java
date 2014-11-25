@@ -399,6 +399,10 @@ public class NetSignature extends ObjectSignature {
         return version;
 	}
 
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
 	public String toString() {
 		return this.getClass() + ":" + providerName + ";" + execType + ";" + isActive + ";"
 				+ serviceType + ";" + selector 
