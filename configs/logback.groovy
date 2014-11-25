@@ -97,7 +97,7 @@ logger("sorcer.arithmetic", DEBUG)
 
 //logger("sorcer.core.provider.logger", DEBUG)
 //logger("sorcer.platform.logger", DEBUG)
-logger("sorcer.core.dispatch", DEBUG)
+//logger("sorcer.core.dispatch", DEBUG)
 
 //logger("sorcer.util", DEBUG)
 
@@ -110,7 +110,7 @@ logger("sorcer.resolver.ProjectArtifactResolver", DEBUG)
 logger("sorcer.launcher.SorcerLauncher", DEBUG)
 */
 
-logger("sorcer.boot", DEBUG)
+//logger("sorcer.boot", DEBUG)
 
 //logger("sorcer.core.service", debug)
 //logger("sorcer.tools.webster.start.WebsterStarter", debug)

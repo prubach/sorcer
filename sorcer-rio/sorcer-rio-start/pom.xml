@@ -40,6 +40,12 @@
             <version>${v.rio}</version>
         </dependency>
         <dependency>
+            <groupId>org.rioproject.resolver</groupId>
+            <artifactId>resolver-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+<!--
+        <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-util</artifactId>
             <version>${project.version}</version>
@@ -49,6 +55,7 @@
             <artifactId>sorcer-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
+-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
