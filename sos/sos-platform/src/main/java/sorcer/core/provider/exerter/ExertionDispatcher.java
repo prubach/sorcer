@@ -44,6 +44,7 @@ import sorcer.ext.ProvisioningException;
 import sorcer.jini.lookup.ProviderID;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
+import sorcer.service.modeling.ModelingTask;
 import sorcer.service.txmgr.TransactionManagerAccessor;
 import sorcer.util.ProviderLookup;
 import sorcer.util.Sorcer;
@@ -220,6 +221,10 @@ public class ExertionDispatcher implements Exerter, Callable {
             if (exertion.isJob()) {
                 ExertionSorter es = new ExertionSorter(exertion);
                 exertion = (ServiceExertion)es.getSortedJob();
+            }
+            //			 execute modeling tasks
+            if (exertion instanceof ModelingTask && exertion.getFidelity().size() == 1) {
+                return ((Task) exertion).doTask(txn);
             }
             //
             if (!(signature instanceof NetSignature)) {

@@ -73,6 +73,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
+import sorcer.core.context.model.par.ParModel;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
@@ -989,7 +990,7 @@ public class ProviderDelegate {
 			Object[] args = new Object[] { task.getContext() };
 
             if (selector.equals("invoke")
-                    && (impl instanceof Exertion || impl instanceof ParModeling)) {
+                    && (impl instanceof Exertion || impl instanceof ParModel)) {
 				Object obj = m.invoke(impl, new Object[] { args[0],
 						new Arg[] {} });
 

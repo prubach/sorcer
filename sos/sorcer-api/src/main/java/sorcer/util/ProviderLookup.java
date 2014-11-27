@@ -60,7 +60,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 
 	static final long WAIT_FOR = Sorcer.getLookupWaitTime();
 
-	static final int MAX_TRIES = 5;
+	static final int MAX_TRIES = 7;
 
 	static final private Logger logger = LoggerFactory.getLogger(ProviderLookup.class.getName());
 
@@ -324,7 +324,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
             lookupDiscovery = new LookupDiscovery(SorcerEnv.getLookupGroups());
             SorcerDiscoveryListener resultListener = new SorcerDiscoveryListener(template, 1, SorcerEnv.getLookupMaxMatches(), filter);
             lookupDiscovery.addDiscoveryListener(resultListener);
-            return resultListener.get(WAIT_FOR, TimeUnit.MILLISECONDS);
+            return resultListener.get(WAIT_FOR*MAX_TRIES, TimeUnit.MILLISECONDS);
         } catch (IOException ignored) {
             return null;
         } catch (InterruptedException ignored) {

@@ -534,7 +534,7 @@ public class operator {
     public static Signature sig(String operation, Class<?> serviceType,
                                 Version version)
             throws SignatureException {
-        return sig(operation, serviceType, version, null);
+        return sig(operation, serviceType, (Version)null, null, new Arg[] {});
     }
 
     public static Signature sig(String operation, Class<?> serviceType,
@@ -542,8 +542,10 @@ public class operator {
             throws SignatureException {
 		if (providerName==null && parameters != null) {
 			for (Object o : parameters) {
-				if (o instanceof ProviderName)
-					providerName = Sorcer.getActualName(((ProviderName)o).getName());
+				if (o instanceof ProviderName) {
+                    providerName = Sorcer.getActualName(((ProviderName)o).getName());
+                }
+
 			}
 		}
         Signature sig = null;
