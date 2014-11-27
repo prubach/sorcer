@@ -40,11 +40,16 @@
             <version>${v.sorcer}</version>
         </dependency>
         <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+<!--        <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
             <version>${v.sorcer}</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
 <!--        <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>

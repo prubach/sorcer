@@ -22,7 +22,7 @@ import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.SorcerEnv;
+import sorcer.env.SorcerHome;
 import sorcer.util.FileUtils;
 import sorcer.util.IOUtils;
 
@@ -47,7 +47,7 @@ public class SorcerResolver implements Resolver {
     private final Map<String, Set<String>> sortedCache = new HashMap<String, Set<String>>();
 
     private long storeLastMod;
-    private File store = SorcerEnv.getEnvironment().getResolverCache();
+    private File store = new File(SorcerHome.sorcerHome, "databases/resolver.ser");
 
     public static synchronized Resolver getResolver() throws ResolverException {
         if (inst == null)
@@ -56,7 +56,7 @@ public class SorcerResolver implements Resolver {
     }
 
     {
-        updateCacheStore(!SorcerEnv.getEnvironment().isClearResolverCache());
+        updateCacheStore(!SorcerHome.isClearResolverCache());
 
         Thread t = new Thread(new CacheStorer(), "Cache storer");
         t.setDaemon(true);

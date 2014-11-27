@@ -9,42 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>sorcer-lib</artifactId>
+    <artifactId>sorcer-resolving-loader</artifactId>
 
-    <name>SORCER tools :: requestor library</name>
+    <name>SORCER tools :: sorcer-resolving-loader</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-req</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>dbp-handler</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-platform</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-webster</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-<!--        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-resolver</artifactId>
-            <version>${project.version}</version>
-        </dependency>-->
-<!--
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-loader</artifactId>
@@ -54,21 +23,6 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-rio-resolver</artifactId>
             <version>${project.version}</version>
-        </dependency>
--->
-        <dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-platform</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-lib</artifactId>
-            <version>${v.jini}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.jini.lookup</groupId>
-            <artifactId>serviceui</artifactId>
-            <version>${v.jini}</version>
         </dependency>
         <dependency>
             <groupId>org.rioproject</groupId>
@@ -81,18 +35,8 @@
             <version>${v.rio}</version>
         </dependency>
         <dependency>
-            <groupId>org.rioproject.monitor</groupId>
-            <artifactId>monitor-api</artifactId>
-            <version>${v.rio}</version>
-        </dependency>
-        <dependency>
             <groupId>org.rioproject.resolver</groupId>
             <artifactId>resolver-api</artifactId>
-            <version>${v.rio}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-lib</artifactId>
             <version>${v.rio}</version>
         </dependency>
     </dependencies>
@@ -112,11 +56,7 @@
                         <configuration>
                             <artifactSet>
                                 <excludes>
-                                    <exclude>org.sorcersoft.sorcer:sos-boot:jar:</exclude>
-                                    <exclude>org.sorcersoft.lockmgr:lockmgr-api:jar:</exclude>
-                                    <exclude>org.jgroups:jgroups:jar:</exclude>
-
-                                    <!--<exclude>org.rioproject:rio-lib:jar:</exclude>-->
+                                    <exclude>org.rioproject:rio-lib:jar:</exclude>
                                     <exclude>org.rioproject:rio-logging-support:jar:</exclude>
                                     <exclude>org.rioproject:rio-proxy:jar:</exclude>
                                     <exclude>org.rioproject:rio-start:jar:</exclude>

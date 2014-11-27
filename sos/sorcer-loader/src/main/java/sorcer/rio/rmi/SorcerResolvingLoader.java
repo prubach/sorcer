@@ -23,7 +23,6 @@ import org.rioproject.url.artifact.ArtifactURLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.resolver.SorcerResolver;
-import sorcer.util.JavaSystemProperties;
 import sorcer.util.StringUtils;
 
 import java.io.File;
@@ -43,8 +42,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SorcerResolvingLoader extends RMIClassLoaderSpi {
 
-    public static final String SORCER_HOME = "sorcer.home";
-    public static final String ENV_SORCER_HOME = "SORCER_HOME";
     public static final String CODEBASE_SEPARATOR = " ";
     /**
      * A table of artifacts to derived codebases. This improves performance by resolving the classpath once per
@@ -73,10 +70,7 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
         primitiveTypes.put("char", char.class);
         primitiveTypes.put("void", void.class);
 
-        String envSorcerHome = System.getenv(ENV_SORCER_HOME);
-        String sorcerHome = (envSorcerHome!=null && !envSorcerHome.isEmpty() ?
-                envSorcerHome : System.getProperty(SORCER_HOME));
-        JavaSystemProperties.ensure("RIO_HOME", (System.getenv("RIO_HOME")!=null ? System.getenv("RIO_HOME") : new File(sorcerHome, "lib/rio").getPath()));
+
         try {
             resolver = SorcerResolver.getResolver();
         } catch (ResolverException e) {
