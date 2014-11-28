@@ -56,21 +56,8 @@
                         <configuration>
                             <artifactSet>
                                 <excludes>
-                                    <exclude>org.rioproject:rio-lib:jar:</exclude>
-                                    <exclude>org.rioproject:rio-logging-support:jar:</exclude>
-                                    <exclude>org.rioproject:rio-proxy:jar:</exclude>
-                                    <exclude>org.rioproject:rio-start:jar:</exclude>
-                                    <exclude>org.rioproject.resolver:resolver-aether</exclude>
                                     <exclude>net.jini:jsk-dl:jar:</exclude>
                                     <exclude>net.jini:jsk-resources:jar:</exclude>
-                                    <exclude>org.apache.river:start:jar:</exclude>
-                                    <exclude>org.codehaus.groovy:*:jar:</exclude>
-
-                                    <exclude>junit:junit</exclude>
-                                    <exclude>*:xml-apis</exclude>
-                                    <exclude>classworlds:classworlds</exclude>
-                                    <exclude>org.apache.maven:lib:tests</exclude>
-                                    <exclude>org.slf4j:slf4j-impl:jar:</exclude>
                                 </excludes>
                             </artifactSet>
                         </configuration>
