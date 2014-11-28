@@ -49,4 +49,6 @@ public interface ILauncher {
 
     void setCustomSystemProperties(Properties customSystemProperties);
 
+    void setWorkingDir(File workingDir);
+
 }

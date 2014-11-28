@@ -102,6 +102,9 @@ public class ForkingLauncher extends Launcher implements IForkingLauncher {
 
         bld.setMainClass(MAIN_CLASS);
 
+        if (workingDir!=null)
+            bld.setWorkingDir(workingDir);
+
         List<String> parameters = bld.getParameters();
 
         //-Mforce-direct enforces SorcerLauncher, so we ensure that there is no loop ForkingLauncher->Sorcer->ForkingLauncher
@@ -215,4 +218,6 @@ public class ForkingLauncher extends Launcher implements IForkingLauncher {
     public void setProfile(String profile) {
         this.profile = profile;
     }
+
+
 }

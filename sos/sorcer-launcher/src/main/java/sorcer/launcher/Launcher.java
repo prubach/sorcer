@@ -43,6 +43,7 @@ public abstract class Launcher implements ILauncher {
     protected File rio;
     protected File logDir;
     protected File configDir;
+    protected File workingDir;
     protected List<String> configs = Collections.emptyList();
 
     /**
@@ -287,6 +288,11 @@ public abstract class Launcher implements ILauncher {
     @Override
     public void setRioConfigs(List<String> rioConfigs) {
         this.rioConfigs = rioConfigs;
+    }
+
+    @Override
+    public void setWorkingDir(File workingDir) {
+        this.workingDir = workingDir;
     }
 
     @Override
