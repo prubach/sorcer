@@ -893,6 +893,21 @@
             <fileMode>0644</fileMode>
         </dependencySet>
 
+        <!-- Libs necessary for R-java integration - java.endorsed.dir should point to this directory -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useStrictFiltering>true</useStrictFiltering>
+            <includes>
+                <include>org.rioproject.resolver:resolver-api</include>
+                <include>org.rioproject.resolver:resolver-aether</include>
+                <include>org.slf4j:slf4j-simple</include>
+                <include>org.sorcersoft.sorcer:sorcer-resolving-loader</include>
+            </includes>
+            <outputDirectory>lib/rjava-endorsed</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
+        </dependencySet>
+
     </dependencySets>
 
 </assembly>

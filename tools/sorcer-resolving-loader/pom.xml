@@ -56,8 +56,11 @@
                         <configuration>
                             <artifactSet>
                                 <excludes>
+                                    <exclude>net.jini.lookup:serviceui:jar:</exclude>
+                                    <exclude>net.jini:jsk-lib:jar:</exclude>
                                     <exclude>net.jini:jsk-dl:jar:</exclude>
                                     <exclude>net.jini:jsk-resources:jar:</exclude>
+                                    <exclude>net.jini:jsk-platform:jar:</exclude>
                                 </excludes>
                             </artifactSet>
                         </configuration>
