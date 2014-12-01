@@ -333,6 +333,20 @@ getProperty ( ) {
   echo $RESULT
 }
 
+getMinReqCp ( ) {
+if [ -f "$LIB_DIR/sorcer/sorcer-api.jar" ]; then
+    SORCER_REQ_CP="$SORCER_HOME/lib/sorcer/sorcer-lib.jar:\
+$SORCER_HOME/lib/commons/groovy-all.jar:\
+$SORCER_HOME/lib/commons/slf4j-simple.jar"
+else
+      SORCER_REQ_CP="$MVN_REPO/org/sorcersoft/sorcer/sorcer-lib/$V_SORCER/sorcer-lib-$V_SORCER.jar:\
+$MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
+$MVN_REPO/javax/inject/javax.inject/1/javax.inject-1.jar:\
+$MVN_REPO/org/slf4j/slf4j-simple/$V_SLF4J/slf4j-simple-$V_SLF4J.jar"
+fi
+    echo $SORCER_REQ_CP
+}
+
 createSorcerRioCp ( ) {
       SORCER_RIO_CP="$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
