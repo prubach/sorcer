@@ -831,6 +831,7 @@ public class SorcerEnv {
      *
      * @return a scratch directory
      */
+    @Deprecated
     static public File getScratchDir() {
         return getNewScratchDir();
     }
@@ -879,10 +880,12 @@ public class SorcerEnv {
      *
      * @return a scratch directory
      */
+    @Deprecated
     static public File getNewScratchDir() {
         return getNewScratchDir("");
     }
 
+    @Deprecated
     static public File getNewScratchDir(String scratchDirNamePrefix) {
         String scratch = System.getProperty(SCRATCH_DIR, "scratch");
         logger.info("scratch_dir = " + scratch);
@@ -924,6 +927,10 @@ public class SorcerEnv {
         return scratchDir;
     }
 
+    /**
+     * @deprecated use new File(new ScratchDirManager.getNewScratchDir(), filename).getAbsolutePath()
+     */
+    @Deprecated
     public static String getAbsoluteScrachFilename(String filename) {
         return getNewScratchDir() + File.separator + filename;
     }

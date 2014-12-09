@@ -17,6 +17,8 @@
  */
 package sorcer.core;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * SORCER interface provides predefined constants, commands and parameter names
  * for the SORCER metacomputing environment. Use them to allow for
@@ -200,6 +202,11 @@ public interface SorcerConstants {
 	public static final String R_DATA_ROOT_DIR = "requestor.root.dir";
 
 	public static final String R_DATA_DIR = "requestor.data.dir";
+
+	public static final String P_SCRATCH_TTL = "scratch.ttl";
+
+	// 30 days as seconds
+	public static final long SCRATCH_TTL_DEFAULT = TimeUnit.DAYS.toSeconds(30);
 
 	public static final String SCRATCH_DIR = "scratch.dir";
 

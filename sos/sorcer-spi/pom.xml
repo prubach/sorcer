@@ -36,6 +36,10 @@
             <artifactId>resolver-api</artifactId>
             <version>${v.rio}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
