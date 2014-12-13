@@ -65,7 +65,7 @@ import sorcer.service.*;
  * of the context.
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class ServiceInvoker<T> extends Observable implements Identifiable, Scopable, Evaluator<T>, Invocation<T>, Observer, Serializable {
+public class ServiceInvoker<T> extends Observable implements Identifiable, Scopable, Evaluator<T>, Invocation<T>, Observer, Reactive<T>, Serializable {
 
 	private static final long serialVersionUID = -2007501128660915681L;
 	
@@ -83,6 +83,8 @@ public class ServiceInvoker<T> extends Observable implements Identifiable, Scopa
 		
 	// invocation delegate to
 	Evaluator evaluator;
+
+	private boolean isReactive = false;
 
 	// indication that value has been calculated with recent arguments
 	protected boolean valueIsValid = false;
@@ -497,4 +499,14 @@ public class ServiceInvoker<T> extends Observable implements Identifiable, Scopa
 		// implemented by subclasses
 	}
 
+	@Override
+	public boolean isReactive() {
+		return isReactive;
+	}
+
+	@Override
+	public Reactive<T> setReactive(boolean isReactive) {
+		this.isReactive = isReactive;
+		return this;
+	}
 }

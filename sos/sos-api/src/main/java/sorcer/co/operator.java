@@ -88,7 +88,15 @@ public class operator {
 	public static <T1,T2,T3,T4,T5,T6> Tuple6<T1,T2,T3,T4,T5,T6> tuple(T1 x1, T2 x2, T3 x3, T4 x4, T5 x5, T6 x6 ){
 		return new Tuple6<T1,T2,T3,T4,T5,T6>( x1, x2, x3, x4, x5, x6 );
 	}
-	
+
+	public static Class[] types(Class... classes) {
+		return classes;
+	}
+
+	public static Object[] typeArgs(Object... args) {
+		return args;
+	}
+
 	public static String[] from(String... elems) {
 		return elems;
 	}
@@ -171,13 +179,13 @@ public class operator {
 	
 	public static <T2> Entry<T2> dbEntry(String x1, T2 x2) {
 		Entry<T2> t2 = new Entry<T2>(x1, x2);
-		t2.isPersistant = true;
+		t2.isPersistent = true;
 		return t2;
 	}
 	
 	public static <T1, T2> Tuple2<T1, T2> dbEntry(T1 x1, T2 x2, URL dbURL) {
 		Tuple2<T1, T2> t2 = new Tuple2<T1, T2>(x1, x2);
-		t2.isPersistant = true;
+		t2.isPersistent = true;
 		t2.datastoreURL = dbURL;
 		return t2;
 	}

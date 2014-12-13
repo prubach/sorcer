@@ -506,13 +506,13 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 				throw new ContextException(e);
 			}
 		}
-		if (isRevaluable && val instanceof Evaluation) {
+		if (val instanceof Evaluation) {
 			try {
 				val = ((Evaluation<T>) val).getValue(entries);
 			} catch (Exception e) {
 				throw new ContextException(e);
 			}
-		} else if (val instanceof Evaluation && isRevaluable) {
+		} else if (val instanceof Evaluation) {
 			val = ((Evaluation<T>) val).getValue(entries);
 		} else if ((val instanceof Revaluation)
 				&& ((Revaluation) val).isRevaluable()) {
@@ -639,7 +639,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			entry = i.next();
 			if (entry.getKey().endsWith(name)) {
 				val = entry.getValue();
-				if (val instanceof Evaluation && isRevaluable)
+				if (val instanceof Evaluation)
 					val = ((Evaluation<T>) val).getValue();
 			}
 		}
@@ -656,7 +656,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			entry = i.next();
 			if (entry.getKey().startsWith(name)) {
 				val = entry.getValue();
-				if (val instanceof Evaluation && isRevaluable)
+				if (val instanceof Evaluation)
 					val = ((Evaluation) val).getValue();
 			}
 		}
@@ -2832,7 +2832,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 				obj = (T) exertion.getContext().getValue(path.substring(6));
 			} else {
 				obj = (T) getValue0(path);
-				if (obj instanceof Evaluation && isRevaluable) {
+				if (obj instanceof Evaluation) {
 					obj = ((Evaluation<T>)obj).getValue(entries);
 				} else if ((obj instanceof Revaluation)
 						&& ((Revaluation) obj).isRevaluable()) {

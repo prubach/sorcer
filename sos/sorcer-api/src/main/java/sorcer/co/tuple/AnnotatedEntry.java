@@ -32,7 +32,6 @@ public class AnnotatedEntry<T> extends Tuple3<String, T, String> implements Arg,
 	private static final long serialVersionUID = 5168783170981015779L;
 	
 	public int index;
-	public boolean isPersistant = false;
 	public URL datastoreURL;
 	public FidelityInfo fidelity;
 	

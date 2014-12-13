@@ -196,6 +196,15 @@ public class operator {
         return fiCxt;
     }
 
+    public static Context target(Context context, String targetPath) throws ContextException {
+        ((ServiceContext)context).setTargetPath(targetPath);
+        return context;
+    }
+
+    public static Object target(Context context) throws ContextException {
+        return ((ServiceContext)context).getTarget();
+    }
+
     public static <T extends Object> Context context(T... entries)
             throws ContextException {
         if (entries[0] instanceof Exertion) {
@@ -238,6 +247,8 @@ public class operator {
                 returnPath = (ReturnPath) o;
             } else if (o instanceof ExecPath) {
                 execPath = (ExecPath) o;
+            } else if (o instanceof Par) {
+                parList.add((Par) o);
             } else if (o instanceof Tuple2) {
                 entryList.add((Tuple2) o);
             } else if (o instanceof Context.Type) {
@@ -246,8 +257,6 @@ public class operator {
                 name = (String) o;
             } else if (o instanceof PoolStrategy) {
                 modelStrategy = (PoolStrategy) o;
-            } else if (o instanceof Par) {
-                parList.add((Par) o);
             } else if (o instanceof EntryList) {
                 entryLists.add((EntryList) o);
             }
@@ -339,21 +348,21 @@ public class operator {
                         throw new ContextException(e);
                     }
                 }
-                if (((InEntry) entryList.get(i)).isPersistant) {
+                if (((InEntry) entryList.get(i)).isPersistent) {
                     setPar(pcxt, (InEntry) entryList.get(i), i);
                 } else {
                     pcxt.putInValueAt(((InEntry) entryList.get(i)).path(),
                             ((InEntry) entryList.get(i)).value(), i + 1);
                 }
             } else if (entryList.get(i) instanceof OutEntry) {
-                if (((OutEntry) entryList.get(i)).isPersistant) {
+                if (((OutEntry) entryList.get(i)).isPersistent) {
                     setPar(pcxt, (OutEntry) entryList.get(i), i);
                 } else {
                     pcxt.putOutValueAt(((OutEntry) entryList.get(i)).path(),
                             ((OutEntry) entryList.get(i)).value(), i + 1);
                 }
             } else if (entryList.get(i) instanceof InoutEntry) {
-                if (((InoutEntry) entryList.get(i)).isPersistant) {
+                if (((InoutEntry) entryList.get(i)).isPersistent) {
                     setPar(pcxt, (InoutEntry) entryList.get(i), i);
                 } else {
                     pcxt.putInoutValueAt(
@@ -361,7 +370,7 @@ public class operator {
                             ((InoutEntry) entryList.get(i)).value(), i + 1);
                 }
             } else if (entryList.get(i) instanceof Entry) {
-                if (((Entry) entryList.get(i)).isPersistant) {
+                if (((Entry) entryList.get(i)).isPersistent) {
                     setPar(pcxt, (Entry) entryList.get(i), i);
                 } else {
                     pcxt.putValueAt(((Entry) entryList.get(i)).path(),
@@ -378,28 +387,28 @@ public class operator {
                                          List<Tuple2<String, ?>> entryList) throws ContextException {
         for (int i = 0; i < entryList.size(); i++) {
             if (entryList.get(i) instanceof InEntry) {
-                if (((InEntry) entryList.get(i)).isPersistant) {
+                if (((InEntry) entryList.get(i)).isPersistent) {
                     setPar(cxt, (InEntry) entryList.get(i));
                 } else {
                     cxt.putInValue(((Entry) entryList.get(i)).path(),
                             ((Entry) entryList.get(i)).value());
                 }
             } else if (entryList.get(i) instanceof OutEntry) {
-                if (((OutEntry) entryList.get(i)).isPersistant) {
+                if (((OutEntry) entryList.get(i)).isPersistent) {
                     setPar(cxt, (OutEntry) entryList.get(i));
                 } else {
                     cxt.putOutValue(((Entry) entryList.get(i)).path(),
                             ((Entry) entryList.get(i)).value());
                 }
             } else if (entryList.get(i) instanceof InoutEntry) {
-                if (((InoutEntry) entryList.get(i)).isPersistant) {
+                if (((InoutEntry) entryList.get(i)).isPersistent) {
                     setPar(cxt, (InoutEntry) entryList.get(i));
                 } else {
                     cxt.putInoutValue(((Entry) entryList.get(i)).path(),
                             ((Entry) entryList.get(i)).value());
                 }
             } else if (entryList.get(i) instanceof Entry) {
-                if (((Entry) entryList.get(i)).isPersistant) {
+                if (((Entry) entryList.get(i)).isPersistent) {
                     setPar(cxt, (Entry) entryList.get(i));
                 } else {
                     cxt.putValue(((Entry) entryList.get(i)).path(),
@@ -410,6 +419,85 @@ public class operator {
                         ((Entry) entryList.get(i)).value());
             }
         }
+    }
+
+    public static Context add(Context context, Identifiable... objects)
+            throws RemoteException, ContextException {
+        boolean isReactive = false;
+        for (Identifiable i : objects) {
+            if (i instanceof Reactive && ((Reactive)i).isReactive()) {
+                isReactive = true;
+            }
+            if (context instanceof PositionalContext) {
+                PositionalContext pc = (PositionalContext)context;
+                if (i instanceof InEntry) {
+                    if (isReactive) {
+                        pc.putInValueAt(i.getName(), i, pc.getTally()+1);
+                    } else {
+                        pc.putInValueAt(i.getName(), ((Entry) i).value(), pc.getTally()+1);
+                    }
+                } else if (i instanceof OutEntry) {
+                    if (isReactive) {
+                        pc.putOutValueAt(i.getName(), i, pc.getTally()+1);
+                    } else {
+                        pc.putOutValueAt(i.getName(), ((Entry) i).value(), pc.getTally()+1);
+                    }
+                } else if (i instanceof InoutEntry) {
+                    if (isReactive) {
+                        pc.putInoutValueAt(i.getName(), i, pc.getTally()+1);
+                    } else {
+                        pc.putInoutValueAt(i.getName(), ((Entry) i).value(), pc.getTally()+1);
+                    }
+                } else {
+                    if (isReactive) {
+                        pc.putValueAt(i.getName(), i, pc.getTally()+1);
+                    } else {
+                        pc.putValueAt(i.getName(), ((Entry) i).value(), pc.getTally()+1);
+                    }
+                }
+            } else if (context instanceof ServiceContext) {
+                if (i instanceof InEntry) {
+                    if (i instanceof Reactive) {
+                        context.putInValue(i.getName(), i);
+                    } else {
+                        context.putInValue(i.getName(), ((Entry) i).value());
+                    }
+                } else if (i instanceof OutEntry) {
+                    if (isReactive) {
+                        context.putOutValue(i.getName(), i);
+                    } else {
+                        context.putOutValue(i.getName(), ((Entry) i).value());
+                    }
+                } else if (i instanceof InoutEntry) {
+                    if (isReactive) {
+                        context.putInoutValue(i.getName(), i);
+                    } else {
+                        context.putInoutValue(i.getName(), ((Entry) i).value());
+                    }
+                } else {
+                    if (isReactive) {
+                        context.putValue(i.getName(), i);
+                    } else {
+                        // TODO!!!!
+                        //context.putValue(i.getName(), ((Entry) i).value());
+                        if (i instanceof Entry)
+                            context.putValue(i.getName(), ((Entry) i).value());
+                        else
+                            context.putValue(i.getName(), i);
+                    }
+                }
+            } else {
+                context.putValue(i.getName(), i);
+            }
+            if (i instanceof Entry) {
+                Entry e = (Entry)i;
+                //if (e.isAnnotated()) context.mark(e.path(), e.annotation());
+                if (e.asis() instanceof Scopable) {
+                    ((Scopable)e.asis()).setScope(context);
+                }
+            }
+        }
+        return context;
     }
 
     protected static void setPar(PositionalContext pcxt, Tuple2 entry, int i)
@@ -1089,7 +1177,23 @@ public class operator {
 			throws EvaluationException {
 		try {
 			synchronized (evaluation) {
-				 if (evaluation instanceof ParModel) {
+                if (evaluation instanceof ParModel) {
+                    return ((ParModel<T>) evaluation).getValue(entries);
+                } else if (evaluation instanceof Exertion) {
+                    ReturnPath rp = ((Exertion)evaluation).getDataContext().getReturnPath();
+                    String path = null;
+                    if (rp != null)
+                        path = rp.path;
+                    return (T) execExertion((Exertion) evaluation, path,
+                            entries);
+                } else if (evaluation instanceof Par){
+                    return ((Par<T>)evaluation).getValue(entries);
+                } else if (evaluation instanceof Entry){
+                    return ((Entry<T>)evaluation).getValue(entries);
+                } else {
+                    return evaluation.getValue(entries);
+                }
+				 /*if (evaluation instanceof ParModel) {
 					return (T) ((ParModel) evaluation).getValue(entries);
 				} else if (evaluation instanceof Exertion) {
 					ReturnPath rp = ((Exertion)evaluation).getDataContext().getReturnPath();
@@ -1100,7 +1204,7 @@ public class operator {
                              entries);
                  } else {
 					return evaluation.getValue(entries);
-				}
+				}  */
 			}
 		} catch (Exception e) {
 			throw new EvaluationException(e);

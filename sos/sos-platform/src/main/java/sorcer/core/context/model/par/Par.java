@@ -27,6 +27,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sorcer.co.tuple.Entry;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ApplicationDescription;
 import sorcer.core.context.ServiceContext;
@@ -44,8 +45,12 @@ import sorcer.util.url.sos.SosDbUtil;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({"unchecked", "rawtypes" })
-public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>, Evaluation<T>, 
-	Invocation<T>, Setter, Scopable, Comparable<T>, Serializable {
+public class Par<T>
+		//extends Identity implements Variability<T>, Arg, Mappable<T>, Evaluation<T>,
+	//Invocation<T>, Setter, Scopable, Comparable<T>, Serializable
+		extends Entry<T> implements Variability<T>, Arg, Mappable<T>, Evaluation<T>,
+		Invocation<T>, Setter, Scopable, Comparable<T>, Reactive<T>, Serializable
+{
 
 	private static final long serialVersionUID = 7495489980319169695L;
 	 

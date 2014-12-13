@@ -6,7 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by pol on 5/27/2014.
+ * @author Paweł Rubach
+ * Created on 5/27/2014.
  */
 public class WhitespaceTokenizer {
 

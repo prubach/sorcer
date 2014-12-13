@@ -20,16 +20,15 @@ package sorcer.co.tuple;
 
 import java.io.Serializable;
 import java.net.URL;
+import java.rmi.RemoteException;
 
-import sorcer.service.Arg;
-import sorcer.service.Identifiable;
-import sorcer.service.Strategy;
+import sorcer.service.*;
 
-public class Tuple2<T1, T2> implements Arg, Serializable, Identifiable {
+public class Tuple2<T1, T2> implements Arg, Serializable, Setter, Evaluation<T2>, Identifiable {
 	private  static final long serialVersionUID = -6519678282532888568L;
 	public T1 _1 = null;
 	public T2 _2 = null;
-	public boolean isPersistant = false;
+	public boolean isPersistent = false;
 	public URL datastoreURL;
 
 	public Tuple2() {}
@@ -67,7 +66,54 @@ public class Tuple2<T1, T2> implements Arg, Serializable, Identifiable {
 	public String toString() {
 		return "[" + _1 + ":" + _2 + "]";
 	}
-	
+
+	/* (non-Javadoc)
+ * @see sorcer.service.Evaluation#asis()
+ */
+	@Override
+	public T2 asis() throws EvaluationException, RemoteException {
+		return _2;
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#getValue(sorcer.service.Arg[])
+	 */
+	@Override
+	public T2 getValue(Arg... entries) throws EvaluationException,
+			RemoteException {
+		try {
+			substitute(entries);
+		} catch (SetterException e) {
+			throw new EvaluationException(e);
+		}
+		return this._2;
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Setter#setValue(java.lang.Object)
+	 */
+	@Override
+	public void setValue(Object value) throws SetterException, RemoteException {
+		this._2 = (T2) value;
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#substitute(sorcer.service.Arg[])
+ 	 */
+	@Override
+	public Evaluation<T2> substitute(Arg... entries) throws SetterException,
+			RemoteException {
+		if (entries != null) {
+			for (Arg a : entries) {
+				if (a.getName().equals(getName()) && a instanceof Entry) {
+					_2 = ((Entry<T2>) a).value();
+				}
+			}
+		}
+		return this;
+	}
+
+
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof Tuple2) {
@@ -76,6 +122,14 @@ public class Tuple2<T1, T2> implements Arg, Serializable, Identifiable {
 				return true;
 		}
 		return false;
+	}
+
+	/* (non-Javadoc)
+ * @see sorcer.service.Setter#isPersistent()
+ */
+	@Override
+	public boolean isPersistent() {
+		return isPersistent;
 	}
 	
 	@Override
@@ -90,4 +144,18 @@ public class Tuple2<T1, T2> implements Arg, Serializable, Identifiable {
 	public Object getId() {
 		return ""+_1;
 	}
+
+	/**
+	 * <p>
+	 * Assigns the flag for persistent storage of values of this entry
+	 * </p>
+	 *
+	 * @param isPersistent
+	 *            the isPersistent to set
+	 * @return nothing
+	 */
+	public void setPersistent(boolean isPersistent) {
+		this.isPersistent = isPersistent;
+	}
+
 }

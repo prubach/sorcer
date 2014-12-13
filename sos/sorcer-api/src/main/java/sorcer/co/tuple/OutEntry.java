@@ -37,12 +37,12 @@ public class OutEntry<T> extends FidelityEntry<T> {
 
 	public OutEntry(String path, T value, boolean isPersistant, int index) {
 		this(path, value, index);
-		this.isPersistant = isPersistant;
+		this.isPersistent = isPersistant;
 	}
 
 	public OutEntry(String path, T value, boolean isPersistant, URL url, int index) {
 		this(path, value, index);
-		this.isPersistant = isPersistant;
+		this.isPersistent = isPersistant;
 		datastoreURL = url;
 	}
 
