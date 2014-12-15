@@ -136,12 +136,11 @@ public class operator {
     }
 */
 
-/*
+
     public static void put(Exertion exertion, Tuple2<String, ?>... entries)
-            throws ContextException {
+            throws ContextException, RemoteException {
         put(exertion.getContext(), entries);
     }
-*/
 
     public static Exertion setContext(Exertion exertion, Context context) {
         ((ServiceExertion) exertion).setContext(context);
@@ -354,8 +353,8 @@ public class operator {
     protected static void popultePositionalContext(PositionalContext pcxt,
                                                    List<Tuple2<String, ?>> entryList) throws ContextException {
         for (int i = 0; i < entryList.size(); i++) {
-            if (entryList.get(i) instanceof InEntry) {
-                Object par = ((InEntry) entryList.get(i)).value();
+            if (entryList.get(i) instanceof InputEntry) {
+                Object par = ((InputEntry) entryList.get(i)).value();
                 if (par instanceof Scopable) {
                     try {
                         ((Scopable) par).setScope(pcxt);
@@ -363,18 +362,18 @@ public class operator {
                         throw new ContextException(e);
                     }
                 }
-                if (((InEntry) entryList.get(i)).isPersistent) {
-                    setPar(pcxt, (InEntry) entryList.get(i), i);
+                if (((InputEntry) entryList.get(i)).isPersistent) {
+                    setPar(pcxt, (InputEntry) entryList.get(i), i);
                 } else {
-                    pcxt.putInValueAt(((InEntry) entryList.get(i)).path(),
-                            ((InEntry) entryList.get(i)).value(), i + 1);
+                    pcxt.putInValueAt(((InputEntry) entryList.get(i)).path(),
+                            ((InputEntry) entryList.get(i)).value(), i + 1);
                 }
-            } else if (entryList.get(i) instanceof OutEntry) {
-                if (((OutEntry) entryList.get(i)).isPersistent) {
-                    setPar(pcxt, (OutEntry) entryList.get(i), i);
+            } else if (entryList.get(i) instanceof OutputEntry) {
+                if (((OutputEntry) entryList.get(i)).isPersistent) {
+                    setPar(pcxt, (OutputEntry) entryList.get(i), i);
                 } else {
-                    pcxt.putOutValueAt(((OutEntry) entryList.get(i)).path(),
-                            ((OutEntry) entryList.get(i)).value(), i + 1);
+                    pcxt.putOutValueAt(((OutputEntry) entryList.get(i)).path(),
+                            ((OutputEntry) entryList.get(i)).value(), i + 1);
                 }
             } else if (entryList.get(i) instanceof InoutEntry) {
                 if (((InoutEntry) entryList.get(i)).isPersistent) {
@@ -401,16 +400,16 @@ public class operator {
     protected static void populteContext(Context cxt,
                                          List<Tuple2<String, ?>> entryList) throws ContextException {
         for (int i = 0; i < entryList.size(); i++) {
-            if (entryList.get(i) instanceof InEntry) {
-                if (((InEntry) entryList.get(i)).isPersistent) {
-                    setPar(cxt, (InEntry) entryList.get(i));
+            if (entryList.get(i) instanceof InputEntry) {
+                if (((InputEntry) entryList.get(i)).isPersistent) {
+                    setPar(cxt, (InputEntry) entryList.get(i));
                 } else {
                     cxt.putInValue(((Entry) entryList.get(i)).path(),
                             ((Entry) entryList.get(i)).value());
                 }
-            } else if (entryList.get(i) instanceof OutEntry) {
-                if (((OutEntry) entryList.get(i)).isPersistent) {
-                    setPar(cxt, (OutEntry) entryList.get(i));
+            } else if (entryList.get(i) instanceof OutputEntry) {
+                if (((OutputEntry) entryList.get(i)).isPersistent) {
+                    setPar(cxt, (OutputEntry) entryList.get(i));
                 } else {
                     cxt.putOutValue(((Entry) entryList.get(i)).path(),
                             ((Entry) entryList.get(i)).value());
@@ -445,13 +444,13 @@ public class operator {
             }
             if (context instanceof PositionalContext) {
                 PositionalContext pc = (PositionalContext)context;
-                if (i instanceof InEntry) {
+                if (i instanceof InputEntry) {
                     if (isReactive) {
                         pc.putInValueAt(i.getName(), i, pc.getTally()+1);
                     } else {
                         pc.putInValueAt(i.getName(), ((Entry) i).value(), pc.getTally()+1);
                     }
-                } else if (i instanceof OutEntry) {
+                } else if (i instanceof OutputEntry) {
                     if (isReactive) {
                         pc.putOutValueAt(i.getName(), i, pc.getTally()+1);
                     } else {
@@ -471,13 +470,13 @@ public class operator {
                     }
                 }
             } else if (context instanceof ServiceContext) {
-                if (i instanceof InEntry) {
+                if (i instanceof InputEntry) {
                     if (i instanceof Reactive) {
                         context.putInValue(i.getName(), i);
                     } else {
                         context.putInValue(i.getName(), ((Entry) i).value());
                     }
-                } else if (i instanceof OutEntry) {
+                } else if (i instanceof OutputEntry) {
                     if (isReactive) {
                         context.putOutValue(i.getName(), i);
                     } else {
@@ -543,9 +542,9 @@ public class operator {
 
             if (context instanceof PositionalContext) {
                 PositionalContext pc = (PositionalContext) context;
-                if (i instanceof InEntry) {
+                if (i instanceof InputEntry) {
                     pc.putInValueAt(i.getName(), i, pc.getTally() + 1);
-                } else if (i instanceof OutEntry) {
+                } else if (i instanceof OutputEntry) {
                     pc.putOutValueAt(i.getName(), i, pc.getTally() + 1);
                 } else if (i instanceof InoutEntry) {
                     pc.putInoutValueAt(i.getName(), i, pc.getTally() + 1);
@@ -555,9 +554,9 @@ public class operator {
                     pc.putValueAt(i.getName(), i, pc.getTally() + 1);
                 }
             } else if (context instanceof ServiceContext) {
-                if (i instanceof InEntry) {
+                if (i instanceof InputEntry) {
                     context.putInValue(i.getName(), i);
-                } else if (i instanceof OutEntry) {
+                } else if (i instanceof OutputEntry) {
                     context.putOutValue(i.getName(), i);
                 } else if (i instanceof InoutEntry) {
                     context.putInoutValue(i.getName(), i);
@@ -584,9 +583,9 @@ public class operator {
         p.setPersistent(true);
         if (entry.datastoreURL != null)
             p.setDbURL(entry.datastoreURL);
-        if (entry instanceof InEntry)
+        if (entry instanceof InputEntry)
             pcxt.putInValueAt(entry.path(), p, i + 1);
-        else if (entry instanceof OutEntry)
+        else if (entry instanceof OutputEntry)
             pcxt.putOutValueAt(entry.path(), p, i + 1);
         else if (entry instanceof InoutEntry)
             pcxt.putInoutValueAt(entry.path(), p, i + 1);
@@ -600,9 +599,9 @@ public class operator {
         p.setPersistent(true);
         if (entry.datastoreURL != null)
             p.setDbURL(entry.datastoreURL);
-        if (entry instanceof InEntry)
+        if (entry instanceof InputEntry)
             cxt.putInValue(entry.path(), p);
-        else if (entry instanceof OutEntry)
+        else if (entry instanceof OutputEntry)
             cxt.putOutValue(entry.path(), p);
         else if (entry instanceof InoutEntry)
             cxt.putInoutValue(entry.path(), p);
@@ -1496,8 +1495,8 @@ public class operator {
 		}
 	}
 
-	public static OutEntry output(Object value) {
-		return new OutEntry(null, value, 0);
+	public static OutputEntry output(Object value) {
+		return new OutputEntry(null, value, 0);
 	}
 
 	public static ReturnPath self() {
@@ -1517,12 +1516,12 @@ public class operator {
 		return new ReturnPath(path, Direction.OUT, type, paths);
 	}
 
-	public static OutEntry output(String path, Object value) {
-		return new OutEntry(path, value, 0);
+	public static OutputEntry output(String path, Object value) {
+		return new OutputEntry(path, value, 0);
 	}
 
-	public static OutEntry out(String path, Object value) {
-		return new OutEntry(path, value, 0);
+	public static OutputEntry out(String path, Object value) {
+		return new OutputEntry(path, value, 0);
 	}
 
 	public static OutEndPoint output(Exertion outExertion, String outPath) {
@@ -1541,44 +1540,44 @@ public class operator {
 		return new InEndPoint(inExertion, inPath);
 	}
 
-	public static OutEntry output(String path, Object value, int index) {
-		return new OutEntry(path, value, index);
+	public static OutputEntry output(String path, Object value, int index) {
+		return new OutputEntry(path, value, index);
 	}
 
-	public static OutEntry out(String path, Object value, int index) {
-		return new OutEntry(path, value, index);
+	public static OutputEntry out(String path, Object value, int index) {
+		return new OutputEntry(path, value, index);
 	}
 
-	public static OutEntry dbOutput(String path, Object value) {
-		return new OutEntry(path, value, true, 0);
+	public static OutputEntry dbOutput(String path, Object value) {
+		return new OutputEntry(path, value, true, 0);
 	}
 
-	public static OutEntry dbOut(String path, Object value) {
-		return new OutEntry(path, value, true, 0);
+	public static OutputEntry dbOut(String path, Object value) {
+		return new OutputEntry(path, value, true, 0);
 	}
 
-	public static OutEntry dbOutput(String path, Object value, URL datasoreURL) {
-		return new OutEntry(path, value, true, datasoreURL, 0);
+	public static OutputEntry dbOutput(String path, Object value, URL datasoreURL) {
+		return new OutputEntry(path, value, true, datasoreURL, 0);
 	}
 
-	public static OutEntry dbOut(String path, Object value, URL datasoreURL) {
-		return new OutEntry(path, value, true, datasoreURL, 0);
+	public static OutputEntry dbOut(String path, Object value, URL datasoreURL) {
+		return new OutputEntry(path, value, true, datasoreURL, 0);
 	}
 
-	public static InEntry input(String path) {
-		return new InEntry(path, null, 0);
+	public static InputEntry input(String path) {
+		return new InputEntry(path, null, 0);
 	}
 
-	public static OutEntry out(String path) {
-		return new OutEntry(path, null, 0);
+	public static OutputEntry out(String path) {
+		return new OutputEntry(path, null, 0);
 	}
 
-	public static OutEntry output(String path) {
-		return new OutEntry(path, null, 0);
+	public static OutputEntry output(String path) {
+		return new OutputEntry(path, null, 0);
 	}
 
-	public static InEntry in(String path) {
-		return new InEntry(path, null, 0);
+	public static InputEntry in(String path) {
+		return new InputEntry(path, null, 0);
 	}
 
 	public static Entry at(String path, Object value) {
@@ -1589,44 +1588,44 @@ public class operator {
 		return new Entry(path, value, index);
 	}
 
-	public static InEntry input(String path, Object value) {
-		return new InEntry(path, value, 0);
+	public static InputEntry input(String path, Object value) {
+		return new InputEntry(path, value, 0);
 	}
 
-	public static InEntry in(String path, Object value) {
-		return new InEntry(path, value, 0);
+	public static InputEntry in(String path, Object value) {
+		return new InputEntry(path, value, 0);
 	}
 
-    public static InEntry dbInput(String path, Object value) {
-		return new InEntry(path, value, true, 0);
+    public static InputEntry dbInput(String path, Object value) {
+		return new InputEntry(path, value, true, 0);
 	}
 
-	public static InEntry dbIn(String path, Object value) {
-		return new InEntry(path, value, true, 0);
+	public static InputEntry dbIn(String path, Object value) {
+		return new InputEntry(path, value, true, 0);
 	}
 
-	public static InEntry dbIntput(String path, Object value, URL datasoreURL) {
-		return new InEntry(path, value, true, datasoreURL, 0);
+	public static InputEntry dbIntput(String path, Object value, URL datasoreURL) {
+		return new InputEntry(path, value, true, datasoreURL, 0);
 	}
 
-	public static InEntry dbIn(String path, Object value, URL datasoreURL) {
-		return new InEntry(path, value, true, datasoreURL, 0);
+	public static InputEntry dbIn(String path, Object value, URL datasoreURL) {
+		return new InputEntry(path, value, true, datasoreURL, 0);
 	}
 
-	public static InEntry input(String path, Object value, int index) {
-		return new InEntry(path, value, index);
+	public static InputEntry input(String path, Object value, int index) {
+		return new InputEntry(path, value, index);
 	}
 
-	public static InEntry in(String path, Object value, int index) {
-		return new InEntry(path, value, index);
+	public static InputEntry in(String path, Object value, int index) {
+		return new InputEntry(path, value, index);
 	}
 
-	public static InEntry inout(String path) {
-		return new InEntry(path, null, 0);
+	public static InputEntry inout(String path) {
+		return new InputEntry(path, null, 0);
 	}
 
-	public static InEntry inout(String path, Object value) {
-		return new InEntry(path, value, 0);
+	public static InputEntry inout(String path, Object value) {
+		return new InputEntry(path, value, 0);
 	}
 
 	public static InoutEntry inout(String path, Object value, int index) {

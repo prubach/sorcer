@@ -865,12 +865,12 @@ public class ParModelTest {
 				 
 //		 logger.info("call getSphereVolume:" + get((Context)value(pm,
 //				 "getSphereVolume"), "sphere/volume"));
-		assertEquals(
-				get((Context) value(pm, "getSphereVolume"), "sphere/volume"),
-				33510.32163829113);
-		assertEquals(
-				get((Context) invoke(pm, "getSphereVolume"), "sphere/volume"),
-				33510.32163829113);
+		assertEquals(33510.32163829113,
+				get((Context) value(pm, "getSphereVolume"), "sphere/volume")
+				);
+		assertEquals(33510.32163829113,
+				get((Context) invoke(pm, "getSphereVolume"), "sphere/volume")
+				);
 
 		// invoke the agent directly
 		invoke(pm,

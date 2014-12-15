@@ -313,19 +313,19 @@ public class operator {
 	}
 
 	// Compat for SORCER 5.0.0-SNAPSHOT {
-	public static InEntry inEnt(String path, Object value) {
+	public static InputEntry inEnt(String path, Object value) {
 		return sorcer.eo.operator.in(path, value);
 	}
 
-	public static InEntry inEnt(String path) {
+	public static InputEntry inEnt(String path) {
 		return sorcer.eo.operator.in(path);
 	}
 
-	public static OutEntry outEnt(String path) {
+	public static OutputEntry outEnt(String path) {
 		return sorcer.eo.operator.out(path);
 	}
 
-	public static OutEntry outEnt(String path, Object value) {
+	public static OutputEntry outEnt(String path, Object value) {
 		return sorcer.eo.operator.out(path, value);
 	}
 

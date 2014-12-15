@@ -17,7 +17,7 @@
  */
 package sorcer.util.url.sos;
 
-import sorcer.co.tuple.InEntry;
+import sorcer.co.tuple.InputEntry;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.provider.DatabaseStorer;
 import sorcer.core.provider.StorageManagement;
@@ -96,7 +96,7 @@ public class SdbConnection extends URLConnection {
         }
 	}
 
-    private static <T>InEntry<T> in(String path, T value) {
-        return new InEntry<T>(path, value, 0);
+    private static <T>InputEntry<T> in(String path, T value) {
+        return new InputEntry<T>(path, value, 0);
 	}
 }

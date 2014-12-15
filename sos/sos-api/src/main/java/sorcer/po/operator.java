@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sorcer.co.tuple.ExecPath;
-import sorcer.co.tuple.InEntry;
+import sorcer.co.tuple.InputEntry;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.par.Agent;
@@ -440,11 +440,11 @@ public class operator {
 		return new ExecPath(name, invoker);
 	}
 	
-	public static InEntry input(Par par) {
-		return new InEntry(par.getName(), par, 0);
+	public static InputEntry input(Par par) {
+		return new InputEntry(par.getName(), par, 0);
 	}
 
-	public static InEntry in(Par par) {
+	public static InputEntry in(Par par) {
 		return input(par);
 	}
 	

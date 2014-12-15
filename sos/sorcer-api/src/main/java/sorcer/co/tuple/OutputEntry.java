@@ -21,11 +21,11 @@ import java.net.URL;
 import sorcer.service.FidelityInfo;
 import sorcer.service.Context;
 
-public class InEntry<T> extends FidelityEntry<T> {
+public class OutputEntry<T> extends FidelityEntry<T> {
 
 	private static final long serialVersionUID = 1L;
 
-	public InEntry(String path, T value, int index) {
+	public OutputEntry(String path, T value, int index) {
 		T v = value;
 		if (v == null)
 			v = (T) Context.none;
@@ -35,18 +35,18 @@ public class InEntry<T> extends FidelityEntry<T> {
 		this.index = index;
 	}
 
-	public InEntry(String path, T value, boolean isPersistant, int index) {
+	public OutputEntry(String path, T value, boolean isPersistant, int index) {
 		this(path, value, index);
 		this.isPersistent = isPersistant;
 	}
 
-	public InEntry(String path, T value, boolean isPersistant, URL url, int index) {
+	public OutputEntry(String path, T value, boolean isPersistant, URL url, int index) {
 		this(path, value, index);
 		this.isPersistent = isPersistant;
 		datastoreURL = url;
 	}
 
-	public InEntry(String path, FidelityInfo fidelity) {
+	public OutputEntry(String path, FidelityInfo fidelity) {
 		this._1 = path;
 		this.fidelity = fidelity;
 	}
