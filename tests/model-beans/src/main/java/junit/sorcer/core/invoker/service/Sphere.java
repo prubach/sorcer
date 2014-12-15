@@ -3,6 +3,8 @@ package junit.sorcer.core.invoker.service;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 
+import java.rmi.RemoteException;
+
 /**
  * @author Mike Sobolewski
  * 
@@ -10,7 +12,7 @@ import sorcer.service.ContextException;
 @SuppressWarnings("rawtypes")
 public interface Sphere {
 
-	public Context getSphereSurface(Context context) throws ContextException;
+	public Context getSphereSurface(Context context) throws ContextException, RemoteException;
 
-	public Context getSphereVolume(Context context) throws ContextException;
+	public Context getSphereVolume(Context context) throws ContextException, RemoteException;
 }

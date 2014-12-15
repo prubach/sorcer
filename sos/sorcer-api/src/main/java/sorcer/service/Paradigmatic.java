@@ -19,28 +19,26 @@
 package sorcer.service;
 
 /**
- * If an Evaluation that is Revaluation isRevaluable then it returns the
- * revaluated value, otherwise returns the evaluated value (
- * {@link #getValue(Parameter...)})
- * 
- * @return if isEvaluable true, otherwise false
+ * A Paradigm instance can return exact data or evaluated (reevaluated -
+ * of Evaluation type). If isModeling is true that returned values of the
+ * Evaluation type are evaluated, otherwise returned as is.
  */
-public interface Revaluation {
+public interface Paradigmatic {
 
 	/**
-	 * Returns true if this dataContext is revaluable, otherwise false
-	 * 
-	 * @return true if this dataContext is revaluable
+	 * Returns true if this instance is a model, otherwise false
+	 *
+	 * @return true if this instance is a model
 	 */
-	public boolean isRevaluable();
+	public boolean isModeling();
 
 	/**
 	 * <p>
 	 * Assign revaluability of this dataContext.
 	 * </p>
 	 * 
-	 * @param isRevaluable set revaluable
+	 * @param isModeling set isModeling
 	 */
-	public void setRevaluable(boolean isRevaluable);
+	public void setModeling(boolean isModeling);
 
 }

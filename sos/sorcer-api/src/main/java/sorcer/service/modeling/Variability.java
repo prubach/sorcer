@@ -72,6 +72,7 @@ public interface Variability<T> extends Identifiable, Evaluation<T>, Setter, Per
 		REAL, // ordered, element math defined as usual, continuous, element
 				// class is Double, design variable
 		LINEAR, // Linear function of the dependent variables
+
 		QUADRATIC // Quadratic function of dependent variables
 	}
 

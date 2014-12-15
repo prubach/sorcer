@@ -123,6 +123,7 @@ public class operator {
         return new Complement<T>(path, value);
     }
 
+/*
     public static <T extends Context> T put(T context, Tuple2... entries)
             throws ContextException {
         for (int i = 0; i < entries.length; i++) {
@@ -133,11 +134,14 @@ public class operator {
         }
         return context;
     }
+*/
 
+/*
     public static void put(Exertion exertion, Tuple2<String, ?>... entries)
             throws ContextException {
         put(exertion.getContext(), entries);
     }
+*/
 
     public static Exertion setContext(Exertion exertion, Context context) {
         ((ServiceExertion) exertion).setContext(context);
@@ -194,6 +198,17 @@ public class operator {
             }
         }
         return fiCxt;
+    }
+
+    public static <T extends Object> Context entModel(T... entries)
+            throws ContextException {
+        if (entries != null && entries.length == 1 && entries[0] instanceof Context) {
+            ((Context)entries[0]).setModeling(true);
+            return (Context)entries[0];
+        }
+        Context cxt = context(entries);
+        cxt.setModeling(true);
+        return cxt;
     }
 
     public static Context target(Context context, String targetPath) throws ContextException {
@@ -491,9 +506,72 @@ public class operator {
             }
             if (i instanceof Entry) {
                 Entry e = (Entry)i;
-                //if (e.isAnnotated()) context.mark(e.path(), e.annotation());
+                if (e.isAnnotated()) context.mark(e.path(), e.annotation());
                 if (e.asis() instanceof Scopable) {
                     ((Scopable)e.asis()).setScope(context);
+                }
+            }
+        }
+        return context;
+    }
+
+    public static Context put(Context context, String path, Object value)
+            throws ContextException {
+        Object val = context.asis(path);
+        if (SdbUtil.isSosURL(val)) {
+            try {
+                SdbUtil.update((URL)val, value);
+            } catch (Exception e) {
+                throw new ContextException(e);
+            }
+        }
+        context.putValue(path, value);
+        return context;
+    }
+
+    public static Context put(Context context, Identifiable... objects)
+            throws RemoteException, ContextException {
+        for (Identifiable i : objects) {
+            // just replace the value
+            if (((Map) context).containsKey(i.getName())) {
+                if (i instanceof Tuple2) {
+                    context.putValue(i.getName(), ((Tuple2) i)._2);
+                } else
+                    context.putValue(i.getName(), i);
+                continue;
+            }
+
+            if (context instanceof PositionalContext) {
+                PositionalContext pc = (PositionalContext) context;
+                if (i instanceof InEntry) {
+                    pc.putInValueAt(i.getName(), i, pc.getTally() + 1);
+                } else if (i instanceof OutEntry) {
+                    pc.putOutValueAt(i.getName(), i, pc.getTally() + 1);
+                } else if (i instanceof InoutEntry) {
+                    pc.putInoutValueAt(i.getName(), i, pc.getTally() + 1);
+                } else if (i instanceof Tuple2) {
+                    pc.putValueAt(i.getName(), ((Tuple2)i)._2, pc.getTally() + 1);
+                } else {
+                    pc.putValueAt(i.getName(), i, pc.getTally() + 1);
+                }
+            } else if (context instanceof ServiceContext) {
+                if (i instanceof InEntry) {
+                    context.putInValue(i.getName(), i);
+                } else if (i instanceof OutEntry) {
+                    context.putOutValue(i.getName(), i);
+                } else if (i instanceof InoutEntry) {
+                    context.putInoutValue(i.getName(), i);
+                } else {
+                    context.putValue(i.getName(), i);
+                }
+            } else {
+                context.putValue(i.getName(), i);
+            }
+            if (i instanceof Entry) {
+                Entry e = (Entry) i;
+                if (e.isAnnotated()) context.mark(e.path(), e.annotation());
+                if (e.asis() instanceof Scopable) {
+                    ((Scopable) e.asis()).setScope(context);
                 }
             }
         }
@@ -563,28 +641,25 @@ public class operator {
     }
 
     /**
-     * Makes this Revaluation revaluable, so its return value is to be again
+     * Makes this Revaluation model, so its return value is to be again
      * evaluated as well.
      *
-     * @param evaluation to be marked as revaluable
+     * @param paradigm to be marked as model
      * @return an uevaluable Evaluation
      * @throws EvaluationException
      */
-    public static Revaluation revaluable(Revaluation evaluation, Arg... entries)
-            throws EvaluationException {
+    public static <T> T evaluate(Paradigmatic paradigm, Arg... entries)
+            throws EvaluationException, RemoteException {
         if (entries != null && entries.length > 0) {
-            try {
-                ((Evaluation) evaluation).substitute(entries);
-            } catch (Exception e) {
-                throw new EvaluationException(e);
-            }
+            if (paradigm instanceof Evaluation)
+                return ((Evaluation<T>) paradigm).getValue(entries);
         }
-        evaluation.setRevaluable(true);
-        return evaluation;
+        return null;
     }
 
-    public static Revaluation unrevaluable(Revaluation evaluation) {
-        evaluation.setRevaluable(false);
+
+    public static Paradigmatic model(Paradigmatic evaluation) {
+        evaluation.setModeling(true);
         return evaluation;
     }
 

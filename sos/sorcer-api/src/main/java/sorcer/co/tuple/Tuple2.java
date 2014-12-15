@@ -22,12 +22,14 @@ import java.io.Serializable;
 import java.net.URL;
 import java.rmi.RemoteException;
 
+import net.jini.id.Uuid;
 import sorcer.service.*;
 
 public class Tuple2<T1, T2> implements Arg, Serializable, Setter, Evaluation<T2>, Identifiable {
 	private  static final long serialVersionUID = -6519678282532888568L;
 	public T1 _1 = null;
 	public T2 _2 = null;
+	private Uuid entryUuid;
 	public boolean isPersistent = false;
 	public URL datastoreURL;
 
@@ -142,7 +144,11 @@ public class Tuple2<T1, T2> implements Arg, Serializable, Setter, Evaluation<T2>
 	 */
 	@Override
 	public Object getId() {
-		return ""+_1;
+		return entryUuid;
+	}
+
+	public void setId(Uuid id) {
+		entryUuid = id;
 	}
 
 	/**

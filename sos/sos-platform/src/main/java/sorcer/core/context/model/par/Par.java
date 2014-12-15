@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,13 @@ public class Par<T>
 	// that is this par name
 	// Sorcer Mappable: Context, Exertion, or Var args
 	protected Mappable mappable;
+
+
+	protected String selectedFidelity;
+
+	// par fidelities for this par
+	protected Map<String, Object> fidelities;
+
 
 	public Par(String parname) {
 		name = parname;
@@ -565,5 +573,35 @@ public class Par<T>
 	public void setScope(Object scope) throws RemoteException {
 		this.scope = (Context)scope;
 		
+	}
+
+
+	public void putFidelity(ParFidelity fidelity) throws EvaluationException,
+			RemoteException {
+		if (fidelities == null)
+			fidelities = new HashMap<String, Object>();
+		for (Entry e : fidelity)
+			fidelities.put(e.getName(), e.asis());
+	}
+
+	public void addFidelity(ParFidelity fidelity) throws EvaluationException,
+			RemoteException {
+		putFidelity(fidelity);
+	}
+
+	public void selectFidelity(String name) throws ParException {
+		if (fidelities.containsKey(name))
+			value = (T) fidelities.get(name);
+		else
+			throw new ParException("no such service fidelity: " + name + " at: " + this);
+	}
+
+	public void setFidelities(Map<String, Object> fidelities) {
+		this.fidelities = fidelities;
+	}
+
+	@Override
+	public boolean isReactive() {
+		return true;
 	}
 }

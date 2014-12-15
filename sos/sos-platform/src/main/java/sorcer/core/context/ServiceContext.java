@@ -28,12 +28,12 @@ import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.util.regex.Pattern;
 
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+import sorcer.co.tuple.Entry;
 import sorcer.co.tuple.EntryList;
 import sorcer.co.tuple.ExecPath;
 import sorcer.co.tuple.Tuple2;
@@ -61,6 +61,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 	private static final long serialVersionUID = 3311956866023311727L;
 
+	protected Uuid contextId;
+
 	private static String defaultName = "cxt-";
 
 	private static int count = 0;
@@ -84,12 +86,10 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	// or use the default one: Context.ARGS
 	//protected String argsPath = Context.ARGS;
 	protected String argsPath;
-
+	
 	protected String parameterTypesPath;
 
-	protected String targetPath = Context.TARGET;
-
-	protected Uuid contextId;
+	protected String targetPath;
 
 	protected String parentPath = "";
 
@@ -127,7 +127,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 	protected String subdomainName;
 
-	protected boolean isRevaluable = false;
+	protected boolean isModeling = false;
 	
 	protected String dbUrl;
 
@@ -157,6 +157,11 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	protected String currentSelector;
 
 	protected String currentPrefix;
+
+	protected boolean isFinalized = false;
+
+	// dependency management for this Context
+	protected List<Evaluation> dependers = new ArrayList<Evaluation>();
 
 	/**
 	 * For persistence layers to differentiate with saved context already
@@ -295,6 +300,10 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 		// specify four SORCER standard composite attributes
 		try {
+			// default relation tags: tag, duo, and triplet
+			setAttribute("tag");
+			setAttribute("duo|_1|_2");
+			setAttribute("triplet|_1|_2|_3");
 			// context path tag
 			setAttribute(PATH_PAR);
 			// annotating input output files associated with source applications
@@ -493,29 +502,31 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	public T getReturnValue(Arg... entries) throws RemoteException,
 			ContextException {
 		T val = null;
-		if (returnPath != null) {
+		Signature.ReturnPath rp = returnPath;
+		for (Arg a : entries) {
+			if (a instanceof Signature.ReturnPath)
+				rp = (Signature.ReturnPath)a;
+		}
+		if (rp != null) {
 			try {
-				if (returnPath.path == null || returnPath.path.equals("self")) {
+				if (rp.path == null || rp.path.equals("self")) {
 					return (T) this;
-				} else if (returnPath.type != null) {
-					val = returnPath.type.cast(getValue(returnPath.path));
+				} else if (rp.argPaths != null) {
+					 val = (T)getSubcontext(rp.argPaths);
 				} else {
-					val = (T) getValue0(returnPath.path);
+					if (rp.type != null) {
+						val = (T) rp.type.cast(getValue(rp.path));
+					}  else
+						val= (T) getValue0(rp.path);
 				}
 			} catch (Exception e) {
 				throw new ContextException(e);
 			}
 		}
-		if (isRevaluable &&  val instanceof Evaluation) {
-			try {
-				val = ((Evaluation<T>) val).getValue(entries);
-			} catch (Exception e) {
-				throw new ContextException(e);
-			}
-		} else if (val instanceof Evaluation && isRevaluable) {
+		if (val instanceof Evaluation && isModeling) {
 			val = ((Evaluation<T>) val).getValue(entries);
-		} else if ((val instanceof Revaluation)
-				&& ((Revaluation) val).isRevaluable()) {
+		} else if ((val instanceof Paradigmatic)
+				&& ((Paradigmatic) val).isModeling()) {
 			val = ((Evaluation<T>) val).getValue(entries);
 		}
 		return val;
@@ -613,7 +624,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	}
 
 	@Override
-	public T getWeakValue(String path) throws ContextException {
+	public T getSoftValue(String path) throws ContextException {
 		T val = getValue(path);
 		if (val == null) {
 			try {
@@ -639,7 +650,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			entry = i.next();
 			if (entry.getKey().endsWith(name)) {
 				val = entry.getValue();
-				if (val instanceof Evaluation)
+				if (val instanceof Evaluation && isModeling)
 					val = ((Evaluation<T>) val).getValue();
 			}
 		}
@@ -656,7 +667,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			entry = i.next();
 			if (entry.getKey().startsWith(name)) {
 				val = entry.getValue();
-				if (val instanceof Evaluation)
+				if (val instanceof Evaluation && isModeling)
 					val = ((Evaluation) val).getValue();
 			}
 		}
@@ -893,7 +904,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		if (value != null) {
 			if (value instanceof Link)
 				result = (Link) value;
-		} else {
+		} else  if (value == null) {
 			// could be in a linked context
 			Enumeration e = localLinkPaths();
 			String linkPath;
@@ -941,7 +952,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		if (value != null) {
 			result[0] = this;
 			result[1] = path;
-		} else {
+		} else  if (value == null) {
 			Enumeration e = localLinkPaths();
 			String linkPath;
 			int len;
@@ -1636,8 +1647,24 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return subcntxt;
 	}
 
-	public Context<T> getContext(String path) throws ContextException, RemoteException {
-		Context<T> subcntxt = this.getSubcontext();
+	public Context getSubcontext(String[] paths) {
+		ServiceContext subcntxt = (ServiceContext)getSubcontext();
+		for (String path : paths) {
+			subcntxt.put(path, get(path));
+		}
+		return subcntxt;
+	}
+
+	public Context getSubcontext(List<String> paths) {
+		ServiceContext subcntxt = (ServiceContext)getSubcontext();
+		for (String path : paths) {
+			subcntxt.put(path, get(path));
+		}
+		return subcntxt;
+	}
+	
+	public Context getContext(String path) throws ContextException, RemoteException {
+		Context subcntxt = this.getSubcontext();
 		return subcntxt.appendContext(this, path);
 	}
 
@@ -2611,7 +2638,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		subjectValue = value;
 	}
 
-	public void updateValue(T value) throws ContextException {
+	public void updateValue(Object value) throws ContextException {
 		Object initVal = null;
 		T newVal = null;
 		Object id = null;
@@ -2622,13 +2649,13 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		} else if (value instanceof Identifiable) {
 			id = ((Identifiable) value).getId();
 			updateValue(initVal, newVal, id);
-		}
-
-		if (value instanceof Tuple2[]) {
+		} else if (value instanceof Tuple2[]) {
 			for (int i = 0; i < ((Tuple2[]) value).length; i++) {
-				initVal = ((Tuple2[]) value)[i].key();
-				newVal = ((Tuple2<?, T>[]) value)[i].value();
-				updateValue(initVal, newVal, id);
+				updateValue(((Tuple2[]) value)[i]);
+			}
+		} else if (value instanceof Identifiable[]) {
+			for (int i = 0; i < ((Identifiable[]) value).length; i++) {
+				updateValue(((Identifiable[]) value)[i]);
 			}
 		}
 	}
@@ -2707,6 +2734,15 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	public ServiceContext substitute(Arg... entries) throws SetterException {
 		if (entries == null)
 			return this;
+		Signature.ReturnPath rPath = null;
+		for (Arg a : entries) {
+			if (a instanceof Signature.ReturnPath) {
+				rPath = (Signature.ReturnPath) a;
+				break;
+			}
+		}
+		if (rPath != null) setReturnPath(rPath);
+
 		try {
 			for (Arg e : entries) {
 				if (e instanceof Tuple2) {
@@ -2782,10 +2818,10 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	public T asis(String path) throws ContextException {
 		T val;
 		synchronized (this) {
-			if (isRevaluable == true) {
-				isRevaluable = false;
+			if (isModeling == true) {
+				isModeling = false;
 				val = get(path);
-				isRevaluable = true;
+				isModeling = true;
 			} else {
 				val = get(path);
 			}
@@ -2820,29 +2856,53 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		}
 	}
 
-	public T getValue(String path, Arg... entries) throws ContextException {
+	public T getValue(String path, Arg... entries)
+			throws ContextException {
+		// first managed dependencies
+		String currentPath = path;
+		if (dependers != null && dependers.size() > 0) {
+			for (Evaluation eval : dependers)  {
+				try {
+					eval.getValue(entries);
+				} catch (RemoteException e) {
+					throw new ContextException(e);
+				}
+			}
+		}
 		T obj = null;
 		try {
 			substitute(entries);
-			if (path == null) {
-				if (returnPath != null) {
-					obj = getReturnValue(entries);
-				}
-			} else if (path.startsWith("super")) {
-				obj = (T) exertion.getContext().getValue(path.substring(6));
+			if (currentPath == null) {
+				if (targetPath != null)
+					currentPath = targetPath;
+				else if (returnPath != null)
+					return getReturnValue(entries);
+				else
+					return (T)this;
+			}
+			if (currentPath.startsWith("super")) {
+				obj = (T) exertion.getContext().getValue(currentPath.substring(6));
 			} else {
-				obj = (T) getValue0(path);
-				if (obj instanceof Evaluation && isRevaluable) {
+				obj = (T) getValue0(currentPath);
+				if (obj instanceof Evaluation && isModeling) {
+					if (obj instanceof Scopable) {
+						Object scope = ((Scopable)obj).getScope();
+						if (scope == null) {
+							((Scopable)obj).setScope(this);
+						} else {
+							((Context)((Scopable)obj).getScope()).append(this);
+						}
+					}
 					obj = ((Evaluation<T>)obj).getValue(entries);
-				} else if ((obj instanceof Revaluation)
-						&& ((Revaluation) obj).isRevaluable()) {
+				} else if ((obj instanceof Paradigmatic)
+						&& ((Paradigmatic) obj).isModeling()) {
 					obj = ((Evaluation<T>)obj).getValue(entries);
 				}
 			}
-            if (obj instanceof Par)
-				return (T) ((Par)obj).getValue(entries);
+			if (obj instanceof Reactive && ((Reactive)obj).isReactive())
+				return (T) ((Evaluation)obj).getValue(entries);
 			else
-				return obj;
+				return (T) obj;
 		} catch (Throwable e) {
 			logger.warn(e.getMessage());
 			e.printStackTrace();
@@ -2910,6 +2970,9 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	 */
 	@Override
 	public Object addValue(Identifiable value) throws ContextException {
+		if (value instanceof Entry && !((Entry)value).isPersistent()) {
+			return putValue(value.getName(), ((Entry)value).value());
+		}
 		return putValue(value.getName(), value);		
 	}
 
@@ -2929,7 +2992,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	@Override
 	public Object putDbValue(String path, Object value, URL datastoreUrl)
 			throws ContextException {
-		Par par = new Par(path, value);
+		Par par = new Par(path, value == null ? Context.none : value);
 		par.setPersistent(true);
 		par.setDbURL(datastoreUrl);
 		return putValue(path, par);
@@ -2997,7 +3060,9 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
     /* (non-Javadoc)
 	 * @see sorcer.service.Context#addPar(sorcer.core.context.model.par.Par)
 	 */
-	public Par addPar(Par p) throws ContextException {
+	@Override
+	public Arg addPar(Arg par) throws ContextException {
+		Par p = (Par)par;
 		put(p.getName(), (T)p);
 		if (p.getScope() == null || p.getScope().size() == 0)
 			p.setScope(this);
@@ -3043,16 +3108,16 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	
 	/**
 	 * <p>
-	 * Returns <code>true</code> if this context is revaluable, otherwise
-	 * <code>false</code>. If context is revaluable then the values of this
+	 * Returns <code>true</code> if this context is modeling, otherwise
+	 * <code>false</code>. If context is modeling then the values of this
 	 * context that implement the {@link Evaluation} interface are evaluated for
 	 * its requested evaluated values.
 	 * </p>
 	 * 
 	 * @return the <code>true</code> if this context is revaluable.
 	 */
-	public boolean isRevaluable() {
-		return isRevaluable;
+	public boolean isModeling() {
+		return isModeling;
 	}
 
 	/**
@@ -3060,10 +3125,24 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	 * Assign revaluability of this context.
 	 * </p>
 	 * 
-	 * @param isRevaluable
+	 * @param isModeling
 	 */
-	public void setRevaluable(boolean isRevaluable) {
-		this.isRevaluable = isRevaluable;
+	public void setModeling(boolean isModeling) {
+		this.isModeling = isModeling;
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Invocation#invoke(sorcer.service.Context, sorcer.service.Arg[])
+	 */
+	@Override
+	public T invoke(Context<T> context, Arg... entries) throws RemoteException,
+			InvocationException {
+		try {
+			appendContext(context);
+			return getValue(entries);
+		} catch (Exception e) {
+			throw new InvocationException(e);
+		}
 	}
 
 	public Context getBlockScope() {
@@ -3074,40 +3153,80 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		this.blockScope = blockScope;
 	}
 
-    /* (non-Javadoc)
-         * @see sorcer.service.Invocation#invoke(sorcer.service.Context, sorcer.service.Arg[])
-         */
-    @Override
-    public T invoke(Context<T> context, Arg... entries) throws RemoteException,
-            InvocationException {
-        try {
-            appendContext(context);
-            return getValue(entries);
-        } catch (Exception e) {
-            throw new InvocationException(e);
-        }
-    }
+	/* (non-Javadoc)
+	 * @see sorcer.service.Service#service(sorcer.service.Exertion, net.jini.core.transaction.Transaction)
+	 */
+	@Override
+	public Exertion service(Exertion exertion, Transaction txn)
+			throws TransactionException, ExertionException, RemoteException {
+		try {
+			((ServiceExertion)exertion).getContext().appendContext(this);
+		} catch (Exception e) {
+			throw new ExertionException(e);
+		}
+		return exertion.exert(txn);
+	}
 
-    /* (non-Javadoc)
-     * @see sorcer.service.Service#service(sorcer.service.Exertion, net.jini.core.transaction.Transaction)
-     */
-    @Override
-    public Exertion service(Exertion exertion, Transaction txn)
-            throws TransactionException, ExertionException, RemoteException {
-        try {
-            ((ServiceExertion)exertion).getContext().appendContext(this);
-        } catch (Exception e) {
-            throw new ExertionException(e);
-        }
-        return exertion.exert(txn);
-    }
+	/* (non-Javadoc)
+	 * @see sorcer.service.Service#service(sorcer.service.Exertion)
+	 */
+	@Override
+	public Exertion service(Exertion exertion) throws TransactionException,
+			ExertionException, RemoteException {
+		return service(exertion, null);
+	}
 
-    /* (non-Javadoc)
-     * @see sorcer.service.Service#service(sorcer.service.Exertion)
-     */
-    @Override
-    public Exertion service(Exertion exertion) throws TransactionException,
-            ExertionException, RemoteException {
-        return service(exertion, null);
-    }
+	@Override
+	public String[] getMarkedPaths(String association)
+			throws ContextException {
+		return Contexts.getMarkedPaths(this, association);
+	}
+
+	@Override
+	public Evaluation addDepender(Evaluation depender) {
+		if (this.dependers == null)
+			this.dependers = new ArrayList<Evaluation>();
+		dependers.add(depender);
+		return this;
+	}
+
+	public Evaluation addDependers(Evaluation... dependers) {
+		if (this.dependers == null)
+			this.dependers = new ArrayList<Evaluation>();
+		for (Evaluation depender : dependers)
+			this.dependers.add(depender);
+		return this;
+	}
+
+	@Override
+	public List<Evaluation> getDependers() {
+		return dependers;
+	}
+
+	public boolean isFinalized() {
+		return isFinalized;
+	}
+
+	public void setFinalized(boolean isFinalized) {
+		this.isFinalized = isFinalized;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Context))
+			return false;
+
+		if (keySet().size() != ((ServiceContext)object).keySet().size())
+			return false;
+
+		for (String  path : keySet()) {
+			try {
+				if (!asis(path).equals(((ServiceContext) object).asis(path)))
+                    return false;
+			} catch (ContextException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
 }

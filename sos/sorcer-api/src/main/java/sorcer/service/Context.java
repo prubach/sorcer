@@ -84,8 +84,7 @@ import sorcer.security.util.SorcerPrincipal;
  */
 @SuppressWarnings("rawtypes")
 public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
-		Invocation<T>, Contexter<T>, Revaluation, Arg, Service {
-
+		Invocation<T>, Dependency, Contexter<T>, Paradigmatic, Arg, Service {
 	/** parameter (par) */
 	final static String PATH_PAR = "par";
 	
@@ -242,7 +241,7 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	 * @param path
 	 *            The path of a context value.
 	 */
-	public T getWeakValue(String path) throws ContextException;
+	public T getSoftValue(String path) throws ContextException;
 
 	/**
      */
@@ -526,6 +525,8 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 
 	public Object addValue(Identifiable value) throws ContextException;
 
+	public Arg addPar(Arg value) throws ContextException;
+
 	public Arg addPar(String path, Object value) throws ContextException;
 
 	public Arg getPar(String path) throws ContextException;
@@ -584,7 +585,7 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 			throws ContextException;
 
 	/**
-	 * Removes the {@link ContextLink} object pointed to by path. If object is
+	 * Removes the {@link Link} object pointed to by path. If object is
 	 * not a context link, a ContextException will be thrown.
 	 * 
 	 * @throws ContextException
@@ -654,6 +655,17 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	 * @throws ContextException
 	 */
 	public List<?> getMarkedValues(String association) throws ContextException;
+
+
+	/**
+	 * Returns the List of tagged path with the given association.
+	 *
+	 * @param association
+	 *            the association of this context to be matched
+	 * @return the List of paths for the given association
+	 * @throws ContextException
+	 */
+	public String[] getMarkedPaths(String association) throws ContextException;
 
 	/**
 	 * Register an attribute with a ServiceContext's metacontext
@@ -799,7 +811,7 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	 * general can be different. To examine metapaths in linked contexts, call
 	 * getLocalMetapath operating on the <code>ServiceContext</code> that is
 	 * linked (which can be obtained, for example, from the getContext method of
-	 * {@link ContextLink} objects. Returns <code>null</code> if not defined.
+	 * {@link Link} objects. Returns <code>null</code> if not defined.
 	 * 
 	 * Metapaths are set using {@link #getLocalMetapath}
 	 * 
@@ -808,7 +820,7 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	 * 
 	 * @return the metapath or <code>null</code> if not defined
 	 * @throws ContextException
-	 * @see ContextLink
+	 * @see Link
 	 * @see #setAttribute
 	 * @see #getAttributes
 	 */
@@ -824,7 +836,7 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	 * 
 	 * @return <code>Enumeration</code>
 	 * @throws ContextException
-	 * @see ContextLink
+	 * @see Link
 	 */
 	public Enumeration<?> contextPaths() throws ContextException;
 
@@ -833,7 +845,7 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	 * 
 	 * @return <code>List</code>
 	 * @throws ContextException
-	 * @see ContextLink
+	 * @see Link
 	 */
 	public List<String> getPaths() throws ContextException;
 	
@@ -859,44 +871,44 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 
 	/**
 	 * Returns an {@link Enumeration} of the locations of the first-level
-	 * {@link ContextLink} objects in this context. The enumeration does not
+	 * {@link Link} objects in this context. The enumeration does not
 	 * include ContextLink objects that reside in linked contexts.
 	 * 
 	 * @return <code>Enumeration</code>
 	 * @throws ContextException
-	 * @see ContextLink
+	 * @see Link
 	 */
 	public Enumeration<?> localLinkPaths() throws ContextException;
 
 	/**
 	 * Returns an {@link Enumeration} of the locations of the
-	 * {@link ContextLink} objects in this context. The enumeration includes
+	 * {@link Link} objects in this context. The enumeration includes
 	 * ContextLink objects that reside in linked contexts.
 	 * 
 	 * @return <code>Enumeration</code>
 	 * @throws ContextException
-	 * @see ContextLink
+	 * @see Link
 	 */
 	public Enumeration<?> linkPaths() throws ContextException;
 
 	/**
-	 * Returns an {@link Enumeration} of all the {@link ContextLink} objects in
+	 * Returns an {@link Enumeration} of all the {@link Link} objects in
 	 * this context including any ContextLinks that reside in linked contexts.
 	 * 
 	 * @return <code>Enumeration</code>
 	 * @throws ContextException
-	 * @see ContextLink
+	 * @see Link
 	 */
 	public Enumeration<?> links() throws ContextException;
 
 	/**
-	 * Returns an {@link Enumeration} of the top-level {@link ContextLink}
+	 * Returns an {@link Enumeration} of the top-level {@link Link}
 	 * objects in this context. Does not include ContextLinks that reside in
 	 * linked contexts.
 	 * 
 	 * @return <code>Enumeration</code>
 	 * @throws ContextException
-	 * @see ContextLink
+	 * @see Link
 	 */
 	public Enumeration<?> localLinks() throws ContextException;
 
@@ -914,7 +926,7 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 			throws ContextException;
 
 	/**
-	 * Returns the {@link ContextLink} object that resides at path in the
+	 * Returns the {@link Link} object that resides at path in the
 	 * context. This method is necessary since ContextLink objects are otherwise
 	 * transparent. For example, getValue(path) returns a value in the linked
 	 * context, not the LinkedContext object.
@@ -924,7 +936,7 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	 * @return <code>ContextLink</code> if a ContextLink object resides at path;
 	 *         <code>null</code> otherwise.
 	 * @throws ContextException
-	 * @see ContextLink
+	 * @see Link
 	 */
 	public Link getLink(String path) throws ContextException;
 
@@ -986,7 +998,7 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 
 	/**
 	 * Removes a context node from the context. If the designated path points to
-	 * a {@link ContextLink} object, a {@link ContextException} will be thrown.
+	 * a {@link Link} object, a {@link ContextException} will be thrown.
 	 * Use {@link #removeLink} to remove link contexts.
 	 * 
 	 * @see #removeLink

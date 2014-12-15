@@ -86,10 +86,10 @@ public class AntTask extends Task {
 		project.init();
 		ProjectHelper.configureProject(project, antFile);
 		try {
-			String name = (String)dataContext.getWeakValue("name");
+			String name = (String)dataContext.getSoftValue("name");
 			if (name != null && name != Context.none)
-				project.setName((String) dataContext.getWeakValue("name"));
-			String targetsToRun = (String)dataContext.getWeakValue("targets");
+				project.setName((String) dataContext.getSoftValue("name"));
+			String targetsToRun = (String)dataContext.getSoftValue("targets");
 
 			if (targetsToRun != null && targetsToRun != Context.none) {
 				String[] targetArrray = StringUtils.tokenizerSplit(targetsToRun, ", ");

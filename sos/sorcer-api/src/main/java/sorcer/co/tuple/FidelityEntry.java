@@ -20,6 +20,8 @@ import sorcer.service.FidelityInfo;
 
 public class FidelityEntry<T> extends Entry<T> {
 	private static final long serialVersionUID = -508307270964254478L;
+
+	protected FidelityInfo fidelity;
 	
 	public FidelityEntry() {}
 	

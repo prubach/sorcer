@@ -95,7 +95,7 @@ public class ContextTest {
     public void contextClosureTest() throws ExertionException, ContextException, RemoteException {
         Context<?> cxt = context(in("x1"), in("x2"),
                 in(par("y", invoker("e1", "x1 * x2", pars("x1", "x2")))));
-        revaluable(cxt);
+        model(cxt);
 
 //		logger.info("x1 value: " + value(cxt, "x1", entry("x1", 10.0), entry("x2", 50.0)));
 //		logger.info("x2 value: " + value(cxt, "x2"));
@@ -109,7 +109,7 @@ public class ContextTest {
     public void evaluatedContextTest() throws ExertionException, ContextException {
         Context<?> cxt = context(in(par("x1")), in(par("x2")),
                 in(par("y", invoker("e1", "x1 * x2", pars("x1", "x2")))));
-        revaluable(cxt);
+        model(cxt);
 //		logger.info("cxt: " + cxt);
 
         //logger.info("cxt value:  " + value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
@@ -121,9 +121,9 @@ public class ContextTest {
         Context<?> cxt = context(in(par("x1")), in(par("x2")),
                 in(par("y", invoker("e1", "x1 * x2", pars("x1", "x2")))),
                 result("y"));
-//		logger.info("cxt: " + cxt);
-//		logger.info("return path: " + cxt.getReturnPath());
-        revaluable(cxt);
+		logger.info("cxt: " + cxt);
+		logger.info("return path: " + cxt.getReturnPath());
+        model(cxt);
 //		logger.info("cxt2: " + cxt);
 //		logger.info("cxt value:  " + value(cxt, entry("x1", 10.0), entry("x2", 50.0)));
 
@@ -136,7 +136,7 @@ public class ContextTest {
         Context<?> cxt = context(in(par("x1")), in(par("x2")),
                 in(par("y", invoker("e1", "x1 * x2", pars("x1", "x2")))),
                 result("y"));
-        revaluable(cxt);
+        model(cxt);
         Context<?> cxt0 = context(in(par("x11", 10.0)), in(par("x21", 50.0)));
         logger.info("x11: " + value(cxt0, "x11"));
         logger.info("x21: " + value(cxt0,"x21"));
@@ -187,8 +187,8 @@ public class ContextTest {
         assertEquals(20.0, cxt.getValue("arg/x1"));
 //		logger.info("val x1 = " + cxt.getValue("x1"));
         assertEquals(null, cxt.getValue("x1"));
-//		logger.info("weak x1 = " + cxt.getWeakValue("arg/var/x1"));
-        assertEquals(20.0, cxt.getWeakValue("arg/var/x1"));
+//		logger.info("weak x1 = " + cxt.getSoftValue("arg/var/x1"));
+        assertEquals(20.0, cxt.getSoftValue("arg/var/x1"));
     }
 
 }

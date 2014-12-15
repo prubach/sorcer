@@ -30,8 +30,8 @@ public class Entry<T> extends Tuple2<String, T> implements Arg, Comparable<T>, S
 	private static final long serialVersionUID = 5168783170981015779L;
 	
 	public int index;
-	public URL datastoreURL;
-	public FidelityInfo fidelity;
+
+	protected String annotation;
 
 	// its arguments are always evaluated if active (either Evaluataion or Invocation type)
 	protected boolean isReactive = false;
@@ -64,6 +64,18 @@ public class Entry<T> extends Tuple2<String, T> implements Arg, Comparable<T>, S
 
 	public int index() {
 		return index;
+	}
+
+	public String annotation() {
+		return annotation;
+	}
+
+	public void annotation(String annotation) {
+		this.annotation = annotation;
+	}
+
+	public boolean isAnnotated() {
+		return annotation != null;
 	}
 
 	/* (non-Javadoc)

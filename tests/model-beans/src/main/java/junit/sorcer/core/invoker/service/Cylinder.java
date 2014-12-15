@@ -3,6 +3,8 @@ package junit.sorcer.core.invoker.service;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 
+import java.rmi.RemoteException;
+
 /**
  * @author Mike Sobolewski
  * 
@@ -10,7 +12,7 @@ import sorcer.service.ContextException;
 @SuppressWarnings("rawtypes")
 public interface Cylinder {
 
-	public Context getCylinderSurface(Context context) throws ContextException;
+	public Context getCylinderSurface(Context context) throws ContextException, RemoteException;
 
-	public Context getCylinderVolume(Context context) throws ContextException;
+	public Context getCylinderVolume(Context context) throws ContextException, RemoteException;
 }

@@ -54,7 +54,7 @@ import static sorcer.service.Strategy.Flow;
 import static sorcer.service.Signature.ReturnPath;
 
 @SuppressWarnings("rawtypes")
-public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Serializable {
+public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, Serializable {
 
 	// Added only for compatibility with AFRL Sorcer
     public static boolean debug = false;
@@ -140,7 +140,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 
 	protected SorcerPrincipal principal;
 
-	protected boolean isRevaluable = false;
+	protected boolean isModeling = false;
 
 	// if isProxy is true then the identity of returned exertion 
 	// after exerting it is preserved
@@ -1071,12 +1071,12 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	 * @see sorcer.service.Evaluation#isEvaluable()
 	 */
 	@Override
-	public boolean isRevaluable() {
-		return isRevaluable;
+	public boolean isModeling() {
+		return isModeling;
 	}
 
-	public void setRevaluable(boolean isRevaluable) {
-		this.isRevaluable = isRevaluable;
+	public void setModeling(boolean isModeling) {
+		this.isModeling = isModeling;
 	}
 
 	public String toString() {
