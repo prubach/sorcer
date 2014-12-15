@@ -13,9 +13,9 @@ import sorcer.service.Task
 
 
 Task t1 = task("t1", sig("add", Adder.class),
-                                context("add", input("x1"), input("x3", 3d),
+                                context("add", inEnt("x1"), inEnt("x3", 3d),
                                         result("x4")))
-block("block", context("blkCtx", entry("x1", 10.0), entry("x2", 20.0d), entry("z", 100.0d)),
+block("block", context("blkCtx", ent("x1", 10.0), ent("x2", 20.0d), ent("z", 100.0d)),
     loop(condition("{ x1, x2, z -> x1 + x2 < z }", "x1", "x2", "z"),
 						task("tLoop", invoker(t1), context("empty"))
 						,pipe(out(t1, path("x4")), input(t1, path("x1")))

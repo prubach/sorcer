@@ -15,6 +15,7 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sorcer.co.operator;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 
@@ -73,16 +74,16 @@ public class Volume implements Sphere, Cylinder, Serializable {
 			} finally {
 				scanner.close();
 			}
-			Context context = context(entry("cylinder/radius", radius),
-					entry("cylinder/height", height));
+			Context context = context(operator.ent("cylinder/radius", radius),
+					operator.ent("cylinder/height", height));
 			out.println("cylinder volume: " + v.getCylinderVolume(context));
 		} else {
 			if (args[0].equals("cylinder")) {
-				Context context = context(entry("cylinder/radius", 2.0),
-						entry("cylinder/height", 3.0));
+				Context context = context(operator.ent("cylinder/radius", 2.0),
+						operator.ent("cylinder/height", 3.0));
 				out.println("cylinder volume: " + v.getCylinderVolume(context));
 			} else if (args[0].equals("sphere")) {
-				Context context = context(entry("sphere/radius", 2.0));
+				Context context = context(operator.ent("sphere/radius", 2.0));
 				out.println("sphere volume: " + v.getSphereVolume(context));
 			}
 		}

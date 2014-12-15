@@ -1,12 +1,13 @@
 package sorcer.account.junit;
 
+import static sorcer.co.operator.inEnt;
 import static sorcer.eo.operator.args;
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.exert;
 import static sorcer.eo.operator.get;
 import static sorcer.eo.operator.in;
 import static sorcer.eo.operator.job;
-import static sorcer.eo.operator.jobContext;
+import static sorcer.eo.operator.serviceContext;
 import static sorcer.eo.operator.parameterTypes;
 import static sorcer.eo.operator.result;
 import static sorcer.eo.operator.sig;
@@ -58,7 +59,7 @@ public class AccountTest implements SorcerConstants {
 	public void accout1DepositTest() throws Exception {
 		Task t2 = task("t2",
 				sig("makeDeposit", ServiceAccount.class, "Account1"),
-				context("deposit", in("deposit/amount", new Money(10000))));
+				context("deposit", inEnt("deposit/amount", new Money(10000))));
 		t2 = exert(t2);
 		logger.info("t1 context: " + context(t2));
 		logger.info("t1 value: " + get(t2, "deposit/balance/amount"));
@@ -76,7 +77,7 @@ public class AccountTest implements SorcerConstants {
 	public void accout2WithdrawalTest() throws Exception {
 		Task t4 = task("t4",
 				sig("makeWithdrawal", ServiceAccount.class, "Account2"),
-				context("withdrawl", in("withdrawal/amount", new Money(10000))));
+				context("withdrawl", inEnt("withdrawal/amount", new Money(10000))));
 		
 		t4 = exert(t4);
 		logger.info("t3 context: " + context(t4));
@@ -90,19 +91,19 @@ public class AccountTest implements SorcerConstants {
 		
 		Task t2 = task("t2",
 				sig("makeDeposit", ServiceAccount.class, "Account1"),
-				context("deposit", in("deposit/amount", new Money(10000))));
+				context("deposit", inEnt("deposit/amount", new Money(10000))));
 		
 		Task t3 = task("t3",
 				sig("getBalance", ServiceAccount.class, "Account2"));
 		
 		Task t4 = task("t4",
 				sig("makeWithdrawal", ServiceAccount.class, "Account2"),
-				context("withdrawl", in("withdrawal/amount", new Money(10000)), 
+				context("withdrawl", inEnt("withdrawal/amount", new Money(10000)), 
 						result("balance/amount")));
 		
 		Job tj = job("tj", t1, t2, t3, t4);
 		tj = exert(tj);
-		logger.info("job transfer context: " + jobContext(tj));
+		logger.info("job transfer context: " + serviceContext(tj));
 	}
 	
 	@Test

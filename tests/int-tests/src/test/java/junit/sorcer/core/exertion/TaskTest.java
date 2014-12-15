@@ -18,8 +18,7 @@ package junit.sorcer.core.exertion;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static sorcer.co.operator.ent;
-import static sorcer.co.operator.entry;
+import static sorcer.co.operator.*;
 import static sorcer.eo.operator.*;
 import static sorcer.po.operator.invoker;
 import static sorcer.po.operator.par;
@@ -63,13 +62,13 @@ public class TaskTest {
 		//to test tracing of execution enable ServiceExertion.debug 		
 		Exertion task = task("add",
 				sig("add"),
-				context(in("arg/x1"), in("arg/x2"),
+				context(inEnt("arg/x1"), inEnt("arg/x2"),
 						result("result/y")));
 		
 		logger.info("get task: " + task);
 		logger.info("get dataContext: " + context(task));
 		
-		Object val = value(task, in("arg/x1", 20.0), in("arg/x2", 80.0),
+		Object val = value(task, inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
 				strategy(sig("add", AdderImpl.class), Access.PUSH, Wait.YES));
 		
 		//logger.info("get value: " + val);
@@ -80,7 +79,7 @@ public class TaskTest {
 	public void arithmeticTaskTest() throws ExertionException, SignatureException, ContextException, RemoteException {
 		Task task = task("add",
 				sig("add", AdderImpl.class),
-				context(in("arg/x1", 20.0), in("arg/x2", 80.0),
+				context(inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
 						result("result/y")));
 
         //to test tracing of execution enable ControlContext.traceEnabled
@@ -117,7 +116,7 @@ public class TaskTest {
 		//logger.info("evaluate: " + val);
 		assertTrue("Wrong value for 6.0", val == 6.0);
 				
-		val = (Double)value(task, entry("arg/x1", 2.0), entry("arg/x2", 10.0));
+		val = (Double)value(task, ent("arg/x1", 2.0), ent("arg/x2", 10.0));
 		//logger.info("evaluate: " + val);
 		assertTrue("Wrong value for 12.0", val == 12.0);
 		
@@ -138,7 +137,7 @@ public class TaskTest {
 //						.equals("" + new Date()));
 //		
 //		VarList vl = inputVars(loop(6), "x");
-//		put(vl, entry("x2", 2.0), entry("x3", 3.0));
+//		put(vl, ent("x2", 2.0), ent("x3", 3.0));
 //		Task exprTask = new EvaluationTask(groovy("x2 + x3",
 //				vl.selectVars("x2", "x3")));
 //		//logger.info("exprTask: " + (EvaluationTask) exprTask.exert());
@@ -161,8 +160,8 @@ public class TaskTest {
 //		
 //		// dependent var values are explicitly in the dataContext
 //		exprTask2 = task(sig(groovy("x2 + x3",
-//				selectVars(vl, "x2", "x3"))), dataContext(entry("x2", 20.0),
-//						entry("x3", 30.0), result("evaluation/result")));
+//				selectVars(vl, "x2", "x3"))), dataContext(ent("x2", 20.0),
+//						ent("x3", 30.0), result("evaluation/result")));
 //		logger.info("exprTask2: " + get(exert(exprTask2), "evaluation/result"));
 //		assertEquals("Wrong value for 50.0",
 //				get(exert(exprTask2), "evaluation/result"), 50.0);
@@ -170,8 +169,8 @@ public class TaskTest {
 //		
 //		// dependent var values as the argument array in the dataContext
 //		exprTask2 = task(sig(groovy("x2 + x3",
-//				selectVars(vl, "x2", "x3"))), dataContext(args(entry("x2", 20.0),
-//						entry("x3", 30.0)), result("evaluation/result")));
+//				selectVars(vl, "x2", "x3"))), dataContext(args(ent("x2", 20.0),
+//						ent("x3", 30.0)), result("evaluation/result")));
 //		logger.info("exprTask2: " + get(exert(exprTask2), "evaluation/result"));
 //		assertEquals("Wrong value for 50.0",
 //				get(exert(exprTask2), "evaluation/result"), 50.0);
@@ -216,7 +215,7 @@ public class TaskTest {
 //		Var<?> y = var("y", expression("x1 + x2", args(x1, x2)));
 //		assertEquals(value(y), 12.0);
 //		
-//		Map<Double, Integer> map = map(entry(1.0,10), entry(2.0,20), entry(12.0,30), entry(24.0,100));
+//		Map<Double, Integer> map = map(ent(1.0,10), ent(2.0,20), ent(12.0,30), ent(24.0,100));
 //		Var<?> x3 = var("x3", expression("x3-e1", "x1 + x2", args(x1, x2)), new MapKeyFilter("x3-f1", map));
 //		//logger.info("x3 value: " + value(x3));
 //		assertEquals(value(x3), 30);
@@ -242,7 +241,7 @@ public class TaskTest {
 //		// dataContext with values for arg vars as the ARGS array
 //		varTask = new VarTask("x3-t", new VarSignature(eval, x3));
 //		cxt = new ServiceContext();
-//		cxt.setArgs(map(entry("x1", 20.0), entry("x2", 4.0)));
+//		cxt.setArgs(map(ent("x1", 20.0), ent("x2", 4.0)));
 //		cxt.setReturnPath("var/result");
 //		varTask.setDataContext(cxt);
 //		//logger.info("ARGS varTask value: " + value(varTask));
@@ -250,8 +249,8 @@ public class TaskTest {
 //		
 //		// dataContext with values for arg vars as the ARGS array
 //		varTask = task("x3-t", sig(eval, x3), 
-//				dataContext(args(map(entry("x1", 20.0),
-//							entry("x2", 4.0)), 
+//				dataContext(args(map(ent("x1", 20.0),
+//							ent("x2", 4.0)),
 //							result("var/result"))));
 //		//logger.info("EOL ARGS varTask value: " + value(varTask));
 //		assertEquals("Wrong value for 100", value(varTask), 100);
@@ -307,15 +306,15 @@ public class TaskTest {
         Task t3 = task(
                 "t3",
                 sig(x3),
-                context("subtract", in(path("x1"), 40.0),
-                        in(path("x2"), 10.0), result(path("result/y"))));
+                context("subtract", inEnt(path("x1"), 40.0),
+                        inEnt(path("x2"), 10.0), result(path("result/y"))));
 
         //logger.info("t3: " + value(t3));
         assertEquals("Wrong value for 30.0", value(t3), 30.0);
 
     }
 
-	
+
     @Test
     public void t3_Task2Test() throws Exception {
         // testing with getValueEndsWith for vars in the context with prefixed paths
@@ -323,8 +322,8 @@ public class TaskTest {
         Task t3 = task(
                 "t3",
                 sig(x3),
-                context("subtract", in(path("arg/x1"), 40.0),
-                        in(path("arg/x2"), 10.0), result(path("result/y"))));
+                context("subtract", inEnt(path("arg/x1"), 40.0),
+                        inEnt(path("arg/x2"), 10.0), result(path("result/y"))));
 
         //logger.info("t3: " + value(t3));
         assertEquals("Wrong value for 30.0", value(t3), 30.0);
@@ -337,8 +336,8 @@ public class TaskTest {
         Task t5 = task("f5",
                 sig("add", Adder.class,
                         deploy(configuration("${sys.sorcer.home}/configs/int-tests/deployment/AdderProviderConfig.groovy"))),
-                context("add", input("arg/x3", 20.0d), input("arg/x4", 80.0d),
-                        output("result/y")),
+                context("add", inEnt("arg/x3", 20.0d), inEnt("arg/x4", 80.0d),
+                        outEnt("result/y")),
                 strategy(Strategy.Provision.YES));
         logger.info("t5 is provisionable: " + t5.isProvisionable());
         assertTrue(t5.isProvisionable());

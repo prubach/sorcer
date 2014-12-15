@@ -25,6 +25,8 @@ import sorcer.service.Strategy.Wait;
 
 import java.io.File;
 
+import static sorcer.co.operator.inEnt;
+import static sorcer.co.operator.outEnt;
 import static sorcer.eo.operator.*;
 
 public class ArithmeticReq extends ServiceRequestor {
@@ -52,8 +54,8 @@ public class ArithmeticReq extends ServiceRequestor {
 		Task f5 = task(
 				"f5",
 				sig("add", Adder.class),
-				context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
-						out("result/y", null)), strategy(Monitor.NO, Wait.YES));
+				context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
+						outEnt("result/y", null)), strategy(Monitor.NO, Wait.YES));
 		return f5;
 	}
 	

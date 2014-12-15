@@ -1,16 +1,12 @@
 package junit.sorcer.util.bdb.objects;
 
-import static sorcer.eo.operator.clear;
+import static sorcer.co.operator.*;
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.cxt;
-import static sorcer.eo.operator.delete;
 import static sorcer.eo.operator.exert;
 import static sorcer.eo.operator.in;
-import static sorcer.eo.operator.list;
 import static sorcer.eo.operator.result;
 import static sorcer.eo.operator.sig;
-import static sorcer.eo.operator.size;
-import static sorcer.eo.operator.store;
 import static sorcer.eo.operator.task;
 import static sorcer.eo.operator.value;
 import static sorcer.po.operator.par;
@@ -55,7 +51,7 @@ public class ObjectStoreTest {
 	
 	@Test
 	public void storeTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
-		Context data = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
+		Context data = cxt("stored", inEnt("arg/x3", par("x3")), inEnt("arg/x4", par("x4")), result("result/y"));
 		
 		Task objectStoreTask = task(
 				"objectStore",
@@ -75,7 +71,7 @@ public class ObjectStoreTest {
 
 	@Test
 	public void storageContextTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
-		Context data = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
+		Context data = cxt("stored", inEnt("arg/x3", par("x3")), inEnt("arg/x4", par("x4")), result("result/y"));
 		
 		Task objectStoreTask = task(
 				"objectStore",
@@ -96,7 +92,7 @@ public class ObjectStoreTest {
 	@Test
 	public void storeOperatorTest() throws SignatureException, ExertionException, ContextException,
             IOException, InterruptedException {
-		Context data = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
+		Context data = cxt("stored", inEnt("arg/x3", par("x3")), inEnt("arg/x4", par("x4")), result("result/y"));
 		
 		URL objURL = store(data);
 		logger.info("stored object URL: " + objURL);
@@ -107,7 +103,7 @@ public class ObjectStoreTest {
 	
 	@Test
 	public void retrievalContextTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
-		Context data = cxt("store", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
+		Context data = cxt("store", inEnt("arg/x3", par("x3")), inEnt("arg/x4", par("x4")), result("result/y"));
 		
 		Uuid uuid = data.getId();
 		store(data);
@@ -125,8 +121,8 @@ public class ObjectStoreTest {
 	
 	@Test
 	public void updateContextTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
-		Context data = cxt("storeUpd", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
-		//Context updatedData = cxt("storeUpd", in("arg/x3", par("x3", 10.0)), in("arg/x4", par("x4", 20.0)));
+		Context data = cxt("storeUpd", inEnt("arg/x3", par("x3")), inEnt("arg/x4", par("x4")), result("result/y"));
+		//Context updatedData = cxt("storeUpd", inEnt("arg/x3", par("x3", 10.0)), inEnt("arg/x4", par("x4", 20.0)));
 		
 		//store task to be executed for data
 		//URL objURL = store(data);
@@ -186,7 +182,7 @@ public class ObjectStoreTest {
 	
 	@Test
 	public void listStoredEntriesTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
-		Context data1 = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
+		Context data1 = cxt("stored", inEnt("arg/x3", par("x3")), inEnt("arg/x4", par("x4")), result("result/y"));
 		//logger.info("id1: " + data1.getId());
 		URL objURL1 = store(data1);
 		List<String> content = list(objURL1);
@@ -194,7 +190,7 @@ public class ObjectStoreTest {
 		//logger.info("initial store size: " + initSize);
 		//logger.info("content 1: " + content);
 
-		Context data2 = cxt("stored", in("arg/x5", par("x5")));
+		Context data2 = cxt("stored", inEnt("arg/x5", par("x5")));
 		//logger.info("id2: " + data2.getId());
 		URL objURL2 = store(data2);
         content = list(objURL2);
@@ -206,14 +202,14 @@ public class ObjectStoreTest {
 	//@Ignore
 	@Test
 	public void deleteStoredEntriesTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
-		Context data1 = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
+		Context data1 = cxt("stored", inEnt("arg/x3", par("x3")), inEnt("arg/x4", par("x4")), result("result/y"));
 		URL objURL1 = store(data1);
         List<String> content = list(objURL1);
 		int initSize = content.size();
 		logger.info("initial store size: " + initSize);
 		logger.info("content 1: " + content);
 
-		Context data2 = cxt("stored", in("arg/x5", par("x5")));
+		Context data2 = cxt("stored", inEnt("arg/x5", par("x5")));
 		logger.info("id2: " + data2.getId());
 		URL objURL2 = store(data2);
         content = list(objURL2);

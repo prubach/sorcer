@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.from;
+import static sorcer.co.operator.inEnt;
+import static sorcer.co.operator.outEnt;
 import static sorcer.eo.operator.*;
 
 /**
@@ -40,7 +42,7 @@ public class ArithmeticNoNetTest {
 		Task t5 = task(
 				"t5",
 				sig("add", AdderImpl.class),
-				context("add", in("arg, x1", 20.0), in("arg, x2", 80.0),
+				context("add", inEnt("arg, x1", 20.0), inEnt("arg, x2", 80.0),
 						result("result, y")));
 
 		t5 = exert(t5);
@@ -54,7 +56,7 @@ public class ArithmeticNoNetTest {
 		Task t5 = task(
 				"t5",
 				sig("add", ArithmeticImpl.class),
-				context("add", in("arg, x1", 20.0), in("arg, x2", 80.0),
+				context("add", inEnt("arg, x1", 20.0), inEnt("arg, x2", 80.0),
 						result("result, y")));
 
 		assertEquals("Wrong value for 100.0", value(t5), 100.0);
@@ -68,8 +70,8 @@ public class ArithmeticNoNetTest {
 				type(sig("multiply", MultiplierImpl.class, result("subtract/x1", Direction.IN)), Signature.PRE),
 				type(sig("add", AdderImpl.class, result("subtract/x2", Direction.IN)), Signature.PRE),
 				sig("subtract", SubtractorImpl.class, result("result/y", from("subtract/x1", "subtract/x2"))),
-				context(in("multiply/x1", 10.0), in("multiply/x2", 50.0), 
-						in("add/x1", 20.0), in("add/x2", 80.0)));
+				context(inEnt("multiply/x1", 10.0), inEnt("multiply/x2", 50.0),
+						inEnt("add/x1", 20.0), inEnt("add/x2", 80.0)));
 		
 		batch3 = exert(batch3);
 		//logger.info("task result/y: " + get(batch3, "result/y"));
@@ -85,8 +87,8 @@ public class ArithmeticNoNetTest {
 				type(sig("multiply#op1", MultiplierImpl.class, result("op3/x1", Direction.IN)), Signature.PRE),
 				type(sig("add#op2", AdderImpl.class, result("op3/x2", Direction.IN)), Signature.PRE),
 				sig("subtract", SubtractorImpl.class, result("result/y", from("op3/x1", "op3/x2"))),
-				context(in("op1/x1", 10.0), in("op1/x2", 50.0), 
-						in("op2/x1", 20.0), in("op2/x2", 80.0)));
+				context(inEnt("op1/x1", 10.0), inEnt("op1/x2", 50.0),
+						inEnt("op2/x1", 20.0), inEnt("op2/x2", 80.0)));
 		
 		batch3 = exert(batch3);
 		//logger.info("task result/y: " + get(batch3, "result/y"));
@@ -100,7 +102,7 @@ public class ArithmeticNoNetTest {
 		job = exert(job);
 		//logger.info("job j1: " + job);
 		//logger.info("job j1 job context: " + context(job));
-		logger.info("job j1 job context: " + jobContext(job));
+		logger.info("job j1 job context: " + serviceContext(job));
 		//logger.info("job j1 value @ j1/t3/result/y = " + get(job, "j1/t3/result/y"));
 		assertEquals(get(job, "j1/t3/result/y"), 400.00);
 	}
@@ -111,7 +113,7 @@ public class ArithmeticNoNetTest {
 		job = exert(job);
 		//logger.info("job j1: " + job);
 		//logger.info("job j1 job context: " + context(job));
-		logger.info("job j1 job context: " + jobContext(job));
+		logger.info("job j1 job context: " + serviceContext(job));
 		//logger.info("job j1 value @ j1/t3/result/y = " + get(job, "j1/t3/result/y"));
 		assertEquals(get(job, "j1/t3/result/y"), 400.00);
 	}
@@ -119,16 +121,16 @@ public class ArithmeticNoNetTest {
 	// two level job composition with PULL and PAR execution
 	private Job createJob(Flow flow, Access access) throws Exception {
 		Task t3 = task("t3", sig("subtract", SubtractorImpl.class), 
-				context("subtract", in("arg/x1", null), in("arg/x2", null),
-						out("result/y", null)));
+				context("subtract", inEnt("arg/x1", null), inEnt("arg/x2", null),
+						outEnt("result/y", null)));
 
 		Task t4 = task("t4", sig("multiply", MultiplierImpl.class), 
-				context("multiply", in("arg/x1", 10.0), in("arg/x2", 50.0),
-						out("result/y", null)));
+				context("multiply", inEnt("arg/x1", 10.0), inEnt("arg/x2", 50.0),
+						outEnt("result/y", null)));
 
 		Task t5 = task("t5", sig("add", AdderImpl.class), 
-				context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
-						out("result/y", null)));
+				context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
+						outEnt("result/y", null)));
 		
 		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
 		//Job job = job("j1",

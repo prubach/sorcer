@@ -27,6 +27,9 @@ import sorcer.service.Task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static sorcer.co.operator.inEnt;
+import static sorcer.co.operator.outEnt;
 import static sorcer.eo.operator.*;
 
 public class ArithmeticJob {
@@ -41,16 +44,16 @@ public class ArithmeticJob {
 		Task t3 = task(
 				"t3",
 				sig("subtract", Subtractor.class),
-				context("subtract", in("arg/x1", null), in("arg/x2", null),
-						out("result/y", null)));
+				context("subtract", inEnt("arg/x1", null), inEnt("arg/x2", null),
+						outEnt("result/y", null)));
 		Task t4 = task("t4",
 				sig("multiply", Multiplier.class),
-				context("multiply", in("arg/x1", 10.0), in("arg/x2", 50.0),
-						out("result/y", null)));
+				context("multiply", inEnt("arg/x1", 10.0), inEnt("arg/x2", 50.0),
+						outEnt("result/y", null)));
 		Task t5 = task("t5",
 				sig("add", Adder.class),
-				context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
-						out("result/y", null)));
+				context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
+						outEnt("result/y", null)));
 
 		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
 		Job j1 = job("j1", // sig("service", Jobber.class),

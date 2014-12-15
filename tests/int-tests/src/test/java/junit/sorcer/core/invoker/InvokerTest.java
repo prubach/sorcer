@@ -2,6 +2,8 @@ package junit.sorcer.core.invoker;
 
 import static org.junit.Assert.*;
 import static sorcer.co.operator.entry;
+import static sorcer.co.operator.inEnt;
+import static sorcer.co.operator.outEnt;
 import static sorcer.eo.operator.condition;
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.in;
@@ -119,8 +121,8 @@ public class InvokerTest {
 //		logger.info("y:" + value(pm, "y"));
 //		logger.info("y:" + value(pm, "z"));
 
-		Context in = context(entry("x", 20.0), entry("y", 30.0));
-		Context arg = context(entry("x", 200.0), entry("y", 300.0));
+		Context in = context(sorcer.co.operator.ent("x", 20.0), sorcer.co.operator.ent("y", 30.0));
+		Context arg = context(sorcer.co.operator.ent("x", 200.0), sorcer.co.operator.ent("y", 300.0));
 		add(pm, methodInvoker("invoke", new Update(in), arg));
 		logger.info("call value:" + invoke(pm, "invoke"));
 		assertEquals(400.0, invoke(pm, "invoke"));
@@ -145,7 +147,7 @@ public class InvokerTest {
 		Task t4 = task(
 				"t4",
 				sig("multiply", MultiplierImpl.class),
-				context("multiply", in("arg/x1", 50.0), in("arg/x2", 10.0),
+				context("multiply", inEnt("arg/x1", 50.0), inEnt("arg/x2", 10.0),
 						result("result/y")));
 
 		// logger.info("invoke value:" + invoke(t4));
@@ -156,16 +158,16 @@ public class InvokerTest {
     @Ignore
 	public void invokeJobTest() throws RemoteException, ContextException,
 			SignatureException, ExertionException, TransactionException {
-		Context c4 = context("multiply", in("arg/x1", 50.0),
-				in("arg/x2", 10.0), result("result/y"));
-		Context c5 = context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
+		Context c4 = context("multiply", inEnt("arg/x1", 50.0),
+				inEnt("arg/x2", 10.0), result("result/y"));
+		Context c5 = context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
 				result("result/y"));
 
 		// exertions
 		Task t3 = task(
 				"t3",
 				sig("subtract", SubtractorImpl.class),
-				context("subtract", in("arg/x1"), in("arg/x2"), out("result/y")));
+				context("subtract", inEnt("arg/x1"), inEnt("arg/x2"), outEnt("result/y")));
 		Task t4 = task("t4", sig("multiply", MultiplierImpl.class), c4);
 		Task t5 = task("t5", sig("add", AdderImpl.class), c5);
 
@@ -183,16 +185,16 @@ public class InvokerTest {
     @Test
 	public void invokeParJobTest() throws RemoteException, ContextException,
 			SignatureException, ExertionException {
-		Context c4 = context("multiply", in("arg/x1"), in("arg/x2"),
+		Context c4 = context("multiply", inEnt("arg/x1"), inEnt("arg/x2"),
 				result("result/y"));
-		Context c5 = context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
+		Context c5 = context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
 				result("result/y"));
 
 		// exertions
 		Task t3 = task(
 				"t3",
 				sig("subtract", SubtractorImpl.class),
-				context("subtract", in("arg/x1"), in("arg/x2"), out("result/y")));
+				context("subtract", inEnt("arg/x1"), inEnt("arg/x2"), outEnt("result/y")));
 		Task t4 = task("t4", sig("multiply", MultiplierImpl.class), c4);
 		Task t5 = task("t5", sig("add", AdderImpl.class), c5);
 
@@ -239,7 +241,7 @@ public class InvokerTest {
 		logger.info("y: " + value(y));
 		assertEquals(3.0, value(y));
 
-		Object val = invoke(y, entry("x1", 10.0), entry ("x2", 20.0));
+		Object val = invoke(y, sorcer.co.operator.ent("x1", 10.0), sorcer.co.operator.ent("x2", 20.0));
 		logger.info("y: " + val);
 
 		logger.info("y: " + value(y));
@@ -249,16 +251,16 @@ public class InvokerTest {
 	@Test
 	public void exertionInvokerTest() throws RemoteException, ContextException,
 			SignatureException, ExertionException {
-		Context c4 = context("multiply", in("arg/x1"), in("arg/x2"),
+		Context c4 = context("multiply", inEnt("arg/x1"), inEnt("arg/x2"),
 				result("result/y"));
-		Context c5 = context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
+		Context c5 = context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
 				result("result/y"));
 
 		// exertions
 		Task t3 = task(
 				"t3",
 				sig("subtract", SubtractorImpl.class),
-				context("subtract", in("arg/x1"), in("arg/x2"), out("result/y")));
+				context("subtract", inEnt("arg/x1"), inEnt("arg/x2"), outEnt("result/y")));
 		Task t4 = task("t4", sig("multiply", MultiplierImpl.class), c4);
 		Task t5 = task("t5", sig("add", AdderImpl.class), c5);
 
@@ -451,7 +453,7 @@ public class InvokerTest {
 	@Test
 	public void polAltInvokerTest() throws RemoteException, ContextException {
 		ParModel pm = operator.parModel("par-model");
-		// add(pm, entry("x", 10.0), entry("y", 20.0), par("x2", 50.0),
+		// add(pm, ent("x", 10.0), ent("y", 20.0), par("x2", 50.0),
 		// par("y2", 40.0), par("x3", 50.0), par("y3", 60.0));
 		add(pm, par("x", 10.0), par("y", 20.0), par("x2", 50.0),
 				par("y2", 40.0), par("x3", 50.0), par("y3", 60.0));
@@ -479,12 +481,12 @@ public class InvokerTest {
 		logger.info("alt value: " + value(alt));
 		assertEquals(50.0, value(alt));
 
-		put(pm, entry("x", 300.0), entry("y", 200.0));
+		put(pm, sorcer.co.operator.ent("x", 300.0), sorcer.co.operator.ent("y", 200.0));
 		logger.info("alt value: " + value(alt));
 		assertEquals(510.0, value(alt));
 
-		put(pm, entry("x", 10.0), entry("y", 20.0), entry("x2", 40.0),
-				entry("y2", 50.0), entry("x3", 50.0), entry("y3", 60.0));
+		put(pm, sorcer.co.operator.ent("x", 10.0), sorcer.co.operator.ent("y", 20.0), sorcer.co.operator.ent("x2", 40.0),
+				sorcer.co.operator.ent("y2", 50.0), sorcer.co.operator.ent("x3", 50.0), sorcer.co.operator.ent("y3", 60.0));
 		logger.info("alt value: " + value(alt));
 		assertEquals(70.0, value(alt));
 	}
@@ -494,7 +496,7 @@ public class InvokerTest {
 	@Test
 	public void loopInvokerTest() throws RemoteException, ContextException {
 		final ParModel pm = operator.parModel("par-model");
-		add(pm, entry("x", 1));
+		add(pm, sorcer.co.operator.ent("x", 1));
 		add(pm, par("y", invoker("x + 1", pars("x"))));
 
 		// update x and y for the loop condition (z) depends on
@@ -527,7 +529,7 @@ public class InvokerTest {
 	@Test
 	public void incrementorBy1Test() throws RemoteException, ContextException {
 		ParModel pm = operator.parModel("par-model");
-		add(pm, entry("x", 1));
+		add(pm, sorcer.co.operator.ent("x", 1));
 		add(pm, par("y", invoker("x + 1", pars("x"))));
 		add(pm, inc("y++", invoker(pm, "y")));
 
@@ -540,7 +542,7 @@ public class InvokerTest {
 	@Test
 	public void incrementorBy2Test() throws RemoteException, ContextException {
 		ParModel pm = operator.parModel("par-model");
-		add(pm, entry("x", 1));
+		add(pm, sorcer.co.operator.ent("x", 1));
 		add(pm, par("y", invoker("x + 1", pars("x"))));
 		add(pm, inc("y++2", invoker(pm, "y"), 2));
 
@@ -554,7 +556,7 @@ public class InvokerTest {
 	public void incrementorDoubleTest() throws RemoteException,
 			ContextException {
 		ParModel pm = operator.parModel("par-model");
-		add(pm, entry("x", 1.0));
+		add(pm, sorcer.co.operator.ent("x", 1.0));
 		add(pm, par("y", invoker("x + 1.2", pars("x"))));
 		add(pm, inc("y++2.1", invoker(pm, "y"), 2.1));
 

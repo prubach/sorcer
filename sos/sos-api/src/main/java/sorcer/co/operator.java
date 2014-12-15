@@ -16,6 +16,8 @@
  */
 package sorcer.co;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,14 +29,17 @@ import java.util.Set;
 
 import sorcer.co.tuple.*;
 import sorcer.core.context.ListContext;
-import sorcer.service.Arg;
-import sorcer.service.ContextException;
-import sorcer.service.FidelityInfo;
-import sorcer.service.Strategy;
+import sorcer.core.context.ServiceContext;
+import sorcer.core.context.model.par.Par;
+import sorcer.core.provider.DatabaseStorer;
+import sorcer.service.*;
 import sorcer.util.Loop;
 //import sorcer.vfe.filter.TableReader;
 //import sorcer.vfe.util.Response;
+import sorcer.util.Sorcer;
 import sorcer.util.Table;
+import sorcer.util.bdb.objects.UuidObject;
+import sorcer.util.url.sos.SdbUtil;
 
 @SuppressWarnings({ "rawtypes" })
 public class operator {
@@ -165,25 +170,25 @@ public class operator {
 		return new Tuple3<T1, T2, T3>(x1, x2, x3);
 	}
 
-	public static <T2> Entry<T2> entry(String x1, T2 x2) {
+	public static <T2> Entry<T2> ent(String x1, T2 x2) {
 		return new Entry<T2>(x1, x2);
 	}
 	
-	public static <T2> Entry<T2> entry(String x1) {
+	public static <T2> Entry<T2> ent(String x1) {
 		return new Entry<T2>(x1, null);
 	}
 	
-	public static <T> AnnotatedEntry<T> entry(String x1, String tag, T x2) {
+	public static <T> AnnotatedEntry<T> ent(String x1, String tag, T x2) {
 		return new AnnotatedEntry<T>(x1, tag, x2);
 	}
 	
-	public static <T2> Entry<T2> dbEntry(String x1, T2 x2) {
+	public static <T2> Entry<T2> dbEnt(String x1, T2 x2) {
 		Entry<T2> t2 = new Entry<T2>(x1, x2);
 		t2.isPersistent = true;
 		return t2;
 	}
 	
-	public static <T1, T2> Tuple2<T1, T2> dbEntry(T1 x1, T2 x2, URL dbURL) {
+	public static <T1, T2> Tuple2<T1, T2> dbEnt(T1 x1, T2 x2, URL dbURL) {
 		Tuple2<T1, T2> t2 = new Tuple2<T1, T2>(x1, x2);
 		t2.isPersistent = true;
 		t2.datastoreURL = dbURL;
@@ -308,26 +313,203 @@ public class operator {
 		}
 	}
 
-	public static <T> Entry<T> ent(String path, T value) {
-		return new Entry<T>(path, value);
-	}
-
 	// Compat for SORCER 5.0.0-SNAPSHOT {
 	public static InputEntry inEnt(String path, Object value) {
-		return sorcer.eo.operator.in(path, value);
+		return in(path, value);
 	}
 
 	public static InputEntry inEnt(String path) {
-		return sorcer.eo.operator.in(path);
+		return in(path);
 	}
 
 	public static OutputEntry outEnt(String path) {
-		return sorcer.eo.operator.out(path);
+		return out(path);
 	}
 
 	public static OutputEntry outEnt(String path, Object value) {
-		return sorcer.eo.operator.out(path, value);
+		return out(path, value);
+	}
+
+
+	public static OutputEntry output(String path, Object value) {
+		return new OutputEntry(path, value, 0);
+	}
+
+	public static OutputEntry out(String path, Object value) {
+		return new OutputEntry(path, value, 0);
+	}
+
+	public static OutputEntry output(String path, Object value, int index) {
+		return new OutputEntry(path, value, index);
+	}
+
+	public static OutputEntry out(String path, Object value, int index) {
+		return new OutputEntry(path, value, index);
+	}
+
+	public static InputEntry input(String path) {
+		return new InputEntry(path, null, 0);
+	}
+
+	public static OutputEntry out(String path) {
+		return new OutputEntry(path, null, 0);
+	}
+
+	public static OutputEntry output(String path) {
+		return new OutputEntry(path, null, 0);
+	}
+
+	public static InputEntry in(String path) {
+		return new InputEntry(path, null, 0);
+	}
+
+	public static Entry at(String path, Object value) {
+		return new Entry(path, value, 0);
+	}
+
+	public static Entry at(String path, Object value, int index) {
+		return new Entry(path, value, index);
+	}
+
+	public static InputEntry input(String path, Object value) {
+		return new InputEntry(path, value, 0);
+	}
+
+	public static InputEntry in(String path, Object value) {
+		return new InputEntry(path, value, 0);
+	}
+
+	public static InputEntry dbInEnt(String path, Object value) {
+		return new InputEntry(path, value, true, 0);
+	}
+
+	public static OutputEntry dbOutEnt(String path, Object value) {
+		return new OutputEntry(path, value, true, 0);
+	}
+
+	public static InputEntry dbInEnt(String path, Object value, URL datasoreURL) {
+		return new InputEntry(path, value, true, datasoreURL, 0);
+	}
+
+	public static InputEntry input(String path, Object value, int index) {
+		return new InputEntry(path, value, index);
+	}
+
+	public static InputEntry in(String path, Object value, int index) {
+		return new InputEntry(path, value, index);
+	}
+
+	public static InputEntry inout(String path) {
+		return new InputEntry(path, null, 0);
+	}
+
+	public static InputEntry inout(String path, Object value) {
+		return new InputEntry(path, value, 0);
+	}
+
+	public static InoutEntry inout(String path, Object value, int index) {
+		return new InoutEntry(path, value, index);
+	}
+
+	public static <T> Entry<T> ent(String path, T value, String association) {
+		return new Entry<T>(path, value, association);
 	}
 
 	//  }
+
+	public static URL dbURL() throws MalformedURLException {
+		return new URL(Sorcer.getDatabaseStorerUrl());
+	}
+
+	public static URL dsURL() throws MalformedURLException {
+		return new URL(Sorcer.getDataspaceStorerUrl());
+	}
+
+	public static void dbURL(Object object, URL dbUrl)
+			throws MalformedURLException {
+		if (object instanceof Par)
+			((Par) object).setDbURL(dbUrl);
+		else if (object instanceof ServiceContext)
+			((ServiceContext) object).setDbUrl("" + dbUrl);
+		else
+			throw new MalformedURLException("Can not set URL to: " + object);
+	}
+
+	public static URL dbURL(Object object) throws MalformedURLException {
+		if (object instanceof Par)
+			return ((Par) object).getDbURL();
+		else if (object instanceof ServiceContext)
+			return new URL(((ServiceContext) object).getDbUrl());
+		return null;
+	}
+
+	public static URL storeArg(Object object) throws EvaluationException {
+		URL dburl = null;
+		try {
+			if (object instanceof Evaluation) {
+				Evaluation entry = (Evaluation)	object;
+				Object obj = entry.asis();
+				if (SdbUtil.isSosURL(obj))
+					dburl = (URL) obj;
+				else {
+					if (entry instanceof Setter) {
+						((Setter) entry).setPersistent(true);
+						entry.getValue();
+						dburl = (URL) entry.asis();
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new EvaluationException(e);
+		}	return dburl;
+	}
+
+
+	public static URL store(Object object) throws EvaluationException {
+		try {
+//			if (object instanceof UuidObject)
+				return SdbUtil.store(object);
+//			else  {
+//				return SdbUtil.store(new UuidObject(object));
+//			}
+		} catch (Exception e) {
+			throw new EvaluationException(e);
+		}
+	}
+
+	public static Object retrieve(URL url) throws IOException {
+		return url.getContent();
+	}
+
+	public static URL update(Object object) throws ExertionException,
+			SignatureException, ContextException {
+		return SdbUtil.update(object);
+	}
+
+	public static List<String> list(URL url) throws ExertionException,
+			SignatureException, ContextException {
+		return SdbUtil.list(url);
+	}
+
+	public static List<String> list(DatabaseStorer.Store store) throws ExertionException,
+			SignatureException, ContextException {
+		return SdbUtil.list(store);
+	}
+
+	public static URL delete(Object object) throws ExertionException,
+			SignatureException, ContextException {
+		return SdbUtil.delete(object);
+	}
+
+	public static int clear(DatabaseStorer.Store type) throws ExertionException,
+			SignatureException, ContextException {
+		return SdbUtil.clear(type);
+	}
+
+	public static int size(DatabaseStorer.Store type) throws ExertionException,
+			SignatureException, ContextException {
+		return SdbUtil.size(type);
+	}
+
+
 }

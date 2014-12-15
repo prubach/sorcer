@@ -62,6 +62,17 @@ public class Entry<T> extends Tuple2<String, T> implements Arg, Comparable<T>, S
 		this.index = index;
 	}
 
+	public Entry(String path, T value, String association) {
+		T v = value;
+		if (v == null)
+			v = (T)Context.none;
+
+		_1 = path;
+		this._2 = v;
+		this.annotation = association;
+	}
+
+
 	public int index() {
 		return index;
 	}

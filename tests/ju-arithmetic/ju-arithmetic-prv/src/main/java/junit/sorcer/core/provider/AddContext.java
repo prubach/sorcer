@@ -2,6 +2,7 @@ package junit.sorcer.core.provider;
 
 import sorcer.service.Context;
 
+import static sorcer.co.operator.inEnt;
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.input;
 
@@ -12,7 +13,9 @@ import static sorcer.eo.operator.input;
  */
 public class AddContext {
     public static Context createContext() throws Exception {
-        Context cxt = context("add", input("arg/x1", 20.0), input("arg/x2", 80.0));
+        Context cxt = context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0));
         return  cxt;
     }
+
+
 }

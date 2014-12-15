@@ -1,5 +1,5 @@
 #!/usr/bin/env nsh
 
 context("multiply",
-     input(path("arg/x1"), 20.0d), 
-     input(path("arg/x2"), 50.0d))
+     inEnt(path("arg/x1"), 20.0d),
+     inEnt(path("arg/x2"), 50.0d))

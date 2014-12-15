@@ -18,6 +18,8 @@ package junit.sorcer.core.deploy;
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static sorcer.co.operator.inEnt;
+import static sorcer.co.operator.outEnt;
 import static sorcer.eo.operator.configuration;
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.deploy;
@@ -96,8 +98,8 @@ public class OperationalStringFactoryTest {
                 sig("Foo",
                         Service.class,
                         deploy(configuration("${sys.sorcer.home}/configs/int-tests/deployment/TestConfig.groovy"))),
-                context("foo", input("arg/x3", 20.0d), input("arg/x4", 80.0d),
-                        output("result/y2", null)));
+                context("foo", inEnt("arg/x3", 20.0d), inEnt("arg/x4", 80.0d),
+                        outEnt("result/y2", null)));
 
         /* totally bogus job definition */
         Job job = job("Some Job", job("f2", task), task, strategy(Strategy.Provision.YES),

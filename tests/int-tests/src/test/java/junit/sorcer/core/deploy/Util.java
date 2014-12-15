@@ -15,20 +15,9 @@
  */
 package junit.sorcer.core.deploy;
 
-import static sorcer.eo.operator.configuration;
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.deploy;
-import static sorcer.eo.operator.idle;
-import static sorcer.eo.operator.input;
-import static sorcer.eo.operator.job;
-import static sorcer.eo.operator.maintain;
-import static sorcer.eo.operator.out;
-import static sorcer.eo.operator.output;
-import static sorcer.eo.operator.perNode;
-import static sorcer.eo.operator.pipe;
-import static sorcer.eo.operator.sig;
-import static sorcer.eo.operator.strategy;
-import static sorcer.eo.operator.task;
+import static sorcer.co.operator.inEnt;
+import static sorcer.co.operator.outEnt;
+import static sorcer.eo.operator.*;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -76,37 +65,37 @@ public class Util {
                                deploy(configuration("${sys.sorcer.home}/configs/int-tests/deployment/multiplier-prv.config"),
                                   idle(1),
                                   ServiceDeployment.Type.SELF)),
-                       context("multiply", input("arg/x1", 10.0d),
-                               input("arg/x2", 50.0d), out("result/y1")));
+                       context("multiply", inEnt("arg/x1", 10.0d),
+                               inEnt("arg/x2", 50.0d), outEnt("result/y1")));
 
         Task f5 = task("f5",
                        sig("add",
                            Adder.class,
                            deploy(configuration("${sys.sorcer.home}/configs/int-tests/deployment/AdderProviderConfig.groovy"))),
-                       context("add", input("arg/x3", 20.0d), input("arg/x4", 80.0d),
-                               output("result/y2")));
+                       context("add", inEnt("arg/x3", 20.0d), inEnt("arg/x4", 80.0d),
+                               outEnt("result/y2")));
 
         Task f3 = task("f3",
                        sig("subtract", Subtractor.class,
                            deploy(maintain(2, perNode(2)),
                                   idle(1),
                                   configuration("${sys.sorcer.home}/configs/int-tests/deployment/subtractor-prv.config"))),
-                       context("subtract", input("arg/x5"),
-                               input("arg/x6"), output("result/y3")));
+                       context("subtract", inEnt("arg/x5"),
+                               inEnt("arg/x6"), outEnt("result/y3")));
 
         return job("f1", sig("service", Jobber.class, deploy(idle(1))),
                    job("f2", f4, f5), f3,
                    strategy(Provision.YES),
-                   pipe(out(f4, "result/y1"), input(f3, "arg/x5")),
-                   pipe(out(f5, "result/y2"), input(f3, "arg/x6")));
+                   pipe(out(f4, "result/y1"), in(f3, "arg/x5")),
+                   pipe(out(f5, "result/y2"), in(f3, "arg/x6")));
     }
 
     static Task createTaskt() throws SignatureException, ContextException, ExertionException {
     	return task("f5",
     			sig("add", Adder.class,
     					deploy(configuration("${sys.sorcer.home}/configs/int-tests/deployment/AdderProviderConfig.groovy"))),
-    				context("add", input("arg/x3", 20.0d), input("arg/x4", 80.0d),
-    							output("result/y2")),
+    				context("add", inEnt("arg/x3", 20.0d), inEnt("arg/x4", 80.0d),
+    							outEnt("result/y2")),
     				strategy(Provision.YES));
     }
 
@@ -114,22 +103,22 @@ public class Util {
     static Job createJobNoDeployment() throws ContextException, SignatureException, ExertionException {
         Task f4 = task("f4",
                        sig("multiply", Multiplier.class),
-                       context("multiply", input("arg/x1", 10.0d),
-                               input("arg/x2", 50.0d), out("result/y1", null)));
+                       context("multiply", inEnt("arg/x1", 10.0d),
+                               inEnt("arg/x2", 50.0d), outEnt("result/y1", null)));
 
         Task f5 = task("f5",
                        sig("add", Adder.class),
-                       context("add", input("arg/x3", 20.0d), input("arg/x4", 80.0d),
-                               output("result/y2", null)));
+                       context("add", inEnt("arg/x3", 20.0d), inEnt("arg/x4", 80.0d),
+                               outEnt("result/y2", null)));
 
         Task f3 = task("f3",
                        sig("subtract", Subtractor.class),
-                       context("subtract", input("arg/x5", null),
-                               input("arg/x6", null), output("result/y3", null)));
+                       context("subtract", inEnt("arg/x5", null),
+                               inEnt("arg/x6", null), outEnt("result/y3", null)));
 
         return job("f1", job("f2", f4, f5), f3, 
-                   pipe(out(f4, "result/y1"), input(f3, "arg/x5")),
-                   pipe(out(f5, "result/y2"), input(f3, "arg/x6")));
+                   pipe(out(f4, "result/y1"), in(f3, "arg/x5")),
+                   pipe(out(f5, "result/y2"), in(f3, "arg/x6")));
     }
     
     static void waitForDeployment(OperationalStringManager mgr) throws RemoteException, OperationalStringException, InterruptedException {

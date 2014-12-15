@@ -36,8 +36,8 @@ public class ExertionExecutor {
         Exertion xrt;
         try {
             if (exertion.getClass() == Task.class) {
-                if (((Task) exertion).getInnerTask() != null)
-                    xrt = exert(((Task) exertion).getInnerTask(), null, entries);
+                if (((Task) exertion).getDelegate() != null)
+                    xrt = exert(((Task) exertion).getDelegate(), null, entries);
                 else
                     xrt = exertOpenTask(exertion, entries);
             } else {

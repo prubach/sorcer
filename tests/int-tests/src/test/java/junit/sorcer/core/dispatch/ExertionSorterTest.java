@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static sorcer.co.operator.from;
+import static sorcer.co.operator.inEnt;
+import static sorcer.co.operator.outEnt;
 import static sorcer.eo.operator.*;
 
 /**
@@ -48,16 +50,16 @@ public class ExertionSorterTest {
         Task t3 = task(
                 "t3",
                 sig("subtract", Subtractor.class),
-                context("subtract", in("arg/x1", null), in("arg/x2", null),
-                        out("result/y", null)));
+                context("subtract", inEnt("arg/x1", null), inEnt("arg/x2", null),
+                        outEnt("result/y", null)));
         Task t4 = task("t4",
                 sig("multiply", Multiplier.class),
-                context("multiply", in("arg/x1", 10.0), in("arg/x2", 50.0),
-                        out("result/y", null)));
+                context("multiply", inEnt("arg/x1", 10.0), inEnt("arg/x2", 50.0),
+                        outEnt("result/y", null)));
         Task t5 = task("t5",
                 sig("add", Adder.class),
-                context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
-                        out("result/y", null)));
+                context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
+                        outEnt("result/y", null)));
 
         // Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
         return job("j1", t3, // sig("service", Jobber.class),
@@ -69,22 +71,22 @@ public class ExertionSorterTest {
 
     private static Job createSrv() throws Exception {
         Task t3 = srv("t3", sig("subtract", SubtractorImpl.class),
-                cxt("subtract", in("arg/x1"), in("arg/x2"),
-                        out("result/y")));
+                cxt("subtract", inEnt("arg/x1"), inEnt("arg/x2"),
+                        outEnt("result/y")));
 
         Task t4 = srv("t4", sig("multiply", MultiplierImpl.class),
-                //cxt("multiply", in("super/arg/x1"), in("arg/x2", 50.0),
-                cxt("multiply", in("arg/x1", 10.0), in("arg/x2", 50.0),
-                        out("result/y")));
+                //cxt("multiply", inEnt("super/arg/x1"), inEnt("arg/x2", 50.0),
+                cxt("multiply", inEnt("arg/x1", 10.0), inEnt("arg/x2", 50.0),
+                        outEnt("result/y")));
 
         Task t5 = srv("t5", sig("add", AdderImpl.class),
-                cxt("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
-                        out("result/y")));
+                cxt("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
+                        outEnt("result/y")));
 
         // Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
         //Job j1= job("j1", job("j2", t4, t5, strategy(Flow.PARALLEL, Access.PULL)), t3,
         return srv("j1", sig("execute", ServiceJobber.class),
-                cxt(in("arg/x1", 10.0), result("job/result", from("j1/t3/result/y"))),
+                cxt(inEnt("arg/x1", 10.0), result("job/result", from("j1/t3/result/y"))),
                 srv("j2", sig("execute", ServiceJobber.class), t4, t5),
                 t3,
                 pipe(out(t4, "result/y"), in(t3, "arg/x1")),
@@ -95,55 +97,55 @@ public class ExertionSorterTest {
     private static Job createComplexJob() throws Exception {
 
         Task f4 = task("Task_f4", sig("multiply", Multiplier.class),
-                context("multiply", input(path("arg/x1"), 2), input(path("arg/x2"), 25 * 2),
-                        out(path("result/y1"), null)), strategy(Strategy.Access.PUSH, Strategy.Flow.SEQ, Strategy.Monitor.NOTIFY_ALL, Strategy.Provision.TRUE, Strategy.Wait.TRUE));
+                context("multiply", inEnt(path("arg/x1"), 2), inEnt(path("arg/x2"), 25 * 2),
+                        outEnt(path("result/y1"), null)), strategy(Strategy.Access.PUSH, Strategy.Flow.SEQ, Strategy.Monitor.NOTIFY_ALL, Strategy.Provision.TRUE, Strategy.Wait.TRUE));
 
         Task f44 = task("Task_f44", sig("multiply", Multiplier.class),
-                context("multiply", input(path("arg/x41"), 10.0d), input(path("arg/x42"), 50.0d),
-                        out(path("result/y41"), null)));
+                context("multiply", inEnt(path("arg/x41"), 10.0d), inEnt(path("arg/x42"), 50.0d),
+                        outEnt(path("result/y41"), null)));
 
         Task f5 = task("Task_f5", sig("add", Adder.class),
-                context("add", input(path("arg/x3"), 20.0d), input(path("arg/x4"), 80.0d),
-                        output(path("result/y2"), null)));
+                context("add", inEnt(path("arg/x3"), 20.0d), inEnt(path("arg/x4"), 80.0d),
+                        outEnt(path("result/y2"), null)));
 
         Task f6 = task("Task_f6", sig("multiply", Multiplier.class),
-                context("multiply", input(path("arg/x7"), 11.0d), input(path("arg/x8"), 51.0d),
-                        out(path("result/y4"), null)));
+                context("multiply", inEnt(path("arg/x7"), 11.0d), inEnt(path("arg/x8"), 51.0d),
+                        outEnt(path("result/y4"), null)));
 
         Task f7 = task("Task_f7", sig("multiply", Multiplier.class),
-                context("multiply", input(path("arg/x9"), 12.0d), input(path("arg/x10"), 52.0d),
-                        out(path("result/y5"), null)));
+                context("multiply", inEnt(path("arg/x9"), 12.0d), inEnt(path("arg/x10"), 52.0d),
+                        outEnt(path("result/y5"), null)));
 
         Task f9 = task("Task_f9", sig("multiply", Multiplier.class),
-                context("multiply", input(path("arg/x11"), 13.0d), input(path("arg/x12"), 53.0d),
-                        out(path("result/y6"), null)));
+                context("multiply", inEnt(path("arg/x11"), 13.0d), inEnt(path("arg/x12"), 53.0d),
+                        outEnt(path("result/y6"), null)));
 
         Task f10 = task("Task_f10", sig("multiply", Multiplier.class),
-                context("multiply", input(path("arg/x13"), 14.0d), input(path("arg/x14"), 54.0d),
-                        out(path("result/y7"), null)));
+                context("multiply", inEnt(path("arg/x13"), 14.0d), inEnt(path("arg/x14"), 54.0d),
+                        outEnt(path("result/y7"), null)));
 
         Task f3 = task("Task_f3", sig("subtract", Subtractor.class),
-                context("subtract", input(path("arg/x5"), null), input(path("arg/x6"), null),
-                        output(path("result/y3"), null)));
+                context("subtract", inEnt(path("arg/x5"), null), inEnt(path("arg/x6"), null),
+                        outEnt(path("result/y3"), null)));
 
         Task f55 = task("Task_f55", sig("add", Adder.class),
-                context("add", input(path("arg/x53"), 20.0d), input(path("arg/x54"), 80.0d), output(path("result/y52"), null)));
+                context("add", inEnt(path("arg/x53"), 20.0d), inEnt(path("arg/x54"), 80.0d), outEnt(path("result/y52"), null)));
 
-        Task f21 = task("Task_f21", sig("multiply", Multiplier.class), context("Task_f21", input(path("arg2"), 50.5d), input(path("arg1"), 20.0d), output(path("fillMeOut"), null)), strategy(Strategy.Access.PUSH, Strategy.Flow.SEQ, Strategy.Monitor.NOTIFY_ALL, Strategy.Provision.FALSE, Strategy.Wait.TRUE));
+        Task f21 = task("Task_f21", sig("multiply", Multiplier.class), context("Task_f21", inEnt(path("arg2"), 50.5d), inEnt(path("arg1"), 20.0d), outEnt(path("fillMeOut"), null)), strategy(Strategy.Access.PUSH, Strategy.Flow.SEQ, Strategy.Monitor.NOTIFY_ALL, Strategy.Provision.FALSE, Strategy.Wait.TRUE));
 
-        Task f22 = task("Task_f22", sig("add", Adder.class), context("Task_f22", input(path("arg4"), 23d), input(path("arg3"), 43d), output(path("fillMeOut"), null)), strategy(Strategy.Access.PUSH, Strategy.Flow.SEQ, Strategy.Monitor.NOTIFY_ALL, Strategy.Provision.FALSE, Strategy.Wait.TRUE));
+        Task f22 = task("Task_f22", sig("add", Adder.class), context("Task_f22", inEnt(path("arg4"), 23d), inEnt(path("arg3"), 43d), outEnt(path("fillMeOut"), null)), strategy(Strategy.Access.PUSH, Strategy.Flow.SEQ, Strategy.Monitor.NOTIFY_ALL, Strategy.Provision.FALSE, Strategy.Wait.TRUE));
 
         Job f20 = job("Job_f20", f22 , f21 );
 
-        Job j8 = job("Job_f8", pipe(out(f10, path("result/y7")), input(f55, path("arg/x54"))), pipe(out(f7, path("result/y5")), input(f55, path("arg/x53"))), f55, f10, f9,
-                pipe(out(f9, path("result/y6")), input(f10, path("arg/x13"))));
+        Job j8 = job("Job_f8", pipe(out(f10, path("result/y7")), in(f55, path("arg/x54"))), pipe(out(f7, path("result/y5")), in(f55, path("arg/x53"))), f55, f10, f9,
+                pipe(out(f9, path("result/y6")), in(f10, path("arg/x13"))));
 
-        Pipe p1 = pipe(out(f4, path("result/y1")), input(f7, path("arg/x9")));
+        Pipe p1 = pipe(out(f4, path("result/y1")), in(f7, path("arg/x9")));
 
         return job("Job_f1", f3, j8, f20, job("Job_f2", f5, f7, f6, f4),
-                pipe(out(f6, path("result/y4")), input(f5, path("arg/x3"))),
-                pipe(out(f4, path("result/y1")), input(f3, path("arg/x5"))),
-                pipe(out(f5, path("result/y2")), input(f3, path("arg/x6"))), p1);
+                pipe(out(f6, path("result/y4")), in(f5, path("arg/x3"))),
+                pipe(out(f4, path("result/y1")), in(f3, path("arg/x5"))),
+                pipe(out(f5, path("result/y2")), in(f3, path("arg/x6"))), p1);
     }
 
     @Test

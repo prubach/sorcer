@@ -17,6 +17,8 @@
  */
 package junit.sorcer.util.bdb.objects;
 
+import static sorcer.co.operator.inEnt;
+import static sorcer.co.operator.outEnt;
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.in;
 import static sorcer.eo.operator.job;
@@ -315,24 +317,24 @@ public class SorcerDatabaseRunner {
 	
 	private Task getTask() throws ExertionException, SignatureException, ContextException {
 		Task f4 = task("f4", sig("multiply", Multiplier.class), 
-				context("multiply", in(path("arg/x1"), 10.0), in(path("arg/x2"), 50.0),
-						out(path("result/y1"), null)));
+				context("multiply", inEnt(path("arg/x1"), 10.0), inEnt(path("arg/x2"), 50.0),
+						outEnt(path("result/y1"), null)));
 		
 		return f4;
 	}
 		
 	private Job getJob() throws ExertionException, SignatureException, ContextException {
 		Task f4 = task("f4", sig("multiply", Multiplier.class), 
-				context("multiply", in(path("arg/x1"), 10.0), in(path("arg/x2"), 50.0),
-						out(path("result/y1"), null)));
+				context("multiply", inEnt(path("arg/x1"), 10.0), inEnt(path("arg/x2"), 50.0),
+						outEnt(path("result/y1"), null)));
 
 		Task f5 = task("f5", sig("add", Adder.class), 
-				context("add", in(path("arg/x3"), 20.0), in(path("arg/x4"), 80.0),
-						out(path("result/y2"), null)));
+				context("add", inEnt(path("arg/x3"), 20.0), inEnt(path("arg/x4"), 80.0),
+						outEnt(path("result/y2"), null)));
 
 		Task f3 = task("f3", sig("subtract", Subtractor.class), 
-				context("subtract", in(path("arg/x5"), null), in(path("arg/x6"), null),
-						out(path("result/y3"), null)));
+				context("subtract", inEnt(path("arg/x5"), null), inEnt(path("arg/x6"), null),
+						outEnt(path("result/y3"), null)));
 
 		// Service Composition f1(f2(x1, x2), f3(x1, x2))
 		// Service Composition f2(f4(x1, x2), f5(x1, x2))

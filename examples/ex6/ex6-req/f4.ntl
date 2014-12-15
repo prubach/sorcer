@@ -7,10 +7,10 @@ import sorcer.arithmetic.provider.Subtractor;
 
 task("f4", sig("subtract", Subtractor.class),
 	context("subtract",
-		input("arg/x1", 10.0d),
-		input("arg/x2", 50.0d)), strategy(Provision.TRUE));
+		inEnt("arg/x1", 10.0d),
+		inEnt("arg/x2", 50.0d)), strategy(Provision.TRUE));
 
 //task("f4", sig("multiply", Multiplier.class),
 //	context("multiply",
-//		input("arg/x1", 10.0d),
-//		input("arg/x2", 50.0d)));
+//		inEnt("arg/x1", 10.0d),
+//		inEnt("arg/x2", 50.0d)));

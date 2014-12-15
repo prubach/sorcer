@@ -166,7 +166,7 @@ public class operator {
         return job.getJobContext();
     }
 
-    public static Context jobContext(Exertion job) throws ContextException {
+    public static Context serviceContext(Exertion job) throws ContextException {
         return ((Job) job).getJobContext();
     }
 
@@ -949,11 +949,11 @@ public class operator {
     }
 
 
-	public static FidelityInfo sFi(String name) {
+	public static FidelityInfo srvFi(String name) {
 		return new FidelityInfo(name);
 	}
 
-	public static FidelityInfo sFi(String name, String... selectors) {
+	public static FidelityInfo srvFi(String name, String... selectors) {
 		return new FidelityInfo(name, selectors);
 	}
 	
@@ -967,19 +967,19 @@ public class operator {
 	}
 	
 	
-	public static ServiceFidelity sFi(Exertion exertion) {
+	public static ServiceFidelity srvFi(Exertion exertion) {
 		return exertion.getFidelity();		
 	}
 	
-	public static Map<String, ServiceFidelity> sFis(Exertion exertion) {
+	public static Map<String, ServiceFidelity> srvFis(Exertion exertion) {
 		return exertion.getFidelities();		
 	}
 	
-	public static ServiceFidelity sFi(Signature... signatures) {
+	public static ServiceFidelity srvFi(Signature... signatures) {
 		return new ServiceFidelity(signatures);		
 	}
 	
-	public static ServiceFidelity sFi(String name, Signature... signatures) {
+	public static ServiceFidelity srvFi(String name, Signature... signatures) {
 		return new ServiceFidelity(name, signatures);		
 	}
 /*
@@ -1180,7 +1180,11 @@ public class operator {
 				logger.debug("to context: "
 						+ ((Exertion) p.out).getDataContext().getName()
 						+ " path: " + p.outPath);
-				((Exertion) p.out).getDataContext().connect(p.outPath,
+                if (!p.isExertional()) {
+                    p.out = job.getComponentExertion(p.outComponentPath);
+                    p.in = job.getComponentExertion(p.inComponentPath);
+                }
+                ((Exertion) p.out).getDataContext().connect(p.outPath,
 						p.inPath, ((Exertion) p.in).getContext());
 			}
 		} else
@@ -1247,6 +1251,18 @@ public class operator {
 		return url.getContent();
 	}
 
+    public static Object content(URL url) throws EvaluationException {
+        if (url instanceof URL) {
+            try {
+                return ((URL) url).getContent();
+            } catch (Exception e) {
+                throw new EvaluationException(e);
+            }
+        } else {
+            throw new EvaluationException("Expected URL for its content");
+        }
+    }
+
 	public static <T> T value(Evaluation<T> evaluation, Arg... entries)
 			throws EvaluationException {
 		try {
@@ -1254,12 +1270,7 @@ public class operator {
                 if (evaluation instanceof ParModel) {
                     return ((ParModel<T>) evaluation).getValue(entries);
                 } else if (evaluation instanceof Exertion) {
-                    ReturnPath rp = ((Exertion)evaluation).getDataContext().getReturnPath();
-                    String path = null;
-                    if (rp != null)
-                        path = rp.path;
-                    return (T) execExertion((Exertion) evaluation, path,
-                            entries);
+                    return (T) execExertion((Exertion) evaluation, entries);
                 } else if (evaluation instanceof Par){
                     return ((Par<T>)evaluation).getValue(entries);
                 } else if (evaluation instanceof Entry){
@@ -1267,18 +1278,6 @@ public class operator {
                 } else {
                     return evaluation.getValue(entries);
                 }
-				 /*if (evaluation instanceof ParModel) {
-					return (T) ((ParModel) evaluation).getValue(entries);
-				} else if (evaluation instanceof Exertion) {
-					ReturnPath rp = ((Exertion)evaluation).getDataContext().getReturnPath();
-                     String path = null;
-                     if (rp != null)
-                         path = rp.path;
-                     return (T) execExertion((Exertion) evaluation, path,
-                             entries);
-                 } else {
-					return evaluation.getValue(entries);
-				}  */
 			}
 		} catch (Exception e) {
 			throw new EvaluationException(e);
@@ -1296,9 +1295,10 @@ public class operator {
 			}
 		} else if (evaluation instanceof Exertion) {
 			try {
-				return (T) execExertion((Exertion) evaluation, evalSelector,
-                        entries);
-			} catch (Exception e) {
+                ((ServiceContext)((Exertion) evaluation).getContext())
+                        .setReturnPath(new ReturnPath(evalSelector));
+                return (T) execExertion((Exertion) evaluation, entries);
+            } catch (Exception e) {
 				e.printStackTrace();
 				throw new EvaluationException(e);
 			}
@@ -1368,49 +1368,107 @@ public class operator {
 					+ context.getName());
 	}
 
-	public static Object execExertion(Exertion exertion, String path,
-			Arg... entries) throws ExertionException, ContextException,
-			RemoteException {
-		Exertion xrt;
-		try {
-			if (exertion.getClass() == Task.class) {
-				if (((Task) exertion).getInnerTask() != null)
-					xrt = exert(((Task) exertion).getInnerTask(), null, entries);
-				else
-					xrt = exertOpenTask(exertion, entries);
-			} else {
-				xrt = exert(exertion, null, entries);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ExertionException(e);
-		}
-        if (path != null) {
-            Context dcxt = xrt.getDataContext();
-            ReturnPath rp = dcxt.getReturnPath();
-            if (rp != null && rp.path != null) {
-                Context cxt = xrt.getContext();
-                Object result = cxt.getValue(rp.path);
-                if (result instanceof Context)
-                    return ((Context)cxt.getValue(rp.path)).getValue(path);
+    private static Exertion initialize(Exertion xrt, Arg... args) throws ContextException {
+        ReturnPath rPath = null;
+        for (Arg a : args) {
+            if (a instanceof ReturnPath) {
+                rPath = (ReturnPath) a;
+                break;
+            }
+        }
+        if (rPath != null)
+            ((ServiceContext)xrt.getDataContext()).setReturnPath(rPath);
+        return xrt;
+    }
+
+    public static Object execExertion(Exertion exertion, Arg... args)
+            throws ExertionException, ContextException, RemoteException {
+        Exertion out;
+        initialize(exertion, args);
+        try {
+            if (exertion.getClass() == Task.class) {
+                if (((Task) exertion).getDelegate() != null)
+                    out = exert(((Task) exertion).getDelegate(), null, args);
                 else
-                    return result;
+                    out = exertOpenTask(exertion, args);
             } else {
-                return xrt.getContext().getValue(path);
+                out = exert(exertion, null, args);
+            }
+            return finalize(out, args);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExertionException(e);
+        }
+    }
+
+    private static Object finalize(Exertion xrt, Arg... args) throws ContextException, RemoteException {
+        Context dcxt = xrt.getDataContext();
+        ReturnPath rPath =	((ServiceContext)dcxt).getReturnPath();
+        // check if it was already finalized
+        if (((ServiceContext) dcxt).isFinalized()) {
+            return dcxt.getValue(rPath.path);
+        }
+        // get the compound service context
+        Context acxt = xrt.getContext();
+
+        if (rPath != null && xrt.isCompound()) {
+            // if Path.argPaths.length > 1 return subcontext
+            if (rPath.argPaths != null && rPath.argPaths.length == 1) {
+                Object val = acxt.getValue(rPath.argPaths[0]);
+                dcxt.putValue(rPath.path, val);
+                return val;
+            } else {
+                ReturnPath rp = ((ServiceContext) dcxt).getReturnPath();
+                if (rp != null && rPath.path != null) {
+                    Object result = acxt.getValue(rp.path);
+                    if (result instanceof Context)
+                        return ((Context) acxt.getValue(rp.path))
+                                .getValue(rPath.path);
+                    else if (result == null) {
+                        Context out = new ServiceContext();
+                        logger.debug("\nselected paths: " + Arrays.toString(rPath.argPaths)
+                                + "\nfrom context: " + acxt);
+                        for (String p : rPath.argPaths) {
+                            out.putValue(p, acxt.getValue(p));
+                        }
+                        dcxt.setReturnValue(out);
+                        result = out;
+                    }
+                    return result;
+                } else {
+                    return xrt.getContext().getValue(rPath.path);
+                }
+            }
+        } else if (rPath != null) {
+            if (rPath.argPaths != null) {
+                if (rPath.argPaths.length == 1) {
+                    Object val = acxt.getValue(rPath.argPaths[0]);
+                    acxt.putValue(rPath.path, val);
+                    return val;
+                } else if (rPath.argPaths.length > 1) {
+                    Object result = acxt.getValue(rPath.path);
+                    if (result instanceof Context)
+                        return result;
+                    else {
+                        Context cxtOut = ((ServiceContext) acxt).getSubcontext(rPath.argPaths);
+                        cxtOut.putValue(rPath.path, result);
+                        return cxtOut;
+                    }
+                }
             }
         }
 
-        Object obj = xrt.getReturnValue(entries);
+        Object obj = ((ServiceExertion) xrt).getReturnValue(args);
         if (obj == null) {
-            ReturnPath returnPath = xrt.getDataContext().getReturnPath();
-            if (returnPath != null) {
-                return xrt.getReturnValue(entries);
+            if (rPath != null) {
+                return ((ServiceExertion) xrt).getReturnValue(args);
             } else {
                 return xrt.getContext();
             }
-        } else {
-            return obj;
+        } else if (obj instanceof Context && rPath!=null && rPath.path != null) {
+            return (((Context)obj).getValue(rPath.path));
         }
+        return obj;
     }
 
 	public static Exertion exertOpenTask(Exertion exertion, Arg... entries)
@@ -1516,122 +1574,6 @@ public class operator {
 		return new ReturnPath(path, Direction.OUT, type, paths);
 	}
 
-	public static OutputEntry output(String path, Object value) {
-		return new OutputEntry(path, value, 0);
-	}
-
-	public static OutputEntry out(String path, Object value) {
-		return new OutputEntry(path, value, 0);
-	}
-
-	public static OutEndPoint output(Exertion outExertion, String outPath) {
-		return new OutEndPoint(outExertion, outPath);
-	}
-
-	public static OutEndPoint out(Mappable outExertion, String outPath) {
-		return new OutEndPoint(outExertion, outPath);
-	}
-
-	public static InEndPoint input(Mappable inExertion, String inPath) {
-		return new InEndPoint(inExertion, inPath);
-	}
-
-	public static InEndPoint in(Exertion inExertion, String inPath) {
-		return new InEndPoint(inExertion, inPath);
-	}
-
-	public static OutputEntry output(String path, Object value, int index) {
-		return new OutputEntry(path, value, index);
-	}
-
-	public static OutputEntry out(String path, Object value, int index) {
-		return new OutputEntry(path, value, index);
-	}
-
-	public static OutputEntry dbOutput(String path, Object value) {
-		return new OutputEntry(path, value, true, 0);
-	}
-
-	public static OutputEntry dbOut(String path, Object value) {
-		return new OutputEntry(path, value, true, 0);
-	}
-
-	public static OutputEntry dbOutput(String path, Object value, URL datasoreURL) {
-		return new OutputEntry(path, value, true, datasoreURL, 0);
-	}
-
-	public static OutputEntry dbOut(String path, Object value, URL datasoreURL) {
-		return new OutputEntry(path, value, true, datasoreURL, 0);
-	}
-
-	public static InputEntry input(String path) {
-		return new InputEntry(path, null, 0);
-	}
-
-	public static OutputEntry out(String path) {
-		return new OutputEntry(path, null, 0);
-	}
-
-	public static OutputEntry output(String path) {
-		return new OutputEntry(path, null, 0);
-	}
-
-	public static InputEntry in(String path) {
-		return new InputEntry(path, null, 0);
-	}
-
-	public static Entry at(String path, Object value) {
-		return new Entry(path, value, 0);
-	}
-
-	public static Entry at(String path, Object value, int index) {
-		return new Entry(path, value, index);
-	}
-
-	public static InputEntry input(String path, Object value) {
-		return new InputEntry(path, value, 0);
-	}
-
-	public static InputEntry in(String path, Object value) {
-		return new InputEntry(path, value, 0);
-	}
-
-    public static InputEntry dbInput(String path, Object value) {
-		return new InputEntry(path, value, true, 0);
-	}
-
-	public static InputEntry dbIn(String path, Object value) {
-		return new InputEntry(path, value, true, 0);
-	}
-
-	public static InputEntry dbIntput(String path, Object value, URL datasoreURL) {
-		return new InputEntry(path, value, true, datasoreURL, 0);
-	}
-
-	public static InputEntry dbIn(String path, Object value, URL datasoreURL) {
-		return new InputEntry(path, value, true, datasoreURL, 0);
-	}
-
-	public static InputEntry input(String path, Object value, int index) {
-		return new InputEntry(path, value, index);
-	}
-
-	public static InputEntry in(String path, Object value, int index) {
-		return new InputEntry(path, value, index);
-	}
-
-	public static InputEntry inout(String path) {
-		return new InputEntry(path, null, 0);
-	}
-
-	public static InputEntry inout(String path, Object value) {
-		return new InputEntry(path, value, 0);
-	}
-
-	public static InoutEntry inout(String path, Object value, int index) {
-		return new InoutEntry(path, value, index);
-	}
-
 	protected static String getUnknown() {
 		return "unknown" + count++;
 	}
@@ -1669,35 +1611,101 @@ public class operator {
 				return "[" + _1 + "-" + _2 + "]";
 		}
 	}
+
+    public static InEndPoint input(String inComponent, String inPath) {
+        return new InEndPoint(inComponent, inPath);
+    }
+
+    public static InEndPoint in(String inComponent, String inPath) {
+        return new InEndPoint(inComponent, inPath);
+    }
+
+    public static OutEndPoint output(Mappable outExertion, String outPath) {
+        return new OutEndPoint(outExertion, outPath);
+    }
+
+    public static OutEndPoint out(Mappable outExertion, String outPath) {
+        return new OutEndPoint(outExertion, outPath);
+    }
+
+    public static InEndPoint input(Mappable inExertion, String inPath) {
+        return new InEndPoint(inExertion, inPath);
+    }
+
+    public static InEndPoint in(Mappable inExertion, String inPath) {
+        return new InEndPoint(inExertion, inPath);
+    }
+
+    private static class InEndPoint {
+        String inPath;
+        Mappable in;
+        String inComponentPath;
+
+        InEndPoint(Mappable in, String inPath) {
+            this.inPath = inPath;
+            this.in = in;
+        }
+
+        InEndPoint(String inComponentPath, String inDataPath) {
+            this.inPath = inDataPath;
+            this.inComponentPath = inComponentPath;
+        }
+    }
+
+    private static class OutEndPoint {
+        public String outPath;
+        public Mappable out;
+        public String outComponentPath;
+
+        OutEndPoint(Mappable out, String outDataPath) {
+            this.outPath = outDataPath;
+            this.out = out;
+        }
+
+        OutEndPoint(String outComponentPath, String outDataPath) {
+            this.outPath = outDataPath;
+            this.outComponentPath = outComponentPath;
+        }
+    }
     public static class Pipe {
-		String inPath;
-		String outPath;
-		Mappable in;
-		Mappable out;
-		Par par;
+        String inPath;
+        String outPath;
+        Mappable in;
+        Mappable out;
+        String outComponentPath;
+        String inComponentPath;
 
-		Pipe(Exertion out, String outPath, Mappable in, String inPath) {
-			this.out = out;
-			this.outPath = outPath;
-			this.in = in;
-			this.inPath = inPath;
-			if ((in instanceof Exertion) && (out instanceof Exertion)) {
-                par = new Par(outPath, inPath, in);
-				((ServiceExertion) out).addPersister(par);
-			}
-		}
+        Par par;
 
-		Pipe(OutEndPoint outEndPoint, InEndPoint inEndPoint) {
-			this.out = outEndPoint.out;
-			this.outPath = outEndPoint.outPath;
-			this.in = inEndPoint.in;
-			this.inPath = inEndPoint.inPath;
-			if ((in instanceof Exertion) && (out instanceof Exertion)) {
-                par = new Par(outPath, inPath, in);
-				((ServiceExertion) out).addPersister(par);
-			}
-		}
-	}
+        Pipe(Exertion out, String outPath, Mappable in, String inPath) {
+            this.out = out;
+            this.outPath = outPath;
+            this.in = in;
+            this.inPath = inPath;
+            if ((in instanceof Exertion) && (out instanceof Exertion)) {
+                par = new Par(outPath, inPath, (Exertion)in);
+                ((ServiceExertion) out).addPersister(par);
+            }
+        }
+
+        Pipe(OutEndPoint outEndPoint, InEndPoint inEndPoint) {
+            this.out = outEndPoint.out;
+            this.outPath = outEndPoint.outPath;
+            this.outComponentPath = outEndPoint.outComponentPath;
+            this.in = inEndPoint.in;
+            this.inPath = inEndPoint.inPath;
+            this.inComponentPath = inEndPoint.inComponentPath;
+
+            if ((in instanceof Exertion) && (out instanceof Exertion)) {
+                par = new Par(outPath, inPath, (Exertion)in);
+                ((ServiceExertion) out).addPersister(par);
+            }
+        }
+
+        public boolean isExertional() {
+            return in != null && out != null;
+        }
+    }
 
     public static Par persistent(Pipe pipe) {
 		pipe.par.setPersistent(true);
@@ -1759,93 +1767,6 @@ public class operator {
 		EntryList el = new EntryList(entries);
 		el.setType(EntryList.Type.INITIAL_DESIGN);
 		return el;
-	}
-	
-	public static URL dbURL() throws MalformedURLException {
-		return new URL(Sorcer.getDatabaseStorerUrl());
-	}
-
-	public static URL dsURL() throws MalformedURLException {
-		return new URL(Sorcer.getDataspaceStorerUrl());
-	}
-
-	public static void dbURL(Object object, URL dbUrl)
-			throws MalformedURLException {
-		if (object instanceof Par)
-			((Par) object).setDbURL(dbUrl);
-		else if (object instanceof ServiceContext)
-			((ServiceContext) object).setDbUrl("" + dbUrl);
-		else
-			throw new MalformedURLException("Can not set URL to: " + object);
-	}
-
-	public static URL dbURL(Object object) throws MalformedURLException {
-		if (object instanceof Par)
-			return ((Par) object).getDbURL();
-		else if (object instanceof ServiceContext)
-			return new URL(((ServiceContext) object).getDbUrl());
-		return null;
-	}
-
-	public static URL store(Object object) throws ExertionException,
-			SignatureException, ContextException {
-		return SdbUtil.store(object);
-	}
-
-	public static Object retrieve(URL url) throws IOException {
-		return url.getContent();
-	}
-
-	public static URL update(Object object) throws ExertionException,
-			SignatureException, ContextException {
-		return SdbUtil.update(object);
-	}
-
-	public static List<String> list(URL url) throws ExertionException,
-			SignatureException, ContextException {
-		return SdbUtil.list(url);
-	}
-
-	public static List<String> list(DatabaseStorer.Store store) throws ExertionException,
-			SignatureException, ContextException {
-		return SdbUtil.list(store);
-	}
-
-	public static URL delete(Object object) throws ExertionException,
-			SignatureException, ContextException {
-		return SdbUtil.delete(object);
-	}
-
-	public static int clear(DatabaseStorer.Store type) throws ExertionException,
-			SignatureException, ContextException {
-		return SdbUtil.clear(type);
-	}
-
-	public static int size(DatabaseStorer.Store type) throws ExertionException,
-			SignatureException, ContextException {
-		return SdbUtil.size(type);
-	}
-
-
-
-    private static class InEndPoint {
-		String inPath;
-		Mappable in;
-
-		InEndPoint(Mappable in, String inPath) {
-			this.inPath = inPath;
-			this.in = in;
-		}
-	}
-
-	private static class OutEndPoint {
-		public String outPath;
-		public Mappable out;
-
-		OutEndPoint(Mappable out, String outPath) {
-			this.outPath = outPath;
-			this.out = out;
-		}
 	}
 
 	public static Object target(Object object) {

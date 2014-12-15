@@ -12,20 +12,20 @@ import sorcer.service.Task
 // Service Composition f1(f2(f4, f5), f3)
 
 Task f4 = task("f4", sig("multiply", Multiplier.class),
-	context("multiply", input(path("arg/x1"), 10.0d), input(path("arg/x2"), 50.0d),
-		out(path("result/y1"), null)), strategy(Provision.FALSE));
+	context("multiply", inEnt(path("arg/x1"), 10.0d), inEnt(path("arg/x2"), 50.0d),
+		outEnt(path("result/y1"), null)), strategy(Provision.FALSE));
 		
 Task f5 = task("f5", sig("add", Adder.class),
-	context("add", input(path("arg/x3"), 20.0d), input(path("arg/x4"), 80.0d),
-		output(path("result/y2"), null)), strategy(Provision.FALSE));
+	context("add", inEnt(path("arg/x3"), 20.0d), inEnt(path("arg/x4"), 80.0d),
+		outEnt(path("result/y2"), null)), strategy(Provision.FALSE));
 
 Task f3 = task("f3", sig("subtract", Subtractor.class),
-	context("subtract", input(path("arg/x5"), null), input(path("arg/x6"), null),
-		output(path("result/y3"), null)), strategy(Provision.FALSE));
+	context("subtract", inEnt(path("arg/x5"), null), inEnt(path("arg/x6"), null),
+		outEnt(path("result/y3"), null)), strategy(Provision.FALSE));
 		
 Task f6 = task("f6", sig("divide", Divider.class),
-	context("divide", input(path("arg/x7"), null), input(path("arg/x8"), 5.0d),
-		output(path("result/y4"), null)), strategy(Provision.FALSE));
+	context("divide", inEnt(path("arg/x7"), null), inEnt(path("arg/x8"), 5.0d),
+		outEnt(path("result/y4"), null)), strategy(Provision.FALSE));
 		
 
 //job("f1", job("f2", f4, f5), job("f3",f3, f6),		

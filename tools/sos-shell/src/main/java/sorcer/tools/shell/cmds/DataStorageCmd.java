@@ -48,6 +48,9 @@ import sorcer.util.WhitespaceTokenizer;
 import sorcer.util.bdb.objects.ObjectInfo;
 import sorcer.util.url.sos.SdbUtil;
 
+import static sorcer.co.operator.list;
+import static sorcer.co.operator.store;
+
 public class DataStorageCmd extends ShellCmd {
 
 	{
@@ -200,13 +203,7 @@ public class DataStorageCmd extends ShellCmd {
 			
 			Context cxt = null;
 			 try {
-				 try {
-                     operator.store("dupa");
-                 } catch (ExertionException e1) {
-					e1.printStackTrace();
-				} catch (SignatureException e1) {
-					e1.printStackTrace();
-				}
+                 store("dupa");
 				 out.println("XXXXXXXXXXXXX service item: " + dataStorers[selectedDataStorer]);
 				 out.println("XXXXXXXXXXXXX service: " + dataStorers[selectedDataStorer].service);
 				 out.println("XXXXXXXXXXXXX interfaces: " + Arrays.toString(dataStorers[selectedDataStorer].service.getClass().getInterfaces()));
@@ -218,8 +215,8 @@ public class DataStorageCmd extends ShellCmd {
 				}
 				out.println("XXXXXXXXXXXXX dataContext: " + cxt);
 				try {
-                    operator.store("dupa");
-                    List<String>  records = operator.list(DatabaseStorer.Store.object);
+                    store("dupa");
+                    List<String>  records = list(DatabaseStorer.Store.object);
 					out.println("XXXXXXXXXXXXX records; " + records);
 				} catch (ExertionException e) {
 					// TODO Auto-generated catch block

@@ -2,6 +2,7 @@ package junit.sorcer.core.exertion;
 
 //import com.gargoylesoftware,base,testing,TestUtil;
 import static org.junit.Assert.assertEquals;
+import static sorcer.co.operator.inEnt;
 import static sorcer.eo.operator.args;
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.exert;
@@ -69,8 +70,8 @@ public class HybridJobTest {
 	private Exertion createJob1() throws Exception {
 		Par<?> x3 = par("x3", invoker("x3-e", "x1 - x2", pars("x1", "x2")));
 		Task t3 = task("t3", sig(x3),
-				context("subtract", in(path("arg/x1"), null),
-						in(path("arg/x2"), null), result("result/y")));
+				context("subtract", inEnt(path("arg/x1"), null),
+						inEnt(path("arg/x2"), null), result("result/y")));
 
 		// Task t4 = task("t4", sig("multiply", Multiplier.class),
 		// context("multiply", in(path("arg/x1"), 10.0), in("path(arg/x2"), 50.0),
@@ -115,7 +116,7 @@ public class HybridJobTest {
 		//logger.info("created job: " + job);
 
 		job = exert(job);
-		//logger.info("job context: " + jobContext(job));
+		//logger.info("job context: " + serviceContext(job));
 		
 		//logger.info("value at j1/t3/result/y: " + value(job, "j1/t3/result/y"));
 		//logger.info("value at t3, result/y: " + value(job, "t3", "result/y"));
@@ -136,8 +137,8 @@ public class HybridJobTest {
 				"t3",
 				//sig("subtract", Subtractor.class),
 				sig("subtract", SubtractorImpl.class),
-				context("subtract", in(path(arg, x1), null),
-						in(path(arg, x2), null), result("result/y")));
+				context("subtract", inEnt(path(arg, x1), null),
+						inEnt(path(arg, x2), null), result("result/y")));
 
 		// Task t4 = task("t4", sig("multiply", Multiplier.class),
 		// context("multiply", in(path(arg, x1), 10.0), in(path(arg, x2), 50.0),

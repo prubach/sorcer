@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.from;
+import static sorcer.co.operator.inEnt;
 import static sorcer.eo.operator.*;
 
 /**
@@ -68,8 +69,8 @@ public class NetBatchTasksTest {
                 type(sig("multiply", Multiplier.class, result("subtract/x1", Direction.IN)), Signature.PRE),
                 type(sig("add", Adder.class, result("subtract/x2", Direction.IN)), Signature.PRE),
                 sig("subtract", Subtractor.class, result("result/y", from("subtract/x1", "subtract/x2"))),
-                context(in("multiply/x1", 10.0), in("multiply/x2", 50.0),
-                        in("add/x1", 20.0), in("add/x2", 80.0)));
+                context(inEnt("multiply/x1", 10.0), inEnt("multiply/x2", 50.0),
+                        inEnt("add/x1", 20.0), inEnt("add/x2", 80.0)));
 
         batch3 = exert(batch3);
         //logger.info("task result/y: " + get(batch3, "result/y"));
@@ -86,8 +87,8 @@ public class NetBatchTasksTest {
                 type(sig("multiply#op1", Multiplier.class, result("op3/x1", Direction.IN)), Signature.PRE),
                 type(sig("add#op2", Adder.class, result("op3/x2", Direction.IN)), Signature.PRE),
                 sig("subtract", Subtractor.class, result("result/y", from("op3/x1", "op3/x2"))),
-                context(in("op1/x1", 10.0), in("op1/x2", 50.0),
-                        in("op2/x1", 20.0), in("op2/x2", 80.0)));
+                context(inEnt("op1/x1", 10.0), inEnt("op1/x2", 50.0),
+                        inEnt("op2/x1", 20.0), inEnt("op2/x2", 80.0)));
 
         batch3 = exert(batch3);
         //logger.info("task result/y: " + get(batch3, "result/y"));

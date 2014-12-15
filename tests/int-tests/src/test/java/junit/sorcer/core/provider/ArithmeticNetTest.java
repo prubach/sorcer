@@ -30,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
+import static sorcer.co.operator.inEnt;
+import static sorcer.co.operator.outEnt;
 import static sorcer.eo.operator.*;
 
 
@@ -55,8 +57,8 @@ public class ArithmeticNetTest {
 
 				"t5",
 				sig("add", Adder.class),
-				context("add", in("arg, x1", 20.0),
-						in("arg, x2", 80.0), result("result, y")));
+				context("add", inEnt("arg, x1", 20.0),
+						inEnt("arg, x2", 80.0), result("result, y")));
 		
 		t5 = exert(t5);
 		//logger.info("t5 dataContext: " + dataContext(t5));
@@ -70,8 +72,8 @@ public class ArithmeticNetTest {
 		Task t5 = task(
 				"t5",
 				sig("add", Arithmetic.class),
-				context("add", in("arg, x1", 20.0),
-						in("arg, x2", 80.0), result("result, y")));
+				context("add", inEnt("arg, x1", 20.0),
+						inEnt("arg, x2", 80.0), result("result, y")));
 		
 		t5 = exert(t5);
 		//logger.info("t5 dataContext: " + dataContext(t5));
@@ -84,8 +86,8 @@ public class ArithmeticNetTest {
 		Task t5 = task(
 				"t5",
 				sig("add", Adder.class),
-				context("add", in("arg/x1", 20.0),
-						in("arg/x2", 80.0), out("result/y", null)),
+				context("add", inEnt("arg/x1", 20.0),
+						inEnt("arg/x2", 80.0), outEnt("result/y", null)),
 				strategy(Access.PULL, Wait.YES));
 		
 		logger.info("t5 init dataContext: " + context(t5));
@@ -102,7 +104,7 @@ public class ArithmeticNetTest {
 		job = exert(job);
 		//logger.info("job j1: " + job);
 		//logger.info("job j1 job dataContext: " + dataContext(job));
-		logger.info("job j1 job dataContext: " + jobContext(job));
+		logger.info("job j1 job dataContext: " + serviceContext(job));
 		//logger.info("job j1 value @ j1/t3/result/y = " + get(job, "j1/t3/result/y"));
 		assertEquals(400.00, get(job, "j1/t3/result/y"));
 	}
@@ -113,7 +115,7 @@ public class ArithmeticNetTest {
 		job = exert(job);
 		//logger.info("job j1: " + job);
 		//logger.info("job j1 job dataContext: " + dataContext(job));
-		logger.info("job j1 job dataContext: " + jobContext(job));
+		logger.info("job j1 job dataContext: " + serviceContext(job));
 		//logger.info("job j1 value @ j1/t3/result/y = " + get(job, "j1/t3/result/y"));
 		assertEquals(400.00, get(job, "j1/t3/result/y"));
 	}
@@ -121,16 +123,16 @@ public class ArithmeticNetTest {
 	// two level job composition with PULL and PAR execution
 	private Job createJob(Flow flow) throws Exception {
 		Task t3 = task("t3", sig("subtract", Subtractor.class), 
-				context("subtract", in("arg/x1", null), in("arg/x2", null),
-						out("result/y", null)));
+				context("subtract", inEnt("arg/x1", null), inEnt("arg/x2", null),
+						outEnt("result/y", null)));
 
 		Task t4 = task("t4", sig("multiply", Multiplier.class), 
-				context("multiply", in("arg/x1", 10.0), in("arg/x2", 50.0),
-						out("result/y", null)));
+				context("multiply", inEnt("arg/x1", 10.0), inEnt("arg/x2", 50.0),
+						outEnt("result/y", null)));
 
 		Task t5 = task("t5", sig("add", Adder.class), 
-				context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
-						out("result/y", null)));
+				context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
+						outEnt("result/y", null)));
 
 		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
 		//Job job = job("j1",
@@ -145,7 +147,7 @@ public class ArithmeticNetTest {
     @Test
     public void contexterTest() throws Exception {
         Task cxtt = task("addContext", sig("getContext", AddContext.createContext()),
-                context("add", input("arg/x1"), input("arg/x2")));
+                context("add", inEnt("arg/x1"), inEnt("arg/x2")));
 
         Context result = context(exert(cxtt));
 //		logger.info("contexter context: " + result);
@@ -159,7 +161,7 @@ public class ArithmeticNetTest {
     public void netContexterTaskTest() throws Exception {
         Task t5 = task("t5", sig("add", Adder.class),
                 sig("getContext", Contexter.class, "Add Contexter", Signature.APD),
-                context("add", in("arg/x1"), in("arg/x2"),
+                context("add", inEnt("arg/x1"), inEnt("arg/x2"),
                         result("result/y")));
 
         Context result =  context(exert(t5));
@@ -171,7 +173,7 @@ public class ArithmeticNetTest {
     public void objectContexterTaskTest() throws Exception {
         Task t5 = task("t5", sig("add", AdderImpl.class),
                 type(sig("getContext", AddContext.createContext()), Signature.APD),
-                context("add", in("arg/x1"), in("arg/x2"),
+                context("add", inEnt("arg/x1"), inEnt("arg/x2"),
                         result("result/y")));
 
         Context result = context(exert(t5));

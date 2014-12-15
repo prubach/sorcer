@@ -21,7 +21,6 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.rioproject.deploy.DeployAdmin;
 import org.rioproject.monitor.ProvisionMonitor;
-import sorcer.core.SorcerConstants;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
@@ -72,7 +71,7 @@ public class DeployExertionTest extends DeploySetup {
         Exertion out = exert(job);
         System.out.println("Waited "+(System.currentTimeMillis()-t0)+" millis for exerting: " + out.getName());
         assertNotNull(out);
-        logger.info("job f1 context: " + jobContext(out));
+        logger.info("job f1 context: " + serviceContext(out));
         logger.info("job f1/f3/result/y3: " + get(out, "f1/f3/result/y3"));
         assertEquals(get(out, "f1/f3/result/y3"), 400.0);
     }

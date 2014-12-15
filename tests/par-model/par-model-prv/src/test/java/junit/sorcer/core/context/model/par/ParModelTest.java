@@ -3,18 +3,15 @@ package junit.sorcer.core.context.model.par;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static sorcer.co.operator.dbEntry;
-import static sorcer.co.operator.entry;
+import static sorcer.co.operator.*;
 import static sorcer.eo.operator.asis;
 import static sorcer.eo.operator.condition;
 import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.dbIn;
-import static sorcer.eo.operator.dbOut;
 import static sorcer.eo.operator.exert;
 import static sorcer.eo.operator.get;
 import static sorcer.eo.operator.in;
 import static sorcer.eo.operator.job;
-import static sorcer.eo.operator.jobContext;
+import static sorcer.eo.operator.serviceContext;
 import static sorcer.eo.operator.out;
 import static sorcer.eo.operator.persistent;
 import static sorcer.eo.operator.pipe;
@@ -137,7 +134,7 @@ public class ParModelTest {
 		logger.info("add value: " + pm.getValue("add"));
 		assertEquals(pm.getValue("add"), 300.0);		
 
-		assertEquals(pm.invoke(context(in("x", 200.0), in("y", 300.0))), 500.0);
+		assertEquals(pm.invoke(context(inEnt("x", 200.0), inEnt("y", 300.0))), 500.0);
 	}
 	
 
@@ -249,7 +246,7 @@ public class ParModelTest {
 	@Test
 	public void contextParsTest() throws RemoteException,
 			ContextException {
-		Context cxt = context(entry("url", "myUrl"), entry("design/in", 25.0));
+		Context cxt = context(ent("url", "myUrl"), ent("design/in", 25.0));
 
 		// mapping parameters to cxt, m1 and m2 are par aliases 
 		Par p1 = par("p1", "design/in", cxt);
@@ -292,7 +289,7 @@ public class ParModelTest {
 	
 	@Test
 	public void persistableEolContext() throws ContextException, RemoteException {
-		Context c4 = context("multiply", dbEntry("arg/x0", 1.0), dbIn("arg/x1", 10.0), dbOut("arg/x2", 50.0), out("result/y"));
+		Context c4 = context("multiply", dbEnt("arg/x0", 1.0), dbInEnt("arg/x1", 10.0), dbOutEnt("arg/x2", 50.0), outEnt("result/y"));
 		
 		assertEquals(value(c4, "arg/x0"), 1.0);
 		assertEquals(value(c4, "arg/x1"), 10.0);
@@ -348,13 +345,13 @@ public class ParModelTest {
 	
 	@Test
 	public void persistableMappableParsTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
-		Context cxt = context(entry("url", "myUrl"), entry("design/in", 25.0));
+		Context cxt = context(ent("url", "myUrl"), ent("design/in", 25.0));
 
 		// persistent par
-		Par dbIn = persistent(par("dbIn", "design/in", cxt));
+		Par dbIn = persistent(par("dbInEnt", "design/in", cxt));
         //Thread.sleep(500);
 		assertEquals(value(dbIn), 25.0);  	// is persisted
-		logger.info("value dbIn asis design/in 1: " + dbIn.getMappable().asis("design/in"));
+		logger.info("value dbInEnt asis design/in 1: " + dbIn.getMappable().asis("design/in"));
 
 		assertTrue(asis(cxt,"design/in") instanceof Par);
 		assertEquals(value((Par)asis(cxt, "design/in")), 25.0);
@@ -362,10 +359,10 @@ public class ParModelTest {
 
 		set(dbIn, 30.0); 	// is persisted
         //Thread.sleep(1000);
-//		logger.info("value dbIn asis: " + dbIn.asis());
-//		logger.info("value dbIn asis design/in 2: " + dbIn.getMappable().asis("design/in"));
+//		logger.info("value dbInEnt asis: " + dbInEnt.asis());
+//		logger.info("value dbInEnt asis design/in 2: " + dbInEnt.getMappable().asis("design/in"));
 
-		logger.info("value dbIn: " + value(dbIn));
+		logger.info("value dbInEnt: " + value(dbIn));
         //Thread.sleep(1000);
 		assertEquals(30.0, value(dbIn));
 		
@@ -380,7 +377,7 @@ public class ParModelTest {
 	
 	@Test
 	public void aliasedParsTest() throws ContextException, RemoteException {
-		Context cxt = context(entry("design/in1", 25.0), entry("design/in2", 35.0));
+		Context cxt = context(ent("design/in1", 25.0), ent("design/in2", 35.0));
 		
 		Par x1 = par("x1", "design/in1", cxt);
 		Par x2 = par("x2", "design/in2", cxt);
@@ -402,15 +399,15 @@ public class ParModelTest {
 	public void exertionParsTest() throws RemoteException,
 			ContextException, ExertionException, SignatureException {
 		
-		Context c4 = context("multiply", in("arg/x1"), in("arg/x2"),
-				out("result/y"));
+		Context c4 = context("multiply", inEnt("arg/x1"), inEnt("arg/x2"),
+				outEnt("result/y"));
 				
-		Context c5 = context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
-				out("result/y", null));
+		Context c5 = context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
+				outEnt("result/y", null));
 		
 		Task t3 = task("t3", sig("subtract", SubtractorImpl.class),
-				context("subtract", in("arg/x1", null), in("arg/x2", null),
-						out("result/y")));
+				context("subtract", inEnt("arg/x1", null), inEnt("arg/x2", null),
+						outEnt("result/y")));
 
 		Task t4 = task("t4", sig("multiply", MultiplierImpl.class), c4);
 
@@ -435,7 +432,7 @@ public class ParModelTest {
 		// update par references
 		j1 = exert(j1);
 		c4 = taskContext("j1/t4", j1);
-//		logger.info("j1 value: " + jobContext(job));
+//		logger.info("j1 value: " + serviceContext(job));
 //		logger.info("j1p value: " + value(j1p));
 		
 		// get job parameter value
@@ -454,15 +451,15 @@ public class ParModelTest {
 	public void associatingContextsTest() throws RemoteException,
 			ContextException, ExertionException, SignatureException {
 		
-		Context c4 = context("multiply", in("arg/x1"), in("arg/x2"),
-				out("result/y"));
+		Context c4 = context("multiply", inEnt("arg/x1"), inEnt("arg/x2"),
+				outEnt("result/y"));
 				
-		Context c5 = context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
-				out("result/y"));
+		Context c5 = context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
+				outEnt("result/y"));
 		
 		Task t3 = task("t3", sig("subtract", SubtractorImpl.class),
-				context("subtract", in("arg/x1", null), in("arg/x2", null),
-						out("result/y", null)));
+				context("subtract", inEnt("arg/x1", null), inEnt("arg/x2", null),
+						outEnt("result/y", null)));
 
 		Task t4 = task("t4", sig("multiply", MultiplierImpl.class), c4);
 
@@ -492,12 +489,12 @@ public class ParModelTest {
 		// get job parameter value
 		assertEquals(value(j1p), 400.0);
 		
-		logger.info("j1 job context: " + jobContext(j1));
+		logger.info("j1 job context: " + serviceContext(j1));
 		
 		
 		Task t6 = task("t6", sig("add", AdderImpl.class),
-				context("add", in("arg/x1", t4x1p), in("arg/x2", j1p),
-						out("result/y")));
+				context("add", inEnt("arg/x1", t4x1p), inEnt("arg/x2", j1p),
+						outEnt("result/y")));
 
 		Task task = exert(t6);
 //		logger.info("t6 context: " + context(task));
@@ -509,15 +506,15 @@ public class ParModelTest {
 	public void associatingParsTest() throws RemoteException,
 			ContextException, ExertionException, SignatureException {
 		// data contexts
-		Context c4 = context("multiply", in("arg/x1", 1.0), in("arg/x2", 5.0),
+		Context c4 = context("multiply", inEnt("arg/x1", 1.0), inEnt("arg/x2", 5.0),
 				result("result/y"));
-		Context c5 = context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
+		Context c5 = context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
 				result("result/y"));
 		
 		// exertions
 		Task t3 = task("t3", sig("subtract", SubtractorImpl.class),
-				context("subtract", in("arg/x1"), in("arg/x2"),
-						out("result/y")));
+				context("subtract", inEnt("arg/x1"), inEnt("arg/x2"),
+						outEnt("result/y")));
 		Task t4 = task("t4", sig("multiply", MultiplierImpl.class), c4);
 		Task t5 = task("t5", sig("add", AdderImpl.class), c5);
 
@@ -528,7 +525,7 @@ public class ParModelTest {
 				pipe(out(t5, "result/y"), in(t3, "arg/x2")));
 		
 		Task t6 = task("t6", sig("add", AdderImpl.class),
-				context("add", in("t6/arg/x1"), in("t6/arg/x2"),
+				context("add", inEnt("t6/arg/x1"), inEnt("t6/arg/x2"),
 						result("result/y")));
 		
 		// task t5
@@ -575,15 +572,15 @@ public class ParModelTest {
 	public void associatingParPipedParsTest() throws RemoteException,
 			ContextException, ExertionException, SignatureException {
 		// data contexts
-		Context c4 = context("multiply", in("arg/x1", 10.0), in("arg/x2", 50.0),
+		Context c4 = context("multiply", inEnt("arg/x1", 10.0), inEnt("arg/x2", 50.0),
 				result("result/y"));
-		Context c5 = context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
+		Context c5 = context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
 				result("result/y"));
 		
 		// exertions
 		Task t3 = task("t3", sig("subtract", SubtractorImpl.class),
-				context("subtract", in("arg/x1"), in("arg/x2"),
-						out("result/y")));
+				context("subtract", inEnt("arg/x1"), inEnt("arg/x2"),
+						outEnt("result/y")));
 		Task t4 = task("t4", sig("multiply", MultiplierImpl.class), c4);
 		Task t5 = task("t5", sig("add", AdderImpl.class), c5);
 
@@ -594,7 +591,7 @@ public class ParModelTest {
 				pipe(out(t5, "result/y"), in(t3, "arg/x2")));
 		
 		Task t6 = task("t6", sig("add", AdderImpl.class),
-				context("add", in("t6/arg/x1"), in("t6/arg/x2"),
+				context("add", inEnt("t6/arg/x1"), inEnt("t6/arg/x2"),
 						result("result/y")));
 		
 		// pars
@@ -620,15 +617,15 @@ public class ParModelTest {
 	public void associatingPipedParsTest() throws RemoteException,
 			ContextException, ExertionException, SignatureException {
 		// data contexts
-		Context c4 = context("multiply", in("arg/x1", 10.0), in("arg/x2", 50.0),
+		Context c4 = context("multiply", inEnt("arg/x1", 10.0), inEnt("arg/x2", 50.0),
 				result("result/y"));
-		Context c5 = context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
+		Context c5 = context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
 				result("result/y"));
 		
 		// exertions
 		Task t3 = task("t3", sig("subtract", SubtractorImpl.class),
-				context("subtract", in("arg/x1"), in("arg/x2"),
-						out("result/y")));
+				context("subtract", inEnt("arg/x1"), inEnt("arg/x2"),
+						outEnt("result/y")));
 		Task t4 = task("t4", sig("multiply", MultiplierImpl.class), c4);
 		Task t5 = task("t5", sig("add", AdderImpl.class), c5);
 
@@ -639,7 +636,7 @@ public class ParModelTest {
 				pipe(out(t5, "result/y"), in(t3, "arg/x2")));
 		
 		Task t6 = task("t6", sig("add", AdderImpl.class),
-				context("add", in("t6/arg/x1"), in("t6/arg/x2"),
+				context("add", inEnt("t6/arg/x1"), inEnt("t6/arg/x2"),
 						result("result/y")));
 		
 		// pars
@@ -821,7 +818,7 @@ public class ParModelTest {
 		};
 		
 		add(pm, callableInvoker("call", update));	
-		assertEquals(invoke(pm, "call", context(entry("limit", 100.0))), 420.0);
+		assertEquals(invoke(pm, "call", context(ent("limit", 100.0))), 420.0);
 	}
 	
 	ParModel pm = new ParModel();
@@ -847,7 +844,7 @@ public class ParModelTest {
 		
 		add(pm, methodInvoker("call", new Config()));	
 		logger.info("call value:" + invoke(pm, "call"));
-		assertEquals(invoke(pm, "call", context(entry("limit", 100.0))), 420.0);
+		assertEquals(invoke(pm, "call", context(ent("limit", 100.0))), 420.0);
 	}
 	
 	@Test
@@ -870,7 +867,7 @@ public class ParModelTest {
 				);
 		assertEquals(33510.32163829113,
 				get((Context) invoke(pm, "getSphereVolume"), "sphere/volume")
-				);
+		);
 
 		// invoke the agent directly
 		invoke(pm,

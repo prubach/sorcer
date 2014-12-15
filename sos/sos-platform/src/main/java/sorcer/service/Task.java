@@ -64,7 +64,7 @@ public class Task extends ServiceExertion {
 	// used for tasks with multiple signatures by CatalogSequentialDispatcher
 	private boolean isContinous = false;
 
-	protected Task innerTask;
+	protected Task delegate;
 	
 	public Task() {
 		super();
@@ -142,7 +142,7 @@ public class Task extends ServiceExertion {
 	
 	public Task doTask(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
-		if (innerTask == null) {
+		if (delegate == null) {
 			if (fidelity != null) {
 				Signature ss = null;
 				if (fidelity.size() == 1) {
@@ -158,25 +158,25 @@ public class Task extends ServiceExertion {
 				if (ss != null) {
 					if (ss instanceof NetSignature) {
 						try {
-                            innerTask = new NetTask(name, (NetSignature) ss);
+                            delegate = new NetTask(name, (NetSignature) ss);
 						} catch (SignatureException e) {
 							throw new ExertionException(e);
 						}
 					} else if (ss instanceof ObjectSignature) {
-                        innerTask = new ObjectTask(ss.getSelector(),
+                        delegate = new ObjectTask(ss.getSelector(),
 								(ObjectSignature) ss);
-                        innerTask.setName(name);
+                        delegate.setName(name);
 					}
-                    innerTask.setFidelities(getFidelities());
-                    innerTask.setFidelity(getFidelity());
-                    innerTask.setSelectedFidelitySelector(selectedFidelitySelector);
-                    innerTask.setContext(dataContext);
-                    innerTask.setIndex(index);
-                    innerTask.setControlContext(controlContext);
+                    delegate.setFidelities(getFidelities());
+                    delegate.setFidelity(getFidelity());
+                    delegate.setSelectedFidelitySelector(selectedFidelitySelector);
+                    delegate.setContext(dataContext);
+                    delegate.setIndex(index);
+                    delegate.setControlContext(controlContext);
 				}
 			}
 		}
-		return innerTask.doTask(txn);
+		return delegate.doTask(txn);
 	}
 	
 	public Task doTask(Exertion xrt, Transaction txn) throws ExertionException {
@@ -238,8 +238,8 @@ public class Task extends ServiceExertion {
 	}
 
 	public String toString() {
-		if (innerTask != null) {
-			return innerTask.toString();
+		if (delegate != null) {
+			return delegate.toString();
 		}
 		StringBuilder sb = new StringBuilder(
 				"\n=== START PRINTNIG TASK ===\nExertion Description: "
@@ -368,12 +368,12 @@ public class Task extends ServiceExertion {
 		throw new RuntimeException("Tasks do not contain component exertions!");
 	}
 
-	public Task getInnerTask() {
-		return innerTask;
+	public Task getDelegate() {
+		return delegate;
 	}
 
-	public void setInnerTask(Task innerTask) {
-		this.innerTask = innerTask;
+	public void setDelegate(Task delegate) {
+		this.delegate = delegate;
 	}
 	
 	/**

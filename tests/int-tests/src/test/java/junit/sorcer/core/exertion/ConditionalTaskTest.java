@@ -1,6 +1,7 @@
 package junit.sorcer.core.exertion;
 
 import static org.junit.Assert.assertEquals;
+import static sorcer.co.operator.inEnt;
 import static sorcer.eo.operator.alt;
 import static sorcer.eo.operator.condition;
 import static sorcer.eo.operator.context;
@@ -61,7 +62,7 @@ public class ConditionalTaskTest {
 		Task task = task(
 				"add",
 				sig("add", AdderImpl.class),
-				context(in("arg/x1", 20.0), in("arg/x2", 80.0),
+				context(inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
 						result("result/y")));
 
 		OptExertion ift = opt("ift", condition(pm,
@@ -95,15 +96,15 @@ public class ConditionalTaskTest {
 
 
 		Task t3 = xrt("t3", sig("subtract", SubtractorImpl.class), 
-				cxt("subtract", in("arg/x1", 200.0), in("arg/x2", 50.0),
+				cxt("subtract", inEnt("arg/x1", 200.0), inEnt("arg/x2", 50.0),
 						result("result/y")));
 
 		Task t4 = xrt("t4", sig("multiply", MultiplierImpl.class), 
-				cxt("multiply", in("arg/x1", 10.0), in("arg/x2", 50.0),
+				cxt("multiply", inEnt("arg/x1", 10.0), inEnt("arg/x2", 50.0),
 						result("result/y")));
 
 		Task t5 = xrt("t5", sig("add", AdderImpl.class), 
-				cxt("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
+				cxt("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
 						result("result/y")));
 		
 		OptExertion opt1 = opt("opt1", condition(pm,

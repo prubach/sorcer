@@ -18,6 +18,8 @@ import sorcer.core.requestor.ServiceRequestor;
 import sorcer.ex0.HelloWorld;
 import sorcer.service.*;
 
+import static sorcer.co.operator.inEnt;
+import static sorcer.co.operator.outEnt;
 import static sorcer.eo.operator.*;
 
 public class HelloWorldReq {
@@ -29,7 +31,7 @@ public class HelloWorldReq {
         System.out.println("Starting HelloWorldRequestor");
 
         Task t1 = task("hello", sig("sayHelloWorld", HelloWorld.class),
-                context("Hello", in(path("in", "value"), "TESTER"), out(path("out", "value"), null)));
+                context("Hello", inEnt(path("in", "value"), "TESTER"), outEnt(path("out", "value"), null)));
 
         System.out.println("Task t1 prepared: " + t1);
         Exertion out = exert(t1);

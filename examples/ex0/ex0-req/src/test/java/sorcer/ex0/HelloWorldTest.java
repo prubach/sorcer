@@ -15,6 +15,7 @@ import sorcer.junit.SorcerRunner;
 
 import java.util.List;
 
+import static sorcer.co.operator.outEnt;
 import static sorcer.eo.operator.*;
 
 @RunWith(SorcerRunner.class)
@@ -30,7 +31,7 @@ public class HelloWorldTest {
         logger.info("Starting HelloWorldTester");
 
         Task t1 = task("hello", sig("sayHelloWorld", HelloWorld.class),
-                context("Hello", in(path("in", "value"), "TESTER"), out(path("out", "value"), null)));
+                context("Hello", in(path("in", "value"), "TESTER"), outEnt(path("out", "value"), null)));
 
         logger.info("Task t1 prepared: " + t1);
         Exertion out = exert(t1);

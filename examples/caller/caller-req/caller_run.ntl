@@ -30,4 +30,4 @@ codebase mvn://org.sorcersoft.sorcer:caller-api:1.1-SNAPSHOT
 
 import sorcer.caller.Caller;
 
-t1 = task("hello1", sig("sayHelloWorld", Caller.class), context("Hello", input(path("in/value"), "TESTER"), out(path("out", "value"), null)));
+t1 = task("hello1", sig("sayHelloWorld", Caller.class), context("Hello", inEnt(path("in/value"), "TESTER"), outEnt(path("out", "value"), null)));

@@ -19,7 +19,9 @@ package junit.sorcer.core.exertion;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static sorcer.co.operator.inEnt;
 import static sorcer.co.operator.list;
+import static sorcer.co.operator.outEnt;
 import static sorcer.eo.operator.*;
 import static sorcer.po.operator.invoker;
 import static sorcer.po.operator.par;
@@ -97,7 +99,7 @@ public class ServiceExertionTest {
 		eJob = exert(eJob);
 		logger.info("eJob: " + eJob);
 
-		logger.info("eJob jobContext: " + jobContext(eJob));
+		logger.info("eJob serviceContext: " + serviceContext(eJob));
 		//logger.info("eJob value @  j2/t5/arg/x1 = " + get(eJob, "j2/t5/arg/x1"));
 		assertEquals(20.0, get(eJob, "/j1/j2/t5/arg/x1"));
 			
@@ -113,7 +115,7 @@ public class ServiceExertionTest {
 		//logger.info("eJob value @  j2/t4/arg/x2 = " + exert(eJob, "j2/t4/arg/x2"));
 		assertEquals(50.0, get(eJob, "/j1/j2/t4/arg/x2"));
 			
-		logger.info("job dataContext: " + jobContext(eJob));
+		logger.info("job dataContext: " + serviceContext(eJob));
 		logger.info("value at j1/t3/result/y: " + get(eJob, "j1/t3/result/y"));
 		logger.info("value at t3, result/y: " + get(eJob, "t3", "result/y"));
 
@@ -153,27 +155,27 @@ public class ServiceExertionTest {
 	private Exertion createTask() throws Exception {
 		
 //		Task task = task("t1", sig("add", Adder.class), 
-//		   dataContext("add", in(path(arg, x1), 20.0), in(path(arg, x2), 80.0),
-//		      out(path(result, y), null)));
+//		   dataContext("add", inEnt(path(arg, x1), 20.0), inEnt(path(arg, x2), 80.0),
+//		      outEnt(path(result, y), null)));
 
 		return task("t1", sig("add", AdderImpl.class),
-				   context("add", in(path(arg, x1), 20.0), in(path(arg, x2), 80.0),
-				      out(path(result, y), null)));
+				   context("add", inEnt(path(arg, x1), 20.0), inEnt(path(arg, x2), 80.0),
+				      outEnt(path(result, y), null)));
 	}
 	
 	// two level job composition
 	private Exertion createJob() throws Exception {
 		Task t3 = task("t3", sig("subtract", SubtractorImpl.class),
-				context("subtract", in(path(arg, x1), null), in(path(arg, x2), null),
-						out(path(result, y), null)));
+				context("subtract", inEnt(path(arg, x1), null), inEnt(path(arg, x2), null),
+						outEnt(path(result, y), null)));
 
 		Task t4 = task("t4", sig("multiply", MultiplierImpl.class), 
-				context("multiply", in(path(arg, x1), 10.0), in(path(arg, x2), 50.0),
-						out(path(result, y), null)));
+				context("multiply", inEnt(path(arg, x1), 10.0), inEnt(path(arg, x2), 50.0),
+						outEnt(path(result, y), null)));
 
 		Task t5 = task("t5", sig("add", AdderImpl.class), 
-				context("add", in(path(arg, x1), 20.0), in(path(arg, x2), 80.0),
-						out(path(result, y), null)));
+				context("add", inEnt(path(arg, x1), 20.0), inEnt(path(arg, x2), 80.0),
+						outEnt(path(result, y), null)));
 
 		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
 		//Job j1= job("j1", job("j2", t4, t5, strategy(Flow.PARALLEL, Access.PULL)), t3,
@@ -201,21 +203,21 @@ public class ServiceExertionTest {
 	private Exertion createXrt() throws Exception {
 		// using the data dataContext in jobs
 		Task t3 = xrt("t3", sig("subtract", SubtractorImpl.class), 
-				cxt("subtract", in("arg/x1", null), in("arg/x2", null),
-						out("result/y", null)));
+				cxt("subtract", inEnt("arg/x1", null), inEnt("arg/x2", null),
+						outEnt("result/y", null)));
 
 		Task t4 = xrt("t4", sig("multiply", MultiplierImpl.class), 
-				cxt("multiply", in("super/arg/x1"), in("arg/x2", 50.0),
-						out("result/y", null)));
+				cxt("multiply", inEnt("super/arg/x1"), inEnt("arg/x2", 50.0),
+						outEnt("result/y", null)));
 
 		Task t5 = xrt("t5", sig("add", AdderImpl.class), 
-				cxt("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
-						out("result/y", null)));
+				cxt("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0),
+						outEnt("result/y", null)));
 
 		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
 		//Job j1= job("j1", job("j2", t4, t5, strategy(Flow.PARALLEL, Access.PULL)), t3,
 		return xrt("j1", sig("execute", ServiceJobber.class),
-					cxt(in("arg/x1", 10.0), out("job/result")),
+					cxt(inEnt("arg/x1", 10.0), outEnt("job/result")),
 				xrt("j2", sig("execute", ServiceJobber.class), t4, t5),
 				t3,
 				pipe(out(t4, "result/y"), in(t3, "arg/x1")),

@@ -32,8 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static sorcer.co.operator.entry;
-import static sorcer.co.operator.map;
+import static sorcer.co.operator.*;
 import static sorcer.eo.operator.*;
 import static sorcer.eo.operator.get;
 import static sorcer.eo.operator.in;
@@ -54,11 +53,11 @@ public class ContextTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void contextCreationTest() throws ExertionException, ContextException {
-		Map<String, Double> m = map(entry("k1", 1.0), entry("k2", 2.0));
+		Map<String, Double> m = map(ent("k1", 1.0), ent("k2", 2.0));
 		//logger.info("map m:  " + m);
 		assertTrue("Wrong value for k1=1.0", m.get("k1").equals(1.0));
 
-		Context<?> cxt = context(in("k1", 1.0), in("k2", 2.0), in("k3", 3.0), out("k4", 4.0));
+		Context<?> cxt = context(inEnt("k1", 1.0), inEnt("k2", 2.0), inEnt("k3", 3.0), outEnt("k4", 4.0));
 		logger.info("in/out dataContext: " + cxt);
 		assertEquals(1.0, get(cxt, "k1"));
 		assertEquals(2.0, get(cxt, "k2"));
@@ -71,38 +70,38 @@ public class ContextTest {
 		
 //		assertEquals(4, ((PositionalContext)cxt).getTally());
 //		//logger.info("tally: " + ((PositionalContext)cxt).getTally());
-//		put(cxt, entry("k4", var("x1", 50.0)));
+//		put(cxt, ent("k4", var("x1", 50.0)));
 //		logger.info("tally after k4: " + ((PositionalContext)cxt).getTally());
 //		assertEquals(4, ((PositionalContext)cxt).getTally());
 //		logger.info("value k4: " + get(cxt, "k4"));
 //		assertEquals(50.0, revalue(cxt, "k4"));
 //		assertEquals(name(get(cxt, "k4")), "x1");
 		
-//		put(cxt, entry("k5", var("x2", 100.0)));
+//		put(cxt, ent("k5", var("x2", 100.0)));
 //		logger.info("tally after k5: " + ((PositionalContext)cxt).getTally());
 //		assertEquals(5, ((PositionalContext)cxt).getTally());
 //		logger.info("value k5: " + get(cxt, "k5"));
 //		assertEquals(100.0, revalue(cxt, "k5"));
 	
-		cxt = context(entry("k1", 1.0), entry("k2", 2.0), entry("k3", 3.0));
+		cxt = context(ent("k1", 1.0), ent("k2", 2.0), ent("k3", 3.0));
 		logger.info("dataContext cxt:  " + cxt.getClass());
-		//logger.info("entry dataContext cxt:  " + cxt);
+		//logger.info("ent dataContext cxt:  " + cxt);
 		assertEquals(2.0, get(cxt, "k2"));
 		assertEquals(3.0, get(cxt, "k3"));
 	}
 
     @Test
     public void contextClosureTest() throws ExertionException, ContextException, RemoteException {
-        Context<?> cxt = context(in("x1"), in("x2"),
+        Context<?> cxt = context(inEnt("x1"), inEnt("x2"),
                 in(par("y", invoker("e1", "x1 * x2", pars("x1", "x2")))));
         model(cxt);
 
-//		logger.info("x1 value: " + value(cxt, "x1", entry("x1", 10.0), entry("x2", 50.0)));
+//		logger.info("x1 value: " + value(cxt, "x1", ent("x1", 10.0), ent("x2", 50.0)));
 //		logger.info("x2 value: " + value(cxt, "x2"));
 //		logger.info("y value: " + value(cxt, "y"));
 
-        logger.info("cxt value:  " + value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
-        assertEquals(500.0, value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
+        logger.info("cxt value:  " + value(cxt, "y", ent("x1", 10.0), ent("x2", 50.0)));
+        assertEquals(500.0, value(cxt, "y", ent("x1", 10.0), ent("x2", 50.0)));
     }
 
     @Test
@@ -112,8 +111,8 @@ public class ContextTest {
         model(cxt);
 //		logger.info("cxt: " + cxt);
 
-        //logger.info("cxt value:  " + value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
-        assertEquals(500.0, value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
+        //logger.info("cxt value:  " + value(cxt, "y", ent("x1", 10.0), ent("x2", 50.0)));
+        assertEquals(500.0, value(cxt, "y", ent("x1", 10.0), ent("x2", 50.0)));
     }
 
     @Test
@@ -125,10 +124,10 @@ public class ContextTest {
 		logger.info("return path: " + cxt.getReturnPath());
         model(cxt);
 //		logger.info("cxt2: " + cxt);
-//		logger.info("cxt value:  " + value(cxt, entry("x1", 10.0), entry("x2", 50.0)));
+//		logger.info("cxt value:  " + value(cxt, ent("x1", 10.0), ent("x2", 50.0)));
 
         // No path for the evaluation is specified in the context cxt
-        assertEquals(500.0, value(cxt, entry("x1", 10.0), entry("x2", 50.0)));
+        assertEquals(500.0, value(cxt, ent("x1", 10.0), ent("x2", 50.0)));
     }
 
     @Test
@@ -141,8 +140,8 @@ public class ContextTest {
         logger.info("x11: " + value(cxt0, "x11"));
         logger.info("x21: " + value(cxt0,"x21"));
 
-//		logger.info("cxt value:  " + value(cxt, entry("x1", value(cxt0, "x11")), entry("x2", value(cxt0,"x21"))));
-        assertEquals(500.0, value(cxt, entry("x1", value(cxt0, "x11")), entry("x2", value(cxt0,"x21"))));
+//		logger.info("cxt value:  " + value(cxt, ent("x1", value(cxt0, "x11")), ent("x2", value(cxt0,"x21"))));
+        assertEquals(500.0, value(cxt, ent("x1", value(cxt0, "x11")), ent("x2", value(cxt0, "x21"))));
     }
 
     @Test
@@ -181,7 +180,7 @@ public class ContextTest {
 
     @Test
     public void weakValueTest() throws Exception {
-        Context cxt = context("add", in("arg/x1", 20.0), in("arg/x2", 80.0));
+        Context cxt = context("add", inEnt("arg/x1", 20.0), inEnt("arg/x2", 80.0));
 
 //		logger.info("arg/x1 = " + cxt.getValue("arg/x1"));
         assertEquals(20.0, cxt.getValue("arg/x1"));

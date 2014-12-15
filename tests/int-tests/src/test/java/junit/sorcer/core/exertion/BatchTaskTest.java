@@ -19,6 +19,7 @@ package junit.sorcer.core.exertion;
 
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.from;
+import static sorcer.co.operator.inEnt;
 import static sorcer.eo.operator.*;
 import static sorcer.po.operator.invoker;
 import static sorcer.po.operator.pars;
@@ -62,8 +63,8 @@ public class BatchTaskTest {
                 type(sig(invoker("x1 * x2", pars("x1", "x2")), result("x5")), Signature.PRE),
                 type(sig(invoker("x3 + x4", pars("x3","x4")), result("x6")), Signature.PRE),
                 type(sig(invoker("x5 - x6", pars("x5", "x6")), result("result/y")), Signature.SRV),
-                context(in("arg/x1", 10.0), in("arg/x2", 50.0),
-                        in("arg/x3", 20.0), in("arg/x4", 80.0)));
+                context(inEnt("arg/x1", 10.0), inEnt("arg/x2", 50.0),
+                        inEnt("arg/x3", 20.0), inEnt("arg/x4", 80.0)));
 
         //logger.info("task batch1: " + batch1.getClass());
 
@@ -80,8 +81,8 @@ public class BatchTaskTest {
                 sig(invoker("x1 * x2", pars("x1", "x2")), result("x5")),
                 sig(invoker("x3 + x4", pars("x3","x4")), result("x6")),
                 sig(invoker("x5 - x6", pars("x5", "x6")), result("result/y")),
-                context(in("arg/x1", 10.0), in("arg/x2", 50.0),
-                        in("arg/x3", 20.0), in("arg/x4", 80.0)));
+                context(inEnt("arg/x1", 10.0), inEnt("arg/x2", 50.0),
+                        inEnt("arg/x3", 20.0), inEnt("arg/x4", 80.0)));
 
         //logger.info("task t: " + value(batch1));
         assertEquals("Wrong value for 400.0", 400.0, value(batch1));
@@ -96,8 +97,8 @@ public class BatchTaskTest {
                 type(sig(invoker("x4 + x3", pars("x3","x4")), result("x6")), Signature.PRE),
                 sig(invoker("x5 - x6", pars("x5", "x6")), result("result/y", Direction.IN)),
                 type(sig("add", AdderImpl.class, result("result/z")), Signature.POST),
-                context(in("arg/x1", 10.0), in("arg/x2", 50.0),
-                        in("arg/x3", 20.0), in("arg/x4", 80.0)));
+                context(inEnt("arg/x1", 10.0), inEnt("arg/x2", 50.0),
+                        inEnt("arg/x3", 20.0), inEnt("arg/x4", 80.0)));
 
         batch2 = exert(batch2);
         //logger.info("task result/y: " + get(batch2, "result/y"));
@@ -116,8 +117,8 @@ public class BatchTaskTest {
 				type(sig("multiply", MultiplierImpl.class, result("subtract/x1", Direction.IN)), Signature.PRE),
 				type(sig("add", AdderImpl.class, result("subtract/x2", Direction.IN)), Signature.PRE),
 				sig("subtract", SubtractorImpl.class, result("result/y", from("subtract/x1", "subtract/x2"))),
-				context(in("multiply/x1", 10.0), in("multiply/x2", 50.0), 
-						in("add/x1", 20.0), in("add/x2", 80.0)));
+				context(inEnt("multiply/x1", 10.0), inEnt("multiply/x2", 50.0), 
+						inEnt("add/x1", 20.0), inEnt("add/x2", 80.0)));
 		
 		batch3 = exert(batch3);
 		//logger.info("task result/y: " + get(batch3, "result/y"));
@@ -133,8 +134,8 @@ public class BatchTaskTest {
 				type(sig("multiply#op1", MultiplierImpl.class, result("op3/x1", Direction.IN)), Signature.PRE),
 				type(sig("add#op2", AdderImpl.class, result("op3/x2", Direction.IN)), Signature.PRE),
 				sig("subtract", SubtractorImpl.class, result("result/y", from("op3/x1", "op3/x2"))),
-				context(in("op1/x1", 10.0), in("op1/x2", 50.0), 
-						in("op2/x1", 20.0), in("op2/x2", 80.0)));
+				context(inEnt("op1/x1", 10.0), inEnt("op1/x2", 50.0), 
+						inEnt("op2/x1", 20.0), inEnt("op2/x2", 80.0)));
 		
 		batch3 = exert(batch3);
 		//logger.info("task result/y: " + get(batch3, "result/y"));
