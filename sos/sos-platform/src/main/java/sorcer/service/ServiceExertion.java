@@ -140,17 +140,17 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 
 	protected SorcerPrincipal principal;
 
-	protected boolean isModeling = false;
+	protected boolean isRevaluable = false;
 
 	// if isProxy is true then the identity of returned exertion 
 	// after exerting it is preserved
 	protected boolean isProxy = false;
 	
 	// the exertions's dependency scope
-	protected ParModel scope;
+	protected Context scope;
 
-	// dependency management for this evaluator 
-	protected List<Invocation> dependers = new ArrayList<Invocation>();
+	// dependency management for this exertion
+	protected List<Evaluation> dependers = new ArrayList<Evaluation>();
 
 	public ServiceExertion() {
 		this(defaultName + count++);
@@ -247,8 +247,11 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 					obj = cxt;
 				else if (rp.path.equals("self"))
 					obj = xrt;
-				else
-					obj = xrt.getContext().getValue(rp.path);
+				else  if (rp.argPaths != null) {
+					obj = ((ServiceContext)cxt).getSubcontext(rp.argPaths);
+				} else {
+					obj = cxt.getValue(rp.path);
+				}
 			}
 			return obj;
 		} catch (Exception e) {
@@ -331,6 +334,7 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
+		
 		ExertionDispatcher se = new ExertionDispatcher(this);
 		return se.exert(entries);
 	}
@@ -437,8 +441,7 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 	
 	public void setFidelity(String name, ServiceFidelity fidelity) {
 		this.fidelity = new ServiceFidelity(name, fidelity);
-
-		ServiceFidelity nf = new ServiceFidelity(name, fidelity);
+		putFidelity(name, fidelity);
 		selectedFidelitySelector = name;
 	}
 	
@@ -1016,12 +1019,30 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 						ex.printStackTrace();
 						throw new SetterException(ex);
 					}
+					// check for control strategy
+				} else if (e instanceof ControlContext) {
+					updateControlContect((ControlContext)e);
 				}
 			}
 		}
 		return this;
 	}
 
+	protected void updateControlContect(ControlContext startegy) {
+		Access at = startegy.getAccessType();
+		if (at != null)
+			controlContext.setAccessType(at);
+		Flow ft = startegy.getFlowType();
+		if (ft != null)
+			controlContext.setFlowType(ft);
+		if (controlContext.isProvisionable() != startegy.isProvisionable())
+			controlContext.setProvisionable(startegy.isProvisionable());
+		if (controlContext.isWaitable() != (startegy.isWaitable()))
+			controlContext.setWaitable(startegy.isWaitable());
+		if (controlContext.isMonitorable() != startegy.isMonitorable())
+			controlContext.setMonitorable(startegy.isMonitorable());
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1072,11 +1093,11 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 	 */
 	@Override
 	public boolean isModeling() {
-		return isModeling;
+		return isRevaluable;
 	}
 
 	public void setModeling(boolean isModeling) {
-		this.isModeling = isModeling;
+		this.isRevaluable = isModeling;
 	}
 
 	public String toString() {
@@ -1285,8 +1306,8 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 		Context cxt = null;
 		try {
 			substitute(entries);
-			Exertion evaluatedExertion = exert();
-			ReturnPath returnPath = evaluatedExertion.getDataContext()
+			Exertion evaluatedExertion = exert(entries);
+			ReturnPath rp = ((ServiceContext)evaluatedExertion.getDataContext())
 					.getReturnPath();
 			if (evaluatedExertion instanceof Job) {
 				cxt = ((Job) evaluatedExertion).getJobContext();
@@ -1294,14 +1315,23 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 				cxt = evaluatedExertion.getContext();
 			}
 
-			if (returnPath != null) {
-				if (returnPath.path == null)
+			if (rp != null) {
+				if (rp.path == null)
 					return cxt;
-				else if (returnPath.path.equals("self"))
+				else if (rp.path.equals("self"))
 					return this;
-				else
+				else if (rp.path != null) {
+					cxt.setReturnValue(cxt.getValue(rp.path));
+					Context out = null;
+					if (rp.argPaths != null && rp.argPaths.length > 0) {
+						out = ((ServiceContext)cxt).getSubcontext(rp.argPaths);
+						cxt.setReturnValue(out);
+						return out;
+					}
 					return cxt.getReturnValue();
-
+				} else {
+					return cxt.getReturnValue();
+				}
 			}
 		} catch (Exception e) {
 			throw new InvocationException(e);
@@ -1309,14 +1339,7 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 		return cxt;
 	}
 
-	/**
-	 * <p>
-	 *  Returns the dependency scope for this exertion.
-	 * </p>
-	 * 
-	 * @return the scope
-	 */
-	public ParModel getScope() {
+	public Object getScope() throws RemoteException {
 		return scope;
 	}
 
@@ -1328,9 +1351,9 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 	 * 
 	 * @param scope
 	 *            the scope to set
-	 */
-	public void setScope(ParModel scope) {
-		this.scope = scope;
+	 */	
+	public void setScope(Object scope) throws RemoteException, ContextException {
+		this.scope = (Context)scope;
 	}
 
 	/**
@@ -1340,7 +1363,7 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 	 * 
 	 * @return the dependers
 	 */
-	public List<Invocation> getDependers() {
+	public List<Evaluation> getDependers() {
 		return dependers;
 	}
 
@@ -1352,23 +1375,8 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 	 * @param dependers
 	 *            the dependers to set
 	 */
-	public void setDependers(List<Invocation> dependers) {
+	public void setDependers(List<Evaluation> dependers) {
 		this.dependers = dependers;
-	}
-	
-	public Exertion addDepender(Invocation depender) {
-		if (this.dependers == null) 
-			this.dependers = new ArrayList<Invocation>();
-		dependers.add(depender);
-		return this;
-	}
-	
-	public Exertion addDependers(Invocation... dependers) {
-		if (this.dependers == null) 
-			this.dependers = new ArrayList<Invocation>();
-		for (Invocation depender : dependers)
-			this.dependers.add(depender);
-		return this;
 	}
 
 	/*
@@ -1492,7 +1500,22 @@ public abstract class ServiceExertion implements Exertion, Paradigmatic, Exec, S
 	public void setProxy(boolean isProxy) {
 		this.isProxy = isProxy;
 	}
-	
+
+	public Exertion addDepender(Evaluation depender) {
+		if (this.dependers == null)
+			this.dependers = new ArrayList<Evaluation>();
+		dependers.add(depender);
+		return this;
+	}
+
+	public Evaluation addDependers(Evaluation... dependers) {
+		if (this.dependers == null)
+			this.dependers = new ArrayList<Evaluation>();
+		for (Evaluation depender : dependers)
+			this.dependers.add(depender);
+		return this;
+	}
+
 	/* (non-Javadoc)
 	 * @see sorcer.service.Exertion#getComponentExertion(java.lang.String)
 	 */

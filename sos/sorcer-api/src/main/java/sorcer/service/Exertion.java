@@ -76,7 +76,7 @@ import sorcer.service.Strategy.Flow;
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocation<Object>, Serializable, Identifiable {
+public interface Exertion extends Service<Object>, Mappable, Evaluation<Object>, Invocation<Object>, Serializable, Identifiable {
 
 	/**
 	 * Returns a name of this exertion.

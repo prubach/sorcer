@@ -30,7 +30,7 @@ import net.jini.core.transaction.TransactionException;
  * 
  * @author Mike Sobolewski
  */
-public interface Service {
+public interface Service<T> extends Evaluation<T>  {
 	
 	/**
 	 * A generic service request as specified by an exertion - a generic service

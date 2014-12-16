@@ -742,7 +742,7 @@ public class ParModelTest {
 	
 	@Ignore
 	@Test
-	public void runnableAttachment() throws RemoteException, ContextException {
+	public void runnableAttachment() throws RemoteException, ContextException, ExertionException {
 		ParModel pm = parModel();
 		final Par x = par("x", 10.0);
 		final Par y = par("y", 20.0);
@@ -849,7 +849,7 @@ public class ParModelTest {
 	
 	@Test
 	public void attachAgent() throws MalformedURLException, RemoteException,
-			ContextException {
+			ContextException, ExertionException {
 		// set the sphere/radius in the model
 		put(pm, "sphere/radius", 20.0);
 		// attach the agent to the par-model and invoke
@@ -858,8 +858,9 @@ public class ParModelTest {
                 new URL(SorcerEnv.getWebsterUrl() + "/" + Resolver.getResolver().resolveRelative("org.sorcersoft.sorcer:model-beans")
         )));
 
-		Object val =  get((Context)value(pm,"getSphereVolume"), "sphere/volume");
-				 
+		Object val =  (Context)value(pm,"getSphereVolume");
+
+		logger.info("Got: " + val);
 //		 logger.info("call getSphereVolume:" + get((Context)value(pm,
 //				 "getSphereVolume"), "sphere/volume"));
 		assertEquals(33510.32163829113,

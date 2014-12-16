@@ -210,11 +210,7 @@ public class operator {
 	public static <T1, T2> T1 key(Tuple2<T1, T2> entry) {
 		return entry._1;
 	}
-	
-	public static <T1, T2> T2 value(Tuple2<T1, T2> entry) {
-		return entry._2;
-	}
-		
+
 	public static <T extends List<?>> Table table(T... elems) {
 		int rowCount = elems.length;
 		int columnCount = ((List<?>) elems[0]).size();
@@ -236,6 +232,14 @@ public class operator {
 			lc.add(elems[i]);
 		}
 		return lc;
+	}
+
+	public static Object value(Table table, String rowName, String columnName) {
+		return table.getValue(rowName, columnName);
+	}
+
+	public static Object value(Table table, int row, int column) {
+		return table.getValueAt(row, column);
 	}
 
 	public static Map<Object, Object> dictionary(Tuple2<?, ?>... entries) {
@@ -313,6 +317,8 @@ public class operator {
 		}
 	}
 
+
+
 	// Compat for SORCER 5.0.0-SNAPSHOT {
 	public static InputEntry inEnt(String path, Object value) {
 		return in(path, value);
@@ -326,8 +332,25 @@ public class operator {
 		return out(path);
 	}
 
-	public static OutputEntry outEnt(String path, Object value) {
-		return out(path, value);
+	public static <T> InputEntry<T> inEnt(String path, T value, String annotation) {
+		InputEntry<T> ie = inEnt(path, value);
+		ie.annotation(annotation);
+		return ie;
+	}
+
+	public static <T> OutputEntry<T> outEnt(String path, T value) {
+		if (value instanceof String && ((String)value).indexOf('|') > 0) {
+			OutputEntry oe =  outEnt(path, null);
+			oe.annotation((String)value);
+			return oe;
+		}
+		return new OutputEntry(path, value, 0);
+	}
+
+	public static <T> OutputEntry<T> outEnt(String path, T value, String annotation) {
+		OutputEntry oe =  outEnt(path, value);
+		oe.annotation(annotation);
+		return oe;
 	}
 
 
@@ -411,8 +434,8 @@ public class operator {
 		return new InoutEntry(path, value, index);
 	}
 
-	public static <T> Entry<T> ent(String path, T value, String association) {
-		return new Entry<T>(path, value, association);
+	public static <T> AnnotatedEntry<T> ent(String path, T value, String association) {
+		return new AnnotatedEntry<T>(path, association, value);
 	}
 
 	//  }

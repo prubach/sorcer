@@ -1781,5 +1781,29 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
             heartbeatClient = new HeartbeatClient(getReferentUuid());
         heartbeatClient.addHeartbeatServer(configArgs);
     }*/
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#asis()
+	 */
+	@Override
+	public Object asis() throws EvaluationException, RemoteException {
+		return null;
+	}
 
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#getValue(sorcer.service.Arg[])
+	 */
+	@Override
+	public Object getValue(Arg... entries) throws EvaluationException,
+			RemoteException {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#substitute(sorcer.service.Arg[])
+	 */
+	@Override
+	public Evaluation substitute(Arg... entries) throws SetterException,
+			RemoteException {
+		return null;
+	}
 }

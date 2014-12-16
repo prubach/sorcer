@@ -166,11 +166,11 @@ public class ExertionDispatcher implements Exerter, Callable {
 
     private void realizeDependencies(Arg... entries) throws RemoteException,
             ExertionException {
-        List<Invocation> dependers = exertion.getDependers();
+        List<Evaluation> dependers = exertion.getDependers();
         if (dependers != null && dependers.size() > 0) {
-            for (Invocation<Object> depender : dependers) {
+            for (Evaluation<Object> depender : dependers) {
                 try {
-                    depender.invoke(exertion.getScope(), entries);
+                    ((Invocation)depender).invoke((Context) exertion.getScope(), entries);
                 } catch (InvocationException e) {
                     throw new ExertionException(e);
                 }

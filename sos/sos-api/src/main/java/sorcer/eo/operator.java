@@ -1324,18 +1324,28 @@ public class operator {
 		return mappable.asis(path);
 	}
 
-	public static Object get(Mappable mappable, String path)
-			throws ContextException {
-		Object obj = mappable.asis(path);
-        while (obj instanceof Mappable || obj instanceof Par) {
-			try {
-				obj = ((Evaluation) obj).asis();
-			} catch (RemoteException e) {
-				throw new ContextException(e);
-			}
-		}
-		return obj;
-	}
+    public static <T> T get(Service<T> service, String path)
+            throws ContextException, ExertionException {
+        if (service instanceof Exertion)
+            return (T) get((Exertion) service, path);
+        logger.info("ZZZZZZZZZZZZZZZZZZZZZZZ get asis path: " + path + " from: " + service);
+        Object obj = ((ServiceContext) service).asis(path);
+        logger.info("ZZZZZZZZZZZZZZZZZZZZZZZ get got: " + obj);
+        if (obj != null) {
+            while (obj instanceof Mappable ||
+                    (obj instanceof Reactive && ((Reactive)obj).isReactive())) {
+                try {
+                    obj = ((Evaluation) obj).asis();
+                } catch (RemoteException e) {
+                    throw new ContextException(e);
+                }
+            }
+        } else {
+            obj = ((ServiceContext) service).getValue(path);
+        }
+        logger.info("ZZZZZZZZZZZZZZZZZZZZZZZ get returning: " + obj);
+        return (T)obj;
+    }
 
 	public static List<Exertion> exertions(Exertion xrt) {
 		return xrt.getAllExertions();
@@ -1526,14 +1536,23 @@ public class operator {
 		}
 	}
 
-	public static <T extends Exertion> T exert(Exertion input, Arg... entries)
-			throws ExertionException {
-		try {
-			return (T) exert(input, null, entries);
-		} catch (Exception e) {
-			throw new ExertionException(e);
-		}
-	}
+    public static <T extends Service> T exert(T input, Arg... args)
+            throws ExertionException {
+        try {
+            return  (T)((Exertion)input).exert(null, args);
+        } catch (Exception e) {
+            throw new ExertionException(e);
+        }
+    }
+
+    public static <T extends Exertion> T exert(Exerter exerter, Exertion input,
+                                               Arg... entries) throws ExertionException {
+        try {
+            return (T) exerter.exert(input, null, entries);
+        } catch (Exception e) {
+            throw new ExertionException(e);
+        }
+    }
 
 	public static <T extends Exertion> T exert(T input,
 			Transaction transaction, Arg... entries) throws ExertionException {

@@ -2218,6 +2218,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	}
 
 	public ServiceContext setTarget(Object target) throws ContextException {
+		if (targetPath==null) setTargetPath(Context.TARGET);
 		putValue(targetPath, target);
 		return this;
 	}
@@ -2826,6 +2827,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 				val = get(path);
 			}
 		}
+		logger.info("ZZZZZZZZZZZZZZZZZ getting from: " + path + "=" + val);
 		return val;
 	}
 
