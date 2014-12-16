@@ -19,6 +19,7 @@ package sorcer.file.remote;
 import com.google.common.io.Closer;
 import com.google.common.io.Resources;
 import sorcer.core.SorcerEnv;
+import sorcer.file.ScratchDirManager;
 import sorcer.util.IOUtils;
 
 import java.io.*;
@@ -30,6 +31,7 @@ import java.net.URL;
  * @author Rafał Krupiński
  */
 public class WebFile extends AbstractRemoteFile implements Serializable {
+    private static final long serialVersionUID = -3333474650265576280L;
     private final File dataDir;
     private URL remoteUrl;
 
@@ -54,7 +56,8 @@ public class WebFile extends AbstractRemoteFile implements Serializable {
 
     @Override
     protected File getLocalPath() {
-        return new File(SorcerEnv.getScratchDir(), checksum);
+        File parent = new ScratchDirManager().getNewScratchDir("remote-file");
+        return new File(parent, checksum);
     }
 
     protected void setLocalFile(File localFile) throws IOException {
