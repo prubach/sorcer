@@ -1328,12 +1328,11 @@ public class operator {
             throws ContextException, ExertionException {
         if (service instanceof Exertion)
             return (T) get((Exertion) service, path);
-        logger.info("ZZZZZZZZZZZZZZZZZZZZZZZ get asis path: " + path + " from: " + service);
         Object obj = ((ServiceContext) service).asis(path);
-        logger.info("ZZZZZZZZZZZZZZZZZZZZZZZ get got: " + obj);
         if (obj != null) {
             while (obj instanceof Mappable ||
-                    (obj instanceof Reactive && ((Reactive)obj).isReactive())) {
+                    (obj instanceof Reactive && ((Reactive)obj).isReactive())
+                    || (obj instanceof Reactive && obj instanceof Evaluation)) {
                 try {
                     obj = ((Evaluation) obj).asis();
                 } catch (RemoteException e) {
@@ -1343,7 +1342,6 @@ public class operator {
         } else {
             obj = ((ServiceContext) service).getValue(path);
         }
-        logger.info("ZZZZZZZZZZZZZZZZZZZZZZZ get returning: " + obj);
         return (T)obj;
     }
 
