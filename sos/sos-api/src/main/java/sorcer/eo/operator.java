@@ -839,6 +839,13 @@ public class operator {
 		return sig;
 	}
 
+    public static Signature sig(Class<?> serviceType, ProviderName prvName)
+            throws SignatureException {
+        Signature sig = sig(serviceType, (ReturnPath) null);
+        sig.setProviderName(prvName.getName());
+        return sig;
+    }
+
 	public static Signature sig(String operation, Class<?> serviceType,
 			ReturnPath resultPath) throws SignatureException {
 		Signature sig = sig(operation, serviceType, Type.SRV);
