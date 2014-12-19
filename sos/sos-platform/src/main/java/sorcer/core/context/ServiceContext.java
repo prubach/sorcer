@@ -2827,7 +2827,6 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 				val = get(path);
 			}
 		}
-		logger.info("ZZZZZZZZZZZZZZZZZ getting from: " + path + "=" + val);
 		return val;
 	}
 

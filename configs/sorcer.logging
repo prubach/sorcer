@@ -1,7 +1,9 @@
 # See logback.groovy
 # This is only necessary for old providers, blitz or Jini, SORCER now uses slf4j
-handlers=java.util.logging.ConsoleHandler
+handlers = org.slf4j.bridge.SLF4JBridgeHandler
+
+#handlers=java.util.logging.ConsoleHandler
 # .level=WARNING
-com.sun.jini.level=INFO
-org.dancres.level=WARNING
-org.dancres.blitz.config=SEVERE
+#com.sun.jini.level=INFO
+#org.dancres.level=WARNING
+#org.dancres.blitz.config=SEVERE

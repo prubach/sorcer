@@ -989,6 +989,8 @@ public class SorcerEnv {
             throw new MalformedURLException("Data file: " + path
                     + " is not in: " + docDir);
         }
+        logger.debug("GET URL for: " + dataFile.getAbsolutePath() + "=" + new URL(dataUrl + File.separator
+                + path.substring(docDir.length() + 1)));
         return new URL(dataUrl + File.separator
                 + path.substring(docDir.length() + 1));
     }

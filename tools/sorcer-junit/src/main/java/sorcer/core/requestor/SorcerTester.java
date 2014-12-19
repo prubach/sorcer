@@ -117,7 +117,8 @@ import static org.junit.Assert.assertTrue;
 		}
 */
 		// system property for DOC_ROOT_DIR - needed for scratchURL
-		System.setProperty(SorcerConstants.DOC_ROOT_DIR, Sorcer.getHome() + File.separator + "data");
+		if (SorcerEnv.getProperty(SorcerConstants.DOC_ROOT_DIR)==null)
+			System.setProperty(SorcerConstants.DOC_ROOT_DIR, Sorcer.getHome() + File.separator + "data");
 	}
 	
 	

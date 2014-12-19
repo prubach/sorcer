@@ -16,7 +16,7 @@
 
 import java.lang.management.ManagementFactory
 
-//installJUL();
+installJUL();
 
 /* Scan for changes every minute. */
 scan()
@@ -292,10 +292,10 @@ def createWatchAppender() {
     }
 }
 
-/*def installJUL() {
+def installJUL() {
     def listener = new ch.qos.logback.classic.jul.LevelChangePropagator();
     listener.setContext(context);
     listener.setResetJUL(true);
     org.slf4j.bridge.SLF4JBridgeHandler.removeHandlersForRootLogger();
     ((ch.qos.logback.classic.LoggerContext) context).addListener(listener);
-}*/
+}

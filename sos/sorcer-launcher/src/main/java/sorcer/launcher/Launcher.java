@@ -98,7 +98,7 @@ public abstract class Launcher implements ILauncher {
             "org.sorcersoft.sigar:sigar:1.6.4-3",
 
             "org.slf4j:slf4j-api",
-            //"org.slf4j:jul-to-slf4j",
+            "org.slf4j:jul-to-slf4j",
             "ch.qos.logback:logback-core",
             "ch.qos.logback:logback-classic"
     };

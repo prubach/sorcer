@@ -43,6 +43,7 @@ import sorcer.core.provider.DatabaseStorer;
 import sorcer.core.provider.Provider;
 import sorcer.core.provider.StorageManagement;
 import sorcer.core.provider.dbp.IDatabaseProvider;
+import sorcer.service.Accessor;
 import sorcer.service.Context;
 import sorcer.service.EvaluationException;
 import sorcer.service.Signature;
@@ -1055,14 +1056,13 @@ public class Table implements ModelTable {
 		try {
 			Context cxt = SdbUtil.getStoreContext(this);
 			if (outputStorageSignature != null) {
-				if (outputStorageSignature.getServiceType() == DatabaseStorer.class) {
-					DatabaseStorer objectStore = ((DatabaseStorer) ProviderLookup
-							.getService(outputStorageSignature));
+				if (outputStorageSignature.getServiceType()!=null &&  outputStorageSignature.getServiceType() == DatabaseStorer.class) {
+					DatabaseStorer objectStore = (DatabaseStorer) Accessor.getService(outputStorageSignature);
 					outputTableURL = (URL)objectStore.contextStore(cxt).getValue("object/url");
 
 				} else {
-					StorageManagement objectStore = ((StorageManagement) ProviderLookup
-							.getService(outputStorageSignature));
+					StorageManagement objectStore = (StorageManagement) Accessor.getService(outputStorageSignature);
+							//.getService(outputStorageSignature));
 					outputTableURL = (URL)objectStore.contextStore(cxt).getValue("object/url");;
 				}
 			} else if (url.getHost().equals("self")) {
@@ -1076,7 +1076,7 @@ public class Table implements ModelTable {
 			} else {
 				String serviceType = url.getHost();
 				String providerName = url.getPath();
-				StorageManagement objectStore = ((StorageManagement) ProviderLookup
+				StorageManagement objectStore = ((StorageManagement) Accessor
 						.getService(providerName.substring(1), Class.forName(serviceType)));
 
 				outputTableURL = (URL) objectStore.contextStore(cxt).getValue(

@@ -44,7 +44,7 @@ public interface SorcerConstants {
 
 	public static final String S_SORCER_EXT = "sorcer.ext";
 
-    public static final String E_ENG_HOME = "ENG_HOME";
+    public static final String E_ENG_HOME = "MSTC_HOME";
 
     public static final String S_ENG_HOME = "eng.home";
 

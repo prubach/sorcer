@@ -207,8 +207,8 @@ lateInit ( ) {
     fi
 
     # Determine the Webster PUT directory
-    if [ -n "$ENG_HOME" ] ; then
-        WEBSTER_DATA_DIR="$ENG_HOME"/data
+    if [ -n "$MSTC_HOME" ] ; then
+        WEBSTER_DATA_DIR="$MSTC_HOME"/data
     else
         WEBSTER_DATA_DIR="$SORCER_HOME"/data
     fi
