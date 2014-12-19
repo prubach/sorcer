@@ -98,7 +98,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.sonatype.aether</groupId>
+			<groupId>org.eclipse.aether</groupId>
 			<artifactId>aether-util</artifactId>
 		</dependency>
 		<dependency>

@@ -41,7 +41,7 @@
         </dependency>
         <dependency>
             <groupId>org.rioproject</groupId>
-            <artifactId>rio-api</artifactId>
+            <artifactId>rio-platform</artifactId>
             <version>${v.rio}</version>
         </dependency>
 <!--        <dependency>

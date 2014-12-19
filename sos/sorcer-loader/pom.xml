@@ -29,11 +29,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.rioproject.resolver</groupId>
-            <artifactId>resolver-api</artifactId>
-            <version>${v.rio}</version>
-        </dependency>
-        <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
         </dependency>

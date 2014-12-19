@@ -66,7 +66,6 @@ set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-spi\
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-container\%v.sorcer%\sorcer-container-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-resolver\%v.sorcer%\sorcer-rio-resolver-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-loader\%v.sorcer%\sorcer-loader-%v.sorcer%.jar
-set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-platform\%v.rio%\rio-platform-%v.rio%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-logging-support\%v.rio%\rio-logging-support-%v.rio%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-start\%v.rio%\rio-start-%v.rio%.jar
@@ -96,7 +95,6 @@ set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commo
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\dbp-api\%v.sorcer%\dbp-api-%v.sorcer%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-resolver\%v.sorcer%\sorcer-rio-resolver-%v.sorcer%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-loader\%v.sorcer%\sorcer-loader-%v.sorcer%.jar
-set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-platform\%v.rio%\rio-platform-%v.rio%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\rioproject\monitor\monitor-api\%v.rio%\monitor-api-%v.rio%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
@@ -132,7 +130,6 @@ set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorce
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\codehaus\groovy\groovy-all\%v.groovy%\groovy-all-%v.groovy%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-resolver\%v.sorcer%\sorcer-rio-resolver-%v.sorcer%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-loader\%v.sorcer%\sorcer-loader-%v.sorcer%.jar
-set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-api\%v.rio%\rio-api-%v.rio%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\rioproject\webster\%v.rio%\webster-%v.rio%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-platform\%v.rio%\rio-platform-%v.rio%.jar
@@ -190,7 +187,7 @@ set INST_CP=%INST_CP%;%LIB_DIR%\commons\commons-io.jar
 set INST_CP=%INST_CP%;%LIB_DIR%\commons\xercesImpl.jar
 set INST_CP=%INST_CP%;%LIB_DIR%\commons\xml-apis.jar
 set INST_CP=%INST_CP%;%LIB_DIR%\rio-resolver\resolver-aether.jar
-set INST_CP=%INST_CP%;%LIB_DIR%\rio-resolver\resolver-api.jar
+set INST_CP=%INST_CP%;%LIB_DIR%\rio\rio-platform.jar
 if exist "%LIB_DIR%\sorcer\sorcer-api.jar" if not exist "%SORCER_HOME%\logs\sorcer_jars_installed_user_%USERNAME%.tmp" (
 	call "%JAVACMD%" -cp "%INST_CP%" sorcer.installer.Installer
 )

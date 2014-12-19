@@ -136,11 +136,6 @@
                                     <version>${v.rio}</version>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>org.rioproject.resolver</groupId>
-                                    <artifactId>resolver-api</artifactId>
-                                    <version>${v.rio}</version>
-                                </artifactItem>
-                                <artifactItem>
                                     <groupId>org.codehaus.groovy</groupId>
                                     <artifactId>groovy-all</artifactId>
                                     <version>${v.groovy}</version>

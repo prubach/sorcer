@@ -38,8 +38,8 @@
 		<v.jini>2.2.2</v.jini>
 		<v.blitz>2.3</v.blitz>
 		<v.sleepycat>5.0.104</v.sleepycat>
-		<v.rio>5.0-M4-S8</v.rio>
-		<v.groovy>2.2.1</v.groovy>
+		<v.rio>5.0-M5S0</v.rio>
+		<v.groovy>2.3.8</v.groovy>
 		<v.sigar>1.6.4-3</v.sigar>
 		<v.lockmgr>0.2-3</v.lockmgr>
         <v.slf4j>1.7.5</v.slf4j>
@@ -192,19 +192,19 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.sonatype.aether</groupId>
+				<groupId>org.eclipse.aether</groupId>
 				<artifactId>aether-api</artifactId>
-				<version>1.13.1</version>
+				<version>1.0.0.v20140518</version>
 			</dependency>
 			<dependency>
-				<groupId>org.sonatype.aether</groupId>
+				<groupId>org.eclipse.aether</groupId>
 				<artifactId>aether-impl</artifactId>
-				<version>1.13.1</version>
+				<version>1.0.0.v20140518</version>
 			</dependency>
 			<dependency>
-				<groupId>org.sonatype.aether</groupId>
+				<groupId>org.eclipse.aether</groupId>
 				<artifactId>aether-util</artifactId>
-				<version>1.13.1</version>
+				<version>1.0.0.v20140518</version>
 			</dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>

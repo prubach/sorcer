@@ -36,8 +36,8 @@
             <version>${v.sorcer}</version>
         </dependency>
         <dependency>
-            <groupId>org.rioproject.resolver</groupId>
-            <artifactId>resolver-api</artifactId>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
             <version>${v.rio}</version>
         </dependency>
         <dependency>

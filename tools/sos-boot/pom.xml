@@ -108,11 +108,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.rioproject.resolver</groupId>
-            <artifactId>resolver-api</artifactId>
-            <version>${v.rio}</version>
-        </dependency>
-        <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
         </dependency>
