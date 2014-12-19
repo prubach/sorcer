@@ -898,7 +898,7 @@
             <useProjectArtifact>false</useProjectArtifact>
             <useStrictFiltering>true</useStrictFiltering>
             <includes>
-                <include>org.rioproject:sorcer-platform</include>
+                <include>org.rioproject:rio-platform</include>
                 <include>org.rioproject.resolver:resolver-aether</include>
                 <include>org.slf4j:slf4j-simple</include>
                 <include>org.sorcersoft.sorcer:sorcer-resolving-loader</include>
