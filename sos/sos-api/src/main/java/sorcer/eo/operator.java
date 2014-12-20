@@ -387,7 +387,17 @@ public class operator {
                 if (((Entry) entryList.get(i)).isPersistent) {
                     setPar(pcxt, (Entry) entryList.get(i), i);
                 } else {
-                    pcxt.putValueAt(((Entry) entryList.get(i)).path(),
+                    if (entryList.get(i) instanceof Par) {
+                        try {
+                            pcxt.putValueAt(((Entry) entryList.get(i)).getName(),
+                                    (entryList.get(i)).asis(), i + 1);
+                        } catch (EvaluationException ce) {
+                            logger.warn("Problem putting Par: " + entryList.get(i) + " into context: " +ce);
+                        } catch (RemoteException re){
+                            logger.warn("Problem putting Par: " + entryList.get(i) + " into context: " +re);
+                        }
+                    } else
+                        pcxt.putValueAt(((Entry) entryList.get(i)).path(),
                             ((Entry) entryList.get(i)).value(), i + 1);
                 }
             } else if (entryList.get(i) instanceof DataEntry) {
@@ -1251,7 +1261,7 @@ public class operator {
 	public static Object get(Exertion exertion, String component, String path)
 			throws ExertionException {
 		Exertion c = exertion.getExertion(component);
-		return get(c, path);
+        return get(c, path);
 	}
 
 	public static Object value(URL url) throws IOException {
