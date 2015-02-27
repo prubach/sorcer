@@ -1,0 +1,8 @@
+
+description = 'SORCER tools :: sorcer-resolving-loader'
+dependencies {
+  compile project(':sos:sorcer-loader')
+  compile project(':sorcer-rio:sorcer-rio-resolver')
+    compile group: 'org.rioproject', name: 'rio-platform', version:rioVersion
+    compile group: 'org.rioproject', name: 'rio-api', version:rioVersion
+}

@@ -1,0 +1,6 @@
+
+description = 'SORCER OS :: providers :: cataloger :: config'
+dependencies {
+  compile project(':sos-providers:cataloger:cataloger-prv')
+  compile project(':sos:sorcer-ui')
+}

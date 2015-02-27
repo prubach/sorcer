@@ -1,0 +1,5 @@
+
+description = 'SORCER OS :: providers :: norm :: config'
+dependencies {
+    compile group: 'org.apache.river', name: 'norm', version:riverVersion
+}

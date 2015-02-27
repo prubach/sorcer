@@ -1,0 +1,8 @@
+
+description = 'SORCER examples :: ex5 :: prv'
+dependencies {
+  compile project(':sos:sos-api')
+  compile project(':sos:sorcer-api')
+  compile project(':sos:sos-platform')
+  compile project(':provider-root:examples:ex5:ex5-api')
+}

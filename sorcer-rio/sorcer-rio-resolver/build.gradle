@@ -1,0 +1,6 @@
+
+description = 'SORCER :: Rio :: Resolver'
+dependencies {
+  compile project(':sos:sos-util')
+    compile group: 'org.rioproject', name: 'rio-platform', version:rioVersion
+}

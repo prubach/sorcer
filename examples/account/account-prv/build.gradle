@@ -1,0 +1,8 @@
+
+description = 'SORCER examples :: account :: provider'
+dependencies {
+  compile project(':provider-root:examples:account:account-api')
+  compile project(':sos:sos-platform')
+    compile group: 'org.slf4j', name: 'slf4j-api', version:slf4jVersion
+    compile group: 'org.slf4j', name: 'slf4j-simple', version:slf4jVersion
+}

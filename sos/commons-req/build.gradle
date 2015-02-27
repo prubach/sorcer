@@ -1,0 +1,8 @@
+
+description = 'SORCER OS :: commons-req'
+dependencies {
+  compile project(':sos:sos-platform')
+  compile project(':tools:sos-webster')
+  compile project(':tools:sorcer-resolver')
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version:groovyVersion
+}

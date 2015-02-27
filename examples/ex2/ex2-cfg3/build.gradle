@@ -1,0 +1,5 @@
+
+description = 'SORCER examples :: ex2 :: config3'
+dependencies {
+  compile project(':provider-root:examples:ex2:ex2-prv')
+}

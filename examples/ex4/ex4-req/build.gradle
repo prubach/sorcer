@@ -1,0 +1,8 @@
+
+description = 'SORCER examples :: ex4 :: req'
+dependencies {
+  testCompile project(':provider-root:examples:ex2:ex2-api')
+  testCompile project(':provider-root:examples:ex2:ex2-rdl')
+  testCompile project(':sos:sorcer-api')
+  testCompile project(':tools:sorcer-junit')
+}

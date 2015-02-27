@@ -1,0 +1,11 @@
+
+description = 'SORCER tools :: resolver'
+dependencies {
+  compile project(':sos:sorcer-api')
+  compile project(':sos:sos-util')
+    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.2.1'
+    compile group: 'commons-io', name: 'commons-io', version:'2.4'
+    compile group: 'org.slf4j', name: 'slf4j-api', version:slf4jVersion
+    testCompile group: 'org.slf4j', name: 'slf4j-simple', version:slf4jVersion
+    testCompile group: 'junit', name: 'junit', version:junitVersion
+}

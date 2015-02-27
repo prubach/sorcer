@@ -1,0 +1,5 @@
+
+description = 'SORCER OS :: providers :: mercury :: config'
+dependencies {
+    compile group: 'org.apache.river', name: 'mercury', version:riverVersion
+}

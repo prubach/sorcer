@@ -1,0 +1,6 @@
+
+description = 'SORCER OS :: providers :: exertmonitor :: prv'
+dependencies {
+  compile project(':sos:sos-platform')
+    compile group: 'com.sleepycat', name: 'je', version:'5.0.104'
+}

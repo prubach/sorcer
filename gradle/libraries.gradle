@@ -1,0 +1,57 @@
+/*
+ * Copyright to the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
+ * use.  In that respect it serves a role similar to <dependencyManagement> in Maven
+ */
+ext {
+	sorcerVersion = version
+
+	groovyVersion = "2.3.8"
+	//rioVersion = "5.1.1"
+    rioVersion = "5.0-M5S0"
+	riverVersion = "2.2.2"
+	slf4jVersion = "1.7.7"
+	blitzVersion = "2.1.7"
+	lockmgrVersion = "2.1.7"
+	jeVersion = "5.0.104"
+	junitVersion = "4.8.2"
+	junitAddonsVersion = "1.4"
+	antVersion = "1.8.2"
+
+
+    v_sorcer = version
+    v_sos_release = "1.0"
+	v_jini = "2.2.2"
+    v_blitz = "2.3"
+	v_sleepycat = "5.0.104"
+    v_rio = "5.0-M5S0"
+    //v_rio = "5.1.1"
+    v_groovy = "2.3.8"
+    v_sigar = "1.6.4-3"
+	v_lockmgr = "0.2-3"
+    v_slf4j = "1.7.5"
+    v_junit = "4.11"
+    v_logback = "1.0.13"
+    v_plexus = "3.0.15"
+    v_guava = "16.0.1"
+    v_clang = "3.2.1"
+    v_ccli = "1.2"
+    v_cio = "2.4"
+    v_guice = "4.0-beta4"
+    v_maven = "3.1.1"
+}

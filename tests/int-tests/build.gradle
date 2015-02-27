@@ -1,0 +1,17 @@
+
+description = 'SORCER OS :: int tests :: integration tests'
+dependencies {
+  compile project(':sos:sos-platform')
+  compile project(':tests:ju-arithmetic:ju-arithmetic-api')
+  compile project(':sos-providers:exertmonitor:exertmonitor-prv')
+    compile group: 'com.sleepycat', name: 'je', version:'5.0.104'
+  compile project(':sos-providers:dbp:dbp-prv')
+  compile project(':tests:model-beans')
+  testCompile project(':sos:commons-req')
+  testCompile project(':tools:sorcer-junit')
+    testCompile group: 'junit', name: 'junit', version:junitVersion
+    testCompile group: 'org.slf4j', name: 'jul-to-slf4j', version:slf4jVersion
+  testCompile project(':sorcer-rio:sorcer-rio-config')
+  compile project(':tests:ju-arithmetic:ju-arithmetic-prv')
+  //providedCompile project(':tests:ju-arithmetic:ju-arithmetic-prv')
+}

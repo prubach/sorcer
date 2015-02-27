@@ -1,0 +1,6 @@
+
+description = 'SORCER examples :: account :: config 2'
+dependencies {
+  compile project(':provider-root:examples:account:account-prv')
+  compile project(':sos:sorcer-ui')
+}

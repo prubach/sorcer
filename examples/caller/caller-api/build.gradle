@@ -1,0 +1,5 @@
+
+description = 'SORCER :: caller :: API'
+dependencies {
+  compile project(':sos:sorcer-api')
+}

@@ -1,0 +1,5 @@
+
+description = 'SORCER examples :: ex6 :: divider config'
+dependencies {
+  compile project(':provider-root:examples:ex6:ex6-prv')
+}

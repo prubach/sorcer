@@ -1,0 +1,8 @@
+
+description = 'SORCER OS :: UI'
+dependencies {
+    compile group: 'net.jini.lookup', name: 'serviceui', version:riverVersion
+    compile group: 'net.jini', name: 'jsk-platform', version:riverVersion
+    compile group: 'net.jini', name: 'jsk-lib', version:riverVersion
+    compile group: 'org.slf4j', name: 'slf4j-api', version:slf4jVersion
+}

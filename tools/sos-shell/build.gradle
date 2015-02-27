@@ -1,0 +1,15 @@
+
+description = 'SORCER tools :: sos-shell'
+dependencies {
+  compile project(':sos-providers:logger:logger-api')
+    compile group: 'ch.qos.logback', name: 'logback-classic', version:'1.0.13'
+  compile project(':sos:sos-api')
+  compile project(':tools:sos-netlet')
+  compile project(':sos:sorcer-api')
+  compile project(':sos:sorcer-launcher')
+  compile project(':tools:sos-webster')
+  compile project(':sos-providers:dbp:dbp-api')
+    compile group: 'commons-io', name: 'commons-io', version:'2.4'
+    compile group: 'commons-cli', name: 'commons-cli', version:'1.2'
+  testCompile project(':tools:sorcer-junit')
+}

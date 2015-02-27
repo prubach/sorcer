@@ -1,0 +1,7 @@
+
+description = 'SORCER OS :: providers :: cataloger :: sui'
+dependencies {
+    compile group: 'net.jini', name: 'jsk-platform', version:riverVersion
+  compile project(':sos:sorcer-api')
+  compile project(':sos:exertlet:sos-exertlet-sui')
+}

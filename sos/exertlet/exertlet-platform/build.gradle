@@ -1,0 +1,8 @@
+
+description = 'SORCER OS :: platform :: exertlet UI installer'
+dependencies {
+  compile project(':tools:sos-boot')
+  compile project(':sos:sorcer-spi')
+  compile project(':sos:sorcer-ui')
+    compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version:'4.0-beta4'
+}

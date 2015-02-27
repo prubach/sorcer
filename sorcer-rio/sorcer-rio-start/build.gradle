@@ -1,0 +1,8 @@
+
+description = 'SORCER :: Rio :: start'
+dependencies {
+  compile project(':sorcer-rio:sorcer-rio-resolver')
+    compile group: 'org.rioproject', name: 'rio-start', version:rioVersion
+    compile group: 'org.rioproject', name: 'rio-platform', version:rioVersion
+    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.2.1'
+}

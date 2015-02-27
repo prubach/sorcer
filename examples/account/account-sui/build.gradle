@@ -1,0 +1,7 @@
+
+description = 'SORCER examples :: account :: service UI'
+dependencies {
+  compile project(':provider-root:examples:account:account-api')
+    compile group: 'net.jini.lookup', name: 'serviceui', version:riverVersion
+    compile group: 'org.slf4j', name: 'slf4j-api', version:slf4jVersion
+}

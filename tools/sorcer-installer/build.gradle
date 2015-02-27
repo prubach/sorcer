@@ -1,0 +1,9 @@
+
+description = 'SORCER tools :: Installer'
+dependencies {
+  compile project(':sos:sorcer-api')
+  compile project(':tools:sorcer-resolver')
+    compile group: 'org.rioproject.resolver', name: 'resolver-aether', version:rioVersion
+    compile group: 'commons-io', name: 'commons-io', version:'2.4'
+    compile group: 'org.slf4j', name: 'slf4j-api', version:slf4jVersion
+}

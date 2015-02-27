@@ -1,0 +1,304 @@
+rootProject.name = 'sorcer'
+include ':tools:dependencies'
+include ':tools:sos-webster'
+include ':tools:sos-boot'
+include ':tools:sos-netlet'
+include ':tools:sos-shell'
+include ':tools:browser'
+include ':tools:sorcer-installer'
+include ':tools:sorcer-provider'
+include ':tools:sorcer-resolver'
+include ':tools:sorcer-pkg'
+include ':tools:sorcer-junit'
+include ':tools:sorcer-lib'
+include ':tools:sorcer-resolving-loader'
+include ':tools'
+include ':sos:sorcer-api'
+include ':sos:sorcer-spi'
+include ':sos:sorcer-container'
+include ':sos:sorcer-ui'
+include ':sos:sos-platform'
+include ':sos:sos-util'
+include ':sos:sorcer-launcher'
+include ':sos:commons-req'
+include ':sos:sos-api'
+include ':sos:exertlet:sos-exertlet-sui'
+include ':sos:exertlet:exertlet-platform'
+include ':sos:exertlet'
+include ':sos:default-codebase'
+include ':sos:sorcer-boot-rio'
+include ':sos:sorcer-loader'
+include ':sos:sorcer-boot-resolver'
+include ':sos'
+include ':sos-providers:other-configs:blitz-cfg'
+include ':sos-providers:other-configs:fiddler-cfg'
+include ':sos-providers:other-configs:mahalo-cfg'
+include ':sos-providers:other-configs:mercury-cfg'
+include ':sos-providers:other-configs:norm-cfg'
+include ':sos-providers:other-configs'
+include ':sos-providers:cataloger:cataloger-cfg'
+include ':sos-providers:cataloger:cataloger-prv'
+include ':sos-providers:cataloger:cataloger-sui'
+include ':sos-providers:cataloger'
+include ':sos-providers:rendezvous:rendezvous-cfg'
+include ':sos-providers:rendezvous'
+include ':sos-providers:logger:logger-cfg'
+include ':sos-providers:logger:logger-dl'
+include ':sos-providers:logger:logger-prv'
+include ':sos-providers:logger:logger-sui'
+include ':sos-providers:logger:logger-api'
+include ':sos-providers:logger:logger-platform'
+include ':sos-providers:logger'
+include ':sos-providers:exertmonitor:exertmonitor-cfg'
+include ':sos-providers:exertmonitor:exertmonitor-dl'
+include ':sos-providers:exertmonitor:exertmonitor-prv'
+include ':sos-providers:exertmonitor'
+include ':sos-providers:dbp:dbp-api'
+include ':sos-providers:dbp:dbp-prv'
+include ':sos-providers:dbp:dbp-cfg'
+include ':sos-providers:dbp:dbp-handler'
+include ':sos-providers:dbp:dbp-dl'
+include ':sos-providers:dbp'
+include ':sos-providers:exerter:exerter-cfg'
+include ':sos-providers:exerter'
+include ':sos-providers'
+include ':tests:ju-arithmetic:ju-arithmetic-api'
+include ':tests:ju-arithmetic:ju-arithmetic-dl'
+include ':tests:ju-arithmetic:ju-arithmetic-prv'
+include ':tests:ju-arithmetic:ju-arithmetic-cfg-all'
+include ':tests:ju-arithmetic:ju-arithmetic-cfg-ctx'
+include ':tests:ju-arithmetic:ju-arithmetic-cfg-ter'
+include ':tests:ju-arithmetic'
+include ':tests:int-tests'
+include ':tests:par-model:par-model-cfg'
+include ':tests:par-model:par-model-prv'
+include ':tests:par-model'
+include ':tests:model-beans'
+include ':tests'
+include ':provider-root:examples:ex0:ex0-api'
+include ':provider-root:examples:ex0:ex0-prv'
+include ':provider-root:examples:ex0:ex0-sui'
+include ':provider-root:examples:ex0:ex0-cfg'
+include ':provider-root:examples:ex0:ex0-req'
+include ':provider-root:examples:ex0:ex0-dl'
+include ':provider-root:examples:ex0'
+include ':provider-root:examples:ex1:ex1-api'
+include ':provider-root:examples:ex1:ex1-prv'
+include ':provider-root:examples:ex1:ex1-rdl'
+include ':provider-root:examples:ex1:ex1-req'
+include ':provider-root:examples:ex1:ex1-cfg1'
+include ':provider-root:examples:ex1:ex1-cfg2'
+include ':provider-root:examples:ex1:ex1-cfg-all'
+include ':provider-root:examples:ex1:ex1-dl'
+include ':provider-root:examples:ex1'
+include ':provider-root:examples:ex2:ex2-api'
+include ':provider-root:examples:ex2:ex2-prv'
+include ':provider-root:examples:ex2:ex2-req'
+include ':provider-root:examples:ex2:ex2-rdl'
+include ':provider-root:examples:ex2:ex2-cfg1'
+include ':provider-root:examples:ex2:ex2-cfg2'
+include ':provider-root:examples:ex2:ex2-cfg3'
+include ':provider-root:examples:ex2:ex2-dl'
+include ':provider-root:examples:ex2'
+include ':provider-root:examples:ex3:ex3-req'
+include ':provider-root:examples:ex3'
+include ':provider-root:examples:ex4:ex4-req'
+include ':provider-root:examples:ex4'
+include ':provider-root:examples:ex5:ex5-api'
+include ':provider-root:examples:ex5:ex5-prv'
+include ':provider-root:examples:ex5:ex5-cfg-adder'
+include ':provider-root:examples:ex5:ex5-cfg-divider'
+include ':provider-root:examples:ex5:ex5-cfg-multiplier'
+include ':provider-root:examples:ex5:ex5-cfg-subtractor'
+include ':provider-root:examples:ex5:ex5-cfg-all'
+include ':provider-root:examples:ex5:ex5-cfg-one-bean'
+include ':provider-root:examples:ex5:ex5-job'
+include ':provider-root:examples:ex5:ex5-req'
+include ':provider-root:examples:ex5:ex5-dl'
+include ':provider-root:examples:ex5'
+include ':provider-root:examples:ex6:ex6-api'
+include ':provider-root:examples:ex6:ex6-prv'
+include ':provider-root:examples:ex6:ex6-req'
+include ':provider-root:examples:ex6:ex6-sui'
+include ':provider-root:examples:ex6:ex6-cfg-adder'
+include ':provider-root:examples:ex6:ex6-cfg-divider'
+include ':provider-root:examples:ex6:ex6-cfg-multiplier'
+include ':provider-root:examples:ex6:ex6-cfg-subtractor'
+include ':provider-root:examples:ex6:ex6-cfg-one-bean'
+include ':provider-root:examples:ex6:ex6-cfg-all'
+include ':provider-root:examples:ex6:ex6-dl'
+include ':provider-root:examples:ex6'
+include ':provider-root:examples:account:account-api'
+include ':provider-root:examples:account:account-prv'
+include ':provider-root:examples:account:account-req'
+include ':provider-root:examples:account:account-cfg-1'
+include ':provider-root:examples:account:account-cfg-2'
+include ':provider-root:examples:account:account-sui'
+include ':provider-root:examples:account:account-dl'
+include ':provider-root:examples:account'
+include ':provider-root:examples:caller:caller-api'
+include ':provider-root:examples:caller:caller-cfg'
+include ':provider-root:examples:caller:caller-dl'
+include ':provider-root:examples:caller:caller-prv'
+include ':provider-root:examples:caller:caller-req'
+include ':provider-root:examples:caller:caller-sui'
+include ':provider-root:examples:caller'
+include ':provider-root:examples'
+include ':sorcer-rio:sorcer-rio-config'
+include ':sorcer-rio:sorcer-rio-start'
+include ':sorcer-rio:sorcer-rio-cli'
+include ':sorcer-rio:sorcer-rio-resolver'
+include ':sorcer-rio'
+
+project(':tools:dependencies').projectDir = "$rootDir/tools/dependencies" as File
+project(':tools:sos-webster').projectDir = "$rootDir/tools/sos-webster" as File
+project(':tools:sos-boot').projectDir = "$rootDir/tools/sos-boot" as File
+project(':tools:sos-netlet').projectDir = "$rootDir/tools/sos-netlet" as File
+project(':tools:sos-shell').projectDir = "$rootDir/tools/sos-shell" as File
+project(':tools:browser').projectDir = "$rootDir/tools/browser" as File
+project(':tools:sorcer-installer').projectDir = "$rootDir/tools/sorcer-installer" as File
+project(':tools:sorcer-provider').projectDir = "$rootDir/tools/sorcer-provider" as File
+project(':tools:sorcer-resolver').projectDir = "$rootDir/tools/sorcer-resolver" as File
+project(':tools:sorcer-pkg').projectDir = "$rootDir/tools/sorcer-pkg" as File
+project(':tools:sorcer-junit').projectDir = "$rootDir/tools/sorcer-junit" as File
+project(':tools:sorcer-lib').projectDir = "$rootDir/tools/sorcer-lib" as File
+project(':tools:sorcer-resolving-loader').projectDir = "$rootDir/tools/sorcer-resolving-loader" as File
+project(':tools').projectDir = "$rootDir/tools" as File
+project(':sos:sorcer-api').projectDir = "$rootDir/sos/sorcer-api" as File
+project(':sos:sorcer-spi').projectDir = "$rootDir/sos/sorcer-spi" as File
+project(':sos:sorcer-container').projectDir = "$rootDir/sos/sorcer-container" as File
+project(':sos:sorcer-ui').projectDir = "$rootDir/sos/sorcer-ui" as File
+project(':sos:sos-platform').projectDir = "$rootDir/sos/sos-platform" as File
+project(':sos:sos-util').projectDir = "$rootDir/sos/sos-util" as File
+project(':sos:sorcer-launcher').projectDir = "$rootDir/sos/sorcer-launcher" as File
+project(':sos:commons-req').projectDir = "$rootDir/sos/commons-req" as File
+project(':sos:sos-api').projectDir = "$rootDir/sos/sos-api" as File
+project(':sos:exertlet:sos-exertlet-sui').projectDir = "$rootDir/sos/exertlet/sos-exertlet-sui" as File
+project(':sos:exertlet:exertlet-platform').projectDir = "$rootDir/sos/exertlet/exertlet-platform" as File
+project(':sos:exertlet').projectDir = "$rootDir/sos/exertlet" as File
+project(':sos:default-codebase').projectDir = "$rootDir/sos/default-codebase" as File
+project(':sos:sorcer-boot-rio').projectDir = "$rootDir/sos/platform/sorcer-boot-rio" as File
+project(':sos:sorcer-loader').projectDir = "$rootDir/sos/sorcer-loader" as File
+project(':sos:sorcer-boot-resolver').projectDir = "$rootDir/sos/platform/sorcer-boot-resolver" as File
+project(':sos').projectDir = "$rootDir/sos" as File
+project(':sos-providers:other-configs:blitz-cfg').projectDir = "$rootDir/sos-providers/other-configs/blitz-cfg" as File
+project(':sos-providers:other-configs:fiddler-cfg').projectDir = "$rootDir/sos-providers/other-configs/fiddler-cfg" as File
+project(':sos-providers:other-configs:mahalo-cfg').projectDir = "$rootDir/sos-providers/other-configs/mahalo-cfg" as File
+project(':sos-providers:other-configs:mercury-cfg').projectDir = "$rootDir/sos-providers/other-configs/mercury-cfg" as File
+project(':sos-providers:other-configs:norm-cfg').projectDir = "$rootDir/sos-providers/other-configs/norm-cfg" as File
+project(':sos-providers:other-configs').projectDir = "$rootDir/sos-providers/other-configs" as File
+project(':sos-providers:cataloger:cataloger-cfg').projectDir = "$rootDir/sos-providers/cataloger/cataloger-cfg" as File
+project(':sos-providers:cataloger:cataloger-prv').projectDir = "$rootDir/sos-providers/cataloger/cataloger-prv" as File
+project(':sos-providers:cataloger:cataloger-sui').projectDir = "$rootDir/sos-providers/cataloger/cataloger-sui" as File
+project(':sos-providers:cataloger').projectDir = "$rootDir/sos-providers/cataloger" as File
+project(':sos-providers:rendezvous:rendezvous-cfg').projectDir = "$rootDir/sos-providers/rendezvous/rendezvous-cfg" as File
+project(':sos-providers:rendezvous').projectDir = "$rootDir/sos-providers/rendezvous" as File
+project(':sos-providers:logger:logger-cfg').projectDir = "$rootDir/sos-providers/logger/logger-cfg" as File
+project(':sos-providers:logger:logger-dl').projectDir = "$rootDir/sos-providers/logger/logger-dl" as File
+project(':sos-providers:logger:logger-prv').projectDir = "$rootDir/sos-providers/logger/logger-prv" as File
+project(':sos-providers:logger:logger-sui').projectDir = "$rootDir/sos-providers/logger/logger-sui" as File
+project(':sos-providers:logger:logger-api').projectDir = "$rootDir/sos-providers/logger/logger-api" as File
+project(':sos-providers:logger:logger-platform').projectDir = "$rootDir/sos-providers/logger/logger-platform" as File
+project(':sos-providers:logger').projectDir = "$rootDir/sos-providers/logger" as File
+project(':sos-providers:exertmonitor:exertmonitor-cfg').projectDir = "$rootDir/sos-providers/exertmonitor/exertmonitor-cfg" as File
+project(':sos-providers:exertmonitor:exertmonitor-dl').projectDir = "$rootDir/sos-providers/exertmonitor/exertmonitor-dl" as File
+project(':sos-providers:exertmonitor:exertmonitor-prv').projectDir = "$rootDir/sos-providers/exertmonitor/exertmonitor-prv" as File
+project(':sos-providers:exertmonitor').projectDir = "$rootDir/sos-providers/exertmonitor" as File
+project(':sos-providers:dbp:dbp-api').projectDir = "$rootDir/sos-providers/dbp/dbp-api" as File
+project(':sos-providers:dbp:dbp-prv').projectDir = "$rootDir/sos-providers/dbp/dbp-prv" as File
+project(':sos-providers:dbp:dbp-cfg').projectDir = "$rootDir/sos-providers/dbp/dbp-cfg" as File
+project(':sos-providers:dbp:dbp-handler').projectDir = "$rootDir/sos-providers/dbp/dbp-handler" as File
+project(':sos-providers:dbp:dbp-dl').projectDir = "$rootDir/sos-providers/dbp/dbp-dl" as File
+project(':sos-providers:dbp').projectDir = "$rootDir/sos-providers/dbp" as File
+project(':sos-providers:exerter:exerter-cfg').projectDir = "$rootDir/sos-providers/exerter/exerter-cfg" as File
+project(':sos-providers:exerter').projectDir = "$rootDir/sos-providers/exerter" as File
+project(':sos-providers').projectDir = "$rootDir/sos-providers" as File
+project(':tests:ju-arithmetic:ju-arithmetic-api').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-api" as File
+project(':tests:ju-arithmetic:ju-arithmetic-dl').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-dl" as File
+project(':tests:ju-arithmetic:ju-arithmetic-prv').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-prv" as File
+project(':tests:ju-arithmetic:ju-arithmetic-cfg-all').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-cfg-all" as File
+project(':tests:ju-arithmetic:ju-arithmetic-cfg-ctx').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-cfg-ctx" as File
+project(':tests:ju-arithmetic:ju-arithmetic-cfg-ter').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-cfg-ter" as File
+project(':tests:ju-arithmetic').projectDir = "$rootDir/tests/ju-arithmetic" as File
+project(':tests:int-tests').projectDir = "$rootDir/tests/int-tests" as File
+project(':tests:par-model:par-model-cfg').projectDir = "$rootDir/tests/par-model/par-model-cfg" as File
+project(':tests:par-model:par-model-prv').projectDir = "$rootDir/tests/par-model/par-model-prv" as File
+project(':tests:par-model').projectDir = "$rootDir/tests/par-model" as File
+project(':tests:model-beans').projectDir = "$rootDir/tests/model-beans" as File
+project(':tests').projectDir = "$rootDir/tests" as File
+project(':provider-root:examples:ex0:ex0-api').projectDir = "$rootDir/examples/ex0/ex0-api" as File
+project(':provider-root:examples:ex0:ex0-prv').projectDir = "$rootDir/examples/ex0/ex0-prv" as File
+project(':provider-root:examples:ex0:ex0-sui').projectDir = "$rootDir/examples/ex0/ex0-sui" as File
+project(':provider-root:examples:ex0:ex0-cfg').projectDir = "$rootDir/examples/ex0/ex0-cfg" as File
+project(':provider-root:examples:ex0:ex0-req').projectDir = "$rootDir/examples/ex0/ex0-req" as File
+project(':provider-root:examples:ex0:ex0-dl').projectDir = "$rootDir/examples/ex0/ex0-dl" as File
+project(':provider-root:examples:ex0').projectDir = "$rootDir/examples/ex0" as File
+project(':provider-root:examples:ex1:ex1-api').projectDir = "$rootDir/examples/ex1/ex1-api" as File
+project(':provider-root:examples:ex1:ex1-prv').projectDir = "$rootDir/examples/ex1/ex1-prv" as File
+project(':provider-root:examples:ex1:ex1-rdl').projectDir = "$rootDir/examples/ex1/ex1-rdl" as File
+project(':provider-root:examples:ex1:ex1-req').projectDir = "$rootDir/examples/ex1/ex1-req" as File
+project(':provider-root:examples:ex1:ex1-cfg1').projectDir = "$rootDir/examples/ex1/ex1-cfg1" as File
+project(':provider-root:examples:ex1:ex1-cfg2').projectDir = "$rootDir/examples/ex1/ex1-cfg2" as File
+project(':provider-root:examples:ex1:ex1-cfg-all').projectDir = "$rootDir/examples/ex1/ex1-cfg-all" as File
+project(':provider-root:examples:ex1:ex1-dl').projectDir = "$rootDir/examples/ex1/ex1-dl" as File
+project(':provider-root:examples:ex1').projectDir = "$rootDir/examples/ex1" as File
+project(':provider-root:examples:ex2:ex2-api').projectDir = "$rootDir/examples/ex2/ex2-api" as File
+project(':provider-root:examples:ex2:ex2-prv').projectDir = "$rootDir/examples/ex2/ex2-prv" as File
+project(':provider-root:examples:ex2:ex2-req').projectDir = "$rootDir/examples/ex2/ex2-req" as File
+project(':provider-root:examples:ex2:ex2-rdl').projectDir = "$rootDir/examples/ex2/ex2-rdl" as File
+project(':provider-root:examples:ex2:ex2-cfg1').projectDir = "$rootDir/examples/ex2/ex2-cfg1" as File
+project(':provider-root:examples:ex2:ex2-cfg2').projectDir = "$rootDir/examples/ex2/ex2-cfg2" as File
+project(':provider-root:examples:ex2:ex2-cfg3').projectDir = "$rootDir/examples/ex2/ex2-cfg3" as File
+project(':provider-root:examples:ex2:ex2-dl').projectDir = "$rootDir/examples/ex2/ex2-dl" as File
+project(':provider-root:examples:ex2').projectDir = "$rootDir/examples/ex2" as File
+project(':provider-root:examples:ex3:ex3-req').projectDir = "$rootDir/examples/ex3/ex3-req" as File
+project(':provider-root:examples:ex3').projectDir = "$rootDir/examples/ex3" as File
+project(':provider-root:examples:ex4:ex4-req').projectDir = "$rootDir/examples/ex4/ex4-req" as File
+project(':provider-root:examples:ex4').projectDir = "$rootDir/examples/ex4" as File
+project(':provider-root:examples:ex5:ex5-api').projectDir = "$rootDir/examples/ex5/ex5-api" as File
+project(':provider-root:examples:ex5:ex5-prv').projectDir = "$rootDir/examples/ex5/ex5-prv" as File
+project(':provider-root:examples:ex5:ex5-cfg-adder').projectDir = "$rootDir/examples/ex5/ex5-cfg-adder" as File
+project(':provider-root:examples:ex5:ex5-cfg-divider').projectDir = "$rootDir/examples/ex5/ex5-cfg-divider" as File
+project(':provider-root:examples:ex5:ex5-cfg-multiplier').projectDir = "$rootDir/examples/ex5/ex5-cfg-multiplier" as File
+project(':provider-root:examples:ex5:ex5-cfg-subtractor').projectDir = "$rootDir/examples/ex5/ex5-cfg-subtractor" as File
+project(':provider-root:examples:ex5:ex5-cfg-all').projectDir = "$rootDir/examples/ex5/ex5-cfg-all" as File
+project(':provider-root:examples:ex5:ex5-cfg-one-bean').projectDir = "$rootDir/examples/ex5/ex5-cfg-one-bean" as File
+project(':provider-root:examples:ex5:ex5-job').projectDir = "$rootDir/examples/ex5/ex5-job" as File
+project(':provider-root:examples:ex5:ex5-req').projectDir = "$rootDir/examples/ex5/ex5-req" as File
+project(':provider-root:examples:ex5:ex5-dl').projectDir = "$rootDir/examples/ex5/ex5-dl" as File
+project(':provider-root:examples:ex5').projectDir = "$rootDir/examples/ex5" as File
+project(':provider-root:examples:ex6:ex6-api').projectDir = "$rootDir/examples/ex6/ex6-api" as File
+project(':provider-root:examples:ex6:ex6-prv').projectDir = "$rootDir/examples/ex6/ex6-prv" as File
+project(':provider-root:examples:ex6:ex6-req').projectDir = "$rootDir/examples/ex6/ex6-req" as File
+project(':provider-root:examples:ex6:ex6-sui').projectDir = "$rootDir/examples/ex6/ex6-sui" as File
+project(':provider-root:examples:ex6:ex6-cfg-adder').projectDir = "$rootDir/examples/ex6/ex6-cfg-adder" as File
+project(':provider-root:examples:ex6:ex6-cfg-divider').projectDir = "$rootDir/examples/ex6/ex6-cfg-divider" as File
+project(':provider-root:examples:ex6:ex6-cfg-multiplier').projectDir = "$rootDir/examples/ex6/ex6-cfg-multiplier" as File
+project(':provider-root:examples:ex6:ex6-cfg-subtractor').projectDir = "$rootDir/examples/ex6/ex6-cfg-subtractor" as File
+project(':provider-root:examples:ex6:ex6-cfg-one-bean').projectDir = "$rootDir/examples/ex6/ex6-cfg-one-bean" as File
+project(':provider-root:examples:ex6:ex6-cfg-all').projectDir = "$rootDir/examples/ex6/ex6-cfg-all" as File
+project(':provider-root:examples:ex6:ex6-dl').projectDir = "$rootDir/examples/ex6/ex6-dl" as File
+project(':provider-root:examples:ex6').projectDir = "$rootDir/examples/ex6" as File
+project(':provider-root:examples:account:account-api').projectDir = "$rootDir/examples/account/account-api" as File
+project(':provider-root:examples:account:account-prv').projectDir = "$rootDir/examples/account/account-prv" as File
+project(':provider-root:examples:account:account-req').projectDir = "$rootDir/examples/account/account-req" as File
+project(':provider-root:examples:account:account-cfg-1').projectDir = "$rootDir/examples/account/account-cfg-1" as File
+project(':provider-root:examples:account:account-cfg-2').projectDir = "$rootDir/examples/account/account-cfg-2" as File
+project(':provider-root:examples:account:account-sui').projectDir = "$rootDir/examples/account/account-sui" as File
+project(':provider-root:examples:account:account-dl').projectDir = "$rootDir/examples/account/account-dl" as File
+project(':provider-root:examples:account').projectDir = "$rootDir/examples/account" as File
+project(':provider-root:examples:caller:caller-api').projectDir = "$rootDir/examples/caller/caller-api" as File
+project(':provider-root:examples:caller:caller-cfg').projectDir = "$rootDir/examples/caller/caller-cfg" as File
+project(':provider-root:examples:caller:caller-dl').projectDir = "$rootDir/examples/caller/caller-dl" as File
+project(':provider-root:examples:caller:caller-prv').projectDir = "$rootDir/examples/caller/caller-prv" as File
+project(':provider-root:examples:caller:caller-req').projectDir = "$rootDir/examples/caller/caller-req" as File
+project(':provider-root:examples:caller:caller-sui').projectDir = "$rootDir/examples/caller/caller-sui" as File
+project(':provider-root:examples:caller').projectDir = "$rootDir/examples/caller" as File
+project(':provider-root:examples').projectDir = "$rootDir/examples" as File
+project(':sorcer-rio:sorcer-rio-config').projectDir = "$rootDir/sorcer-rio/sorcer-rio-config" as File
+project(':sorcer-rio:sorcer-rio-start').projectDir = "$rootDir/sorcer-rio/sorcer-rio-start" as File
+project(':sorcer-rio:sorcer-rio-cli').projectDir = "$rootDir/sorcer-rio/sorcer-rio-cli" as File
+project(':sorcer-rio:sorcer-rio-resolver').projectDir = "$rootDir/sorcer-rio/sorcer-rio-resolver" as File
+project(':sorcer-rio').projectDir = "$rootDir/sorcer-rio" as File
+
+include 'distribution'

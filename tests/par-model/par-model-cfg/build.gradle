@@ -1,0 +1,5 @@
+
+description = 'SORCER OS :: int tests :: par-model :: config'
+dependencies {
+  compile project(':tests:par-model:par-model-prv')
+}

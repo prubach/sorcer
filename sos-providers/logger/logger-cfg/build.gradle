@@ -1,0 +1,7 @@
+
+description = 'SORCER OS :: providers :: logger :: config'
+dependencies {
+  compile project(':sos:sos-platform')
+  compile project(':sos-providers:logger:logger-prv')
+  compile project(':sos-providers:logger:logger-sui')
+}

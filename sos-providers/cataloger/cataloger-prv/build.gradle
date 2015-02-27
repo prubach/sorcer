@@ -1,0 +1,7 @@
+
+description = 'SORCER OS :: providers :: cataloger :: prv'
+dependencies {
+  compile project(':sos:sorcer-api')
+  compile project(':sos:sos-platform')
+  compile project(':sos:sos-util')
+}

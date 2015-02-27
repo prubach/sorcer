@@ -1,0 +1,8 @@
+
+description = 'SORCER examples :: ex5 :: req'
+dependencies {
+  compile project(':provider-root:examples:ex5:ex5-api')
+  compile project(':provider-root:examples:ex5:ex5-prv')
+  compile project(':sos:sorcer-api')
+  testCompile project(':tools:sorcer-junit')
+}

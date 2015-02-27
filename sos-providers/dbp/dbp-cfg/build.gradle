@@ -1,0 +1,5 @@
+
+description = 'SORCER OS :: providers :: dbp :: config'
+dependencies {
+  compile project(':sos-providers:dbp:dbp-prv')
+}

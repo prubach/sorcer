@@ -1,0 +1,10 @@
+
+description = 'SORCER examples :: ex6 :: req'
+dependencies {
+  compile project(':provider-root:examples:ex6:ex6-api')
+  compile project(':sos:sos-platform')
+  compile project(':sos:sos-api')
+  compile project(':sos:commons-req')
+  testCompile project(':tools:sorcer-junit')
+  testCompile project(':provider-root:examples:ex6:ex6-cfg-all')
+}

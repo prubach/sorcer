@@ -1,0 +1,16 @@
+
+description = 'SORCER tools :: requestor library'
+dependencies {
+  compile project(':sos:commons-req')
+  compile project(':sos-providers:dbp:dbp-handler')
+  compile project(':sos:sos-platform')
+  compile project(':sos:sos-api')
+  compile project(':tools:sos-webster')
+    compile group: 'net.jini', name: 'jsk-platform', version:riverVersion
+    compile group: 'net.jini', name: 'jsk-lib', version:riverVersion
+    compile group: 'net.jini.lookup', name: 'serviceui', version:riverVersion
+    compile group: 'org.rioproject', name: 'rio-platform', version:rioVersion
+    compile group: 'org.rioproject', name: 'rio-api', version:rioVersion
+    compile group: 'org.rioproject.monitor', name: 'monitor-api', version:rioVersion
+    compile group: 'org.rioproject', name: 'rio-lib', version:rioVersion
+}

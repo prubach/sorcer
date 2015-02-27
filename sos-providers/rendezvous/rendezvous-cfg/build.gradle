@@ -1,0 +1,5 @@
+
+description = 'SORCER OS :: providers :: rendezvous :: config'
+dependencies {
+  compile project(':sos:sos-platform')
+}

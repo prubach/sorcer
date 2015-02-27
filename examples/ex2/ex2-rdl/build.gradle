@@ -1,0 +1,6 @@
+
+description = 'SORCER examples :: ex2 :: rdl'
+dependencies {
+  compile project(':provider-root:examples:ex2:ex2-api')
+  compile project(':sos:sorcer-api')
+}

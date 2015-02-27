@@ -1,0 +1,7 @@
+
+description = 'SORCER :: caller :: config'
+dependencies {
+  compile project(':provider-root:examples:caller:caller-prv')
+  compile project(':sos:sorcer-ui')
+  compile project(':provider-root:examples:caller:caller-dl')
+}

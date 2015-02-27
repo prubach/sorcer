@@ -1,0 +1,5 @@
+
+description = 'SORCER OS :: providers :: fiddler :: config'
+dependencies {
+    compile group: 'org.apache.river', name: 'fiddler', version:riverVersion
+}

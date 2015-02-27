@@ -1,0 +1,8 @@
+
+description = ''
+dependencies {
+  compile project(':tools:sos-boot')
+    compile group: 'org.rioproject', name: 'rio-platform', version:rioVersion
+  compile project(':sorcer-rio:sorcer-rio-resolver')
+    compile group: 'org.slf4j', name: 'slf4j-api', version:slf4jVersion
+}

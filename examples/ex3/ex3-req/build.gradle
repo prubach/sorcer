@@ -1,0 +1,9 @@
+
+description = 'SORCER examples :: ex3 :: req'
+dependencies {
+  compile project(':provider-root:examples:ex2:ex2-api')
+  compile project(':provider-root:examples:ex2:ex2-rdl')
+  compile project(':sos:sos-platform')
+  compile project(':sos:commons-req')
+  testCompile project(':tools:sorcer-junit')
+}

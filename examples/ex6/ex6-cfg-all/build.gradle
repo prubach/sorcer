@@ -1,0 +1,6 @@
+
+description = 'SORCER examples :: ex6 :: all config'
+dependencies {
+  compile project(':provider-root:examples:ex6:ex6-prv')
+  compile project(':provider-root:examples:ex6:ex6-dl')
+}

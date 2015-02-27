@@ -1,0 +1,10 @@
+
+description = 'SORCER OS :: int tests :: arithmetic :: provider'
+dependencies {
+  compile project(':sos:sos-platform')
+  compile project(':tests:ju-arithmetic:ju-arithmetic-api')
+  compile project(':sos:sos-api')
+  testCompile project(':sos:commons-req')
+    testCompile group: 'junit', name: 'junit', version:junitVersion
+  testCompile project(':tools:sorcer-junit')
+}

@@ -1,0 +1,9 @@
+
+description = 'SORCER examples :: ex6 :: sui'
+dependencies {
+  compile project(':provider-root:examples:ex6:ex6-api')
+    compile group: 'net.jini', name: 'jsk-lib', version:riverVersion
+  compile project(':sos:sos-platform')
+    compile group: 'net.jini.lookup', name: 'serviceui', version:riverVersion
+  compile project(':sos:sorcer-ui')
+}

@@ -1,0 +1,5 @@
+
+description = 'SORCER OS :: int tests :: arithmetic :: contexter :: config'
+dependencies {
+  compile project(':tests:ju-arithmetic:ju-arithmetic-prv')
+}

@@ -1,0 +1,24 @@
+
+description = 'SORCER tools :: booter'
+dependencies {
+  compile project(':tools:sorcer-resolver')
+  compile project(':sos:sorcer-launcher')
+  compile project(':sos:sorcer-container')
+    compile group: 'org.apache.river', name: 'start', version:riverVersion
+    compile group: 'net.jini', name: 'jsk-platform', version:riverVersion
+    compile group: 'org.rioproject', name: 'rio-start', version:rioVersion
+    compile group: 'org.rioproject', name: 'rio-logging-support', version:rioVersion
+    compile group: 'com.google.guava', name: 'guava', version:'16.0.1'
+    compile group: 'com.google.inject', name: 'guice', version:'4.0-beta4'
+    compile group: 'org.slf4j', name: 'jul-to-slf4j', version:slf4jVersion
+  compile project(':sos:sos-util')
+    compile group: 'javax.inject', name: 'javax.inject', version:'1'
+    compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version:'4.0-beta4'
+    compile group: 'commons-io', name: 'commons-io', version:'2.4'
+    compile group: 'commons-cli', name: 'commons-cli', version:'1.2'
+    compile group: 'org.slf4j', name: 'slf4j-api', version:slf4jVersion
+    compile group: 'org.rioproject', name: 'rio-platform', version:rioVersion
+  compile project(':sos:sorcer-spi')
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version:groovyVersion
+  runtime project(':sorcer-rio:sorcer-rio-start')
+}

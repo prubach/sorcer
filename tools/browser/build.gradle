@@ -1,0 +1,13 @@
+
+description = 'SORCER tools :: browser'
+dependencies {
+  compile project(':sos:sorcer-ui')
+  compile project(':sos:sorcer-api')
+  compile project(':tools:sos-webster')
+    compile group: 'org.cheiron.jsc', name: 'jsc-admin', version:'0.1-b31078'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version:groovyVersion
+    compile group: 'com.apple', name: 'AppleJavaExtensions', version:'1.4'
+    compile group: 'net.jini', name: 'jsk-platform', version:riverVersion
+    runtime group: 'org.rioproject', name: 'rio-platform', version:rioVersion
+    testCompile group: 'org.slf4j', name: 'slf4j-simple', version:slf4jVersion
+}

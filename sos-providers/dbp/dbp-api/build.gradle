@@ -1,0 +1,6 @@
+
+description = 'SORCER OS :: providers :: dbp :: api'
+dependencies {
+  compile project(':sos:sorcer-api')
+    compile group: 'net.jini', name: 'jsk-platform', version:riverVersion
+}

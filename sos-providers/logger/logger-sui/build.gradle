@@ -1,0 +1,8 @@
+
+description = 'SORCER OS :: providers :: logger :: sui'
+dependencies {
+  compile project(':sos:sorcer-api')
+  compile project(':sos-providers:logger:logger-api')
+  compile project(':sos:sos-util')
+  compile project(':sos:sorcer-ui')
+}

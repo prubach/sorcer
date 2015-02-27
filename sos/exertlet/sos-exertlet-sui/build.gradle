@@ -1,0 +1,8 @@
+
+description = 'SORCER OS :: exertlet-sui'
+dependencies {
+  compile project(':sos:sorcer-api')
+  compile project(':sos:sos-platform')
+  compile project(':tools:sos-netlet')
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version:groovyVersion
+}

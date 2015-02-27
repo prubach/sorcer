@@ -1,0 +1,6 @@
+
+description = 'SORCER :: Rio :: CLI'
+dependencies {
+    compile group: 'org.rioproject', name: 'rio-cli', version:rioVersion
+    compile group: 'org.rioproject', name: 'rio-start', version:rioVersion
+}

@@ -1,0 +1,9 @@
+
+description = 'SORCER OS :: providers :: dbp :: provider'
+dependencies {
+  compile project(':sos-providers:dbp:dbp-api')
+  compile project(':sos:sos-platform')
+  compile project(':sos:sorcer-api')
+    compile group: 'com.sleepycat', name: 'je', version:'5.0.104'
+  testCompile project(':tools:sorcer-junit')
+}

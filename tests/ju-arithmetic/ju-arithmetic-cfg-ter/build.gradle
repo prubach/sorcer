@@ -1,0 +1,6 @@
+
+description = 'SORCER OS :: int tests :: arithmetic :: exertleter :: config'
+dependencies {
+  compile project(':tests:ju-arithmetic:ju-arithmetic-api')
+  compile project(':sos:sos-api')
+}

@@ -1,0 +1,5 @@
+
+description = 'SORCER OS :: int tests :: arithmetic :: API'
+dependencies {
+  compile project(':sos:sorcer-api')
+}

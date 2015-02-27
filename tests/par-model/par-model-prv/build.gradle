@@ -1,0 +1,8 @@
+
+description = 'SORCER OS :: int tests :: par-model :: prv'
+dependencies {
+  compile project(':sos:sos-api')
+  compile project(':tests:ju-arithmetic:ju-arithmetic-prv')
+    testCompile group: 'junit', name: 'junit', version:junitVersion
+  testCompile project(':tools:sorcer-junit')
+}

@@ -1,0 +1,11 @@
+
+description = 'SORCER OS :: providers :: blitz :: config'
+dependencies {
+    compile group: 'org.sorcersoft.blitz', name: 'blitz-service', version:'2.3'
+    compile group: 'org.rioproject', name: 'rio-platform', version: rioVersion
+    compile group: 'org.rioproject', name: 'rio-api', version: rioVersion
+  compile project(':sos:sorcer-api')
+  compile project(':sos:sorcer-ui')
+  compile project(':sos:sos-platform')
+    compile group: 'org.apache.river', name: 'mahalo-dl', version:riverVersion
+}

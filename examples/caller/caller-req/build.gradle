@@ -1,0 +1,9 @@
+
+description = 'SORCER :: caller :: requestor'
+dependencies {
+  compile project(':provider-root:examples:caller:caller-api')
+  compile project(':sos:sos-api')
+  compile project(':sos:commons-req')
+    compile group: 'org.slf4j', name: 'slf4j-api', version:slf4jVersion
+  testCompile project(':tools:sorcer-junit')
+}

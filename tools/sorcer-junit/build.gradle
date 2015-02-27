@@ -1,0 +1,12 @@
+
+description = 'SORCER tools :: JUnit'
+dependencies {
+  compile project(':tools:sorcer-resolver')
+  compile project(':sos:commons-req')
+  compile project(':tools:sos-boot')
+  compile project(':sos-providers:dbp:dbp-handler')
+    compile group: 'junit', name: 'junit', version:junitVersion
+    compile group: 'junit-addons', name: 'junit-addons', version:'1.4'
+    compile group: 'org.slf4j', name: 'jul-to-slf4j', version:slf4jVersion
+    runtime group: 'ch.qos.logback', name: 'logback-classic', version:'1.0.13'
+}

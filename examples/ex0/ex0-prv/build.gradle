@@ -1,0 +1,6 @@
+
+description = 'SORCER examples :: ex0 :: provider'
+dependencies {
+  compile project(':provider-root:examples:ex0:ex0-api')
+  compile project(':sos:sos-platform')
+}
