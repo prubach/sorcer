@@ -334,10 +334,10 @@ getProperty ( ) {
 }
 
 getMinReqCp ( ) {
-if [ -f "$LIB_DIR/sorcer/sorcer-api.jar" ]; then
+if [ -f "$LIB_DIR/sorcer/lib/sorcer-api-$V_SORCER.jar" ]; then
     SORCER_REQ_CP="$SORCER_HOME/lib/sorcer/sorcer-lib.jar:\
-$SORCER_HOME/lib/commons/groovy-all.jar:\
-$SORCER_HOME/lib/commons/slf4j-simple.jar"
+$SORCER_HOME/lib/common/groovy-all-$V_GROOVY.jar:\
+$SORCER_HOME/lib/common/slf4j-simple-$V_SLF4J.jar"
 else
       SORCER_REQ_CP="$MVN_REPO/org/sorcersoft/sorcer/sorcer-lib/$V_SORCER/sorcer-lib-$V_SORCER.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
@@ -402,7 +402,7 @@ $MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-proxy/$V_RIO/rio-proxy-$V_RIO.jar:\
-$MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
+$MVN_REPO/org/sorcersoft/sigar/	/$V_SIGAR/sigar-$V_SIGAR.jar"
 
     # Determine webster url
 
@@ -564,7 +564,7 @@ installSorcerToLocalRepository() {
 #
 
     # Installer is only needed in Distribution
-    if [ -f "$LIB_DIR/sorcer/sorcer-api.jar" ]; then
+    if [ -f "$LIB_DIR/sorcer/lib/sorcer-api-$V_SORCER.jar" ]; then
         # Run Sorcer Installer to install sorcer jars to local repo
         # Check if marker file exists - if so installer has already been run, ignore
         if [ -f "$SORCER_HOME/logs/sorcer_jars_installed_user_$USER.tmp" ]; then
@@ -575,16 +575,20 @@ installSorcerToLocalRepository() {
             #    echo "Sorcer jars already installed."
             #fi
         else
-			SOS_INST_CP="$LIB_DIR/sorcer/sorcer-installer.jar:\
-$LIB_DIR/sorcer/sorcer-resolver.jar:\
-$LIB_DIR/sorcer/sorcer-api.jar:\
-$LIB_DIR/sorcer/sos-util.jar:\
-$LIB_DIR/commons/slf4j-api.jar:\
-$LIB_DIR/commons/slf4j-simple.jar:\
-$LIB_DIR/commons/commons-io.jar:\
-$LIB_DIR/commons/xml-apis.jar:\
-$LIB_DIR/commons/xercesImpl.jar:\
-$LIB_DIR/rio/lib/resolver/resolver-aether-$V_RIO.jar"
+			SOS_INST_CP="$LIB_DIR/sorcer/lib/sorcer-installer-$V_SORCER.jar:\
+$LIB_DIR/sorcer/lib/sorcer-resolver-$V_SORCER.jar:\
+$LIB_DIR/sorcer/lib/sorcer-api-$V_SORCER.jar:\
+$LIB_DIR/sorcer/lib/sos-util-$V_SORCER.jar:\
+$LIB_DIR/common/slf4j-api-1.7.7.jar:\
+$LIB_DIR/common/slf4j-simple-1.7.7.jar:\
+$LIB_DIR/common/commons-io-2.4.jar:\
+$LIB_DIR/common/xercesImpl-2.6.2.jar:\
+$RIO_HOME/lib/resolver/resolver-aether-$V_RIO.jar"
+
+# $LIB_DIR/commons/xml-apis.jar:\
+
+
+	    echo "Installer CP: ".$SOS_INST_CP
             if [ "$daem" = "1" ]; then
 				""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer > $SORCER_HOME/logs/rio-boot.log
             else

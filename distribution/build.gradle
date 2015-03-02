@@ -36,9 +36,9 @@ dependencies {
         distribution "org.apache.river:${riverDep}-dl:$riverVersion"
     }
     distribution "net.jini.lookup:serviceui:$riverVersion"
-    ["blitz", "blitz-dl", "blitzui"].each { blitz ->
-        distribution "org.dancres:${blitz}:$blitzVersion"
-    }
+    //["blitz", "blitz-dl", "blitzui"].each { blitz ->
+     //   distribution "org.dancres:${blitz}:$blitzVersion"
+   // }
     distribution "org.rioproject:distribution:${rioVersion}@zip"
 }
 
@@ -103,12 +103,11 @@ task gatherDeps() {
                 println "Processing ${project.path}"
                 ["jsk, start, service-ui"  : "lib/river",
                  "blitz, lockmgr"          : "lib/blitz",
-                 "je, xerces, xml"         : "lib/common",
-                 "groovy"                  : "lib/common/groovy",
+                 "groovy, slf4j, je, xerces, xml, xml-apis, common-io, commons-collections, commons-compress, plexus, commons-lang3, commons-io, commons-cli, guice, javax.inject, aopalliance, asm, cglib, guava, sigar" : "lib/common",
                  "junit"                   : "lib/common/buildsupport"].each {
                     prefix, dest ->
                     copy {
-                        from filterDeps(project, prefix)
+                        from filterDeps(project, prefix, dest)
                         into "$distDir-${version}/$dest"
                     }
                 }
@@ -145,12 +144,17 @@ task gatherDeps() {
     }
 }
 
-def filterDeps(project, prefix) {
+def filterDeps(project, prefix, dest) {
+    //println "Filtering runtime for $project and $prefix "
     project.configurations.runtime.filter {
         String[] parts = prefix.split(",")
         for (String part : parts) {
             if (it.name.startsWith(part.trim())) {
-                return true
+                //println "Found: $it in $part"
+                if (!file("$distDir-${version}/$dest/$it.name").exists())
+                    return true
+                else
+                    return false
             }
         }
         false
@@ -165,6 +169,7 @@ task createDistribution(dependsOn: [":tools:sos-boot:install",
                               ":tools:browser:install",
                               ":tools:sos-webster:install",
                               ":tools:sos-shell:install",
+                              ":tools:sorcer-installer:install",
                               gatherDeps]) {
     description 'Creates a Sorcer distribution'
     doLast {
@@ -182,7 +187,7 @@ task createDistribution(dependsOn: [":tools:sos-boot:install",
                         if (jar.archiveName.indexOf('dl') > 0 ||
                             jar.archiveName.indexOf('ui') > 0) {
                             target = sorcerDlDir
-                        } else if (jar.archiveName.startsWith('ssb-') || jar.archiveName.startsWith('webster-')) {
+                        } else if (jar.archiveName.startsWith('browser-') || jar.archiveName.startsWith('webster-')) {
                             target = sorcerExtDir
                         } else {
                             target = sorcerLibDir
@@ -227,18 +232,17 @@ task createDistribution(dependsOn: [":tools:sos-boot:install",
         }
 
         /* Overlay Rio customizations onto Rio distribution */
+        println "Overlaying Rio platform from: ${projectDir.path}/sorcer-rio/sorcer-rio-config/src/main/resources/config/platform"
         copy {
-            //from("${projectDir.path}/resources/rio")
-            from("${projectDir.path}/sorcer-rio/sorcer-rio-config/src/main/resources/")
-            into "${distDir}-${version}/rio-${rioVersion}"
-            //into "${distDir}-${version}/lib/rio"
+            from("${projectDir.path}/../sorcer-rio/sorcer-rio-config/src/main/resources/config/platform")
+            into "${distDir}-${version}/rio-${rioVersion}/config/platform"
         }
 
         /* Move the SLF4J logback jars out of the way and slide SLF4J JUL logging support in */
         File rioLoggingLib = file("${distDir}-${version}/rio-${rioVersion}/lib/logging")
         for(File jar : rioLoggingLib.listFiles()) {
-            if(jar.name.startsWith("logback") && !jar.isDirectory())
-                jar.delete()
+            //if(jar.name.startsWith("logback") && !jar.isDirectory())
+            //    jar.delete()
         }
         copy {
             from(file("${rioLoggingLib.path}/jul")) {
@@ -257,6 +261,86 @@ task createDistribution(dependsOn: [":tools:sos-boot:install",
         versionProps.setProperty("groovy.version", groovyVersion)
         versionProps.setProperty("slf4j.version", slf4jVersion)
         versionProps.store(versionPropsFile.newWriter(), null)*/
+
+
+
+        def homePath = System.properties['user.home']
+        copy {
+            from(file("${homePath}/.m2/repository/")) {
+                include "org/apache/river/fiddler/${riverVersion}/fiddler-${riverVersion}.pom"
+                include "org/apache/river/fiddler-dl/${riverVersion}/fiddler-dl-${riverVersion}.pom"
+                include "net/jini/jsk-dl/${riverVersion}/jsk-dl-${riverVersion}.pom"
+                include "net/jini/jsk-lib/${riverVersion}/jsk-lib-${riverVersion}.pom"
+                include "net/jini/jsk-platform/${riverVersion}/jsk-platform-${riverVersion}.pom"
+                include "net/jini/jsk-resources/${riverVersion}/jsk-resources-${riverVersion}.pom"
+                include "org/apache/river/mahalo/${riverVersion}/mahalo-${riverVersion}.pom"
+                include "org/apache/river/mahalo-dl/${riverVersion}/mahalo-dl-${riverVersion}.pom"
+                include "org/apache/river/mercury/${riverVersion}/mercury-${riverVersion}.pom"
+                include "org/apache/river/mercury-dl/${riverVersion}/mercury-dl-${riverVersion}.pom"
+                include "org/apache/river/norm/${riverVersion}/norm-${riverVersion}.pom"
+                include "org/apache/river/norm-dl/${riverVersion}/norm-dl-${riverVersion}.pom"
+                include "org/apache/river/outrigger/${riverVersion}/outrigger-${riverVersion}.pom"
+                include "org/apache/river/outrigger-dl/${riverVersion}/outrigger-dl-${riverVersion}.pom"
+                include "org/apache/river/reggie/${riverVersion}/reggie-${riverVersion}.pom"
+                include "org/apache/river/reggie-dl/${riverVersion}/reggie-dl-${riverVersion}.pom"
+                include "net/jini/lookup/serviceui/${riverVersion}/serviceui-${riverVersion}.pom"
+                include "org/apache/river/start/${riverVersion}/start-${riverVersion}.pom"
+                include "org/sorcersoft/blitz/main/${v_blitz}/main-${v_blitz}.pom"
+                include "org/sorcersoft/lockmgr/lockmgr/${v_lockmgr}/lockmgr-${v_lockmgr}.pom"
+                include "org/rioproject/main/${rioVersion}/main-${rioVersion}.pom"
+                include "org/apache/commons/commons-parent/5/commons-parent-5.pom"
+                include "org/apache/commons/commons-parent/32/commons-parent-32.pom"
+                //include "org/apache/maven/maven/${v.maven}/maven-${v.maven}.pom"
+                //include "org/apache/maven/maven-parent/23/maven-parent-23.pom"
+                include "org/codehaus/plexus/plexus/3.3/plexus-3.3.pom"
+                include "org/apache/ant/ant/1.9.3/ant-1.9.3.pom"
+                include "org/apache/ant/ant-parent/1.9.3/ant-parent-1.9.3.pom"
+                include "org/apache/ant/ant-launcher/1.9.3/ant-launcher-1.9.3.pom"
+                include "org/slf4j/slf4j-parent/${slf4jVersion}/slf4j-parent-${slf4jVersion}.pom"
+                //include "org/sorcersoft/sigar/sigar/1.6.4-3/sigar-1.6.4-3.pom"
+                include "org/sorcersoft/sigar/sigar-parent/1.6.4-3/sigar-parent-1.6.4-3.pom"
+                include "com/apple/AppleJavaExtensions/1.4/AppleJavaExtensions-1.4.pom"
+                include "classworlds/classworlds/1.1-alpha-2/classworlds-1.1-alpha-2.pom"
+                include "ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.pom"
+                include "nekohtml/xercesMinimal/1.9.6.2/xercesMinimal-1.9.6.2.pom"
+                include "aopalliance/aopalliance/1.0/aopalliance-1.0.pom"
+                include "org/apache/apache/4/apache-4.pom"
+                include "org/codehaus/groovy/groovy-all/${groovyVersion}/groovy-all-${groovyVersion}.pom"
+                include "org/eclipse/jdt/core/compiler/ecj/3.5.1/ecj-3.5.1.pom"
+                include "org/codehaus/janino/janino/2.5.16/janino-2.5.16.pom"
+                include "com/google/guava/guava-parent/${v_guava}/guava-parent-${v_guava}.pom"
+                include "org/sonatype/oss/oss-parent/7/oss-parent-7.pom"
+                include "junit/junit/${junitVersion}/junit-${junitVersion}.pom"
+                include "org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.pom"
+                include "org/hamcrest/hamcrest-parent/1.3/hamcrest-parent-1.3.pom"
+                include "ch/qos/logback/logback-parent/1.0.13/logback-parent-1.0.13.pom"
+                include "com/google/inject/extensions/guice-multibindings/4.0-beta4/guice-multibindings-4.0-beta4.pom"
+                include "com/google/inject/guice/4.0-beta4/guice-4.0-beta4.pom"
+                include "com/google/inject/guice-parent/4.0-beta4/guice-parent-4.0-beta4.pom"
+                include "com/google/inject/extensions/extensions-parent/4.0-beta4/extensions-parent-4.0-beta4.pom"
+                include "com/google/google/5/google-5.pom"
+                include "asm/asm/3.3.1/asm-3.3.1.pom"
+                include "xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.pom"
+                include "com/sleepycat/je/4.0.92/je-4.0.92.pom"
+            }
+            into "${project.buildDir.path}/tmp/configs/poms"
+            eachFile {details ->
+                def targetPath = details.getSourceName()
+                details.path = targetPath
+            }
+        }
+        copy {
+            from(file("${project.buildDir.path}/tmp/configs/poms")) {
+                include "*.pom"
+            }
+            into "${distDir}-${version}/configs/poms"
+        }
+        copy {
+            from(file("src/main/configs/poms")) {
+                include "*.pom"
+            }
+            into "${distDir}-${version}/configs/poms"
+        }
     }
 }
 

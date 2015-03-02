@@ -62,7 +62,7 @@ include ':sos-providers:dbp'
 include ':sos-providers:exerter:exerter-cfg'
 include ':sos-providers:exerter'
 include ':sos-providers'
-include ':tests:ju-arithmetic:ju-arithmetic-api'
+/*include ':tests:ju-arithmetic:ju-arithmetic-api'
 include ':tests:ju-arithmetic:ju-arithmetic-dl'
 include ':tests:ju-arithmetic:ju-arithmetic-prv'
 include ':tests:ju-arithmetic:ju-arithmetic-cfg-all'
@@ -115,7 +115,7 @@ include ':provider-root:examples:ex5:ex5-cfg-one-bean'
 include ':provider-root:examples:ex5:ex5-job'
 include ':provider-root:examples:ex5:ex5-req'
 include ':provider-root:examples:ex5:ex5-dl'
-include ':provider-root:examples:ex5'
+include ':provider-root:examples:ex5' */
 include ':provider-root:examples:ex6:ex6-api'
 include ':provider-root:examples:ex6:ex6-prv'
 include ':provider-root:examples:ex6:ex6-req'
@@ -128,7 +128,7 @@ include ':provider-root:examples:ex6:ex6-cfg-one-bean'
 include ':provider-root:examples:ex6:ex6-cfg-all'
 include ':provider-root:examples:ex6:ex6-dl'
 include ':provider-root:examples:ex6'
-include ':provider-root:examples:account:account-api'
+/*include ':provider-root:examples:account:account-api'
 include ':provider-root:examples:account:account-prv'
 include ':provider-root:examples:account:account-req'
 include ':provider-root:examples:account:account-cfg-1'
@@ -143,7 +143,7 @@ include ':provider-root:examples:caller:caller-prv'
 include ':provider-root:examples:caller:caller-req'
 include ':provider-root:examples:caller:caller-sui'
 include ':provider-root:examples:caller'
-include ':provider-root:examples'
+include ':provider-root:examples'*/
 include ':sorcer-rio:sorcer-rio-config'
 include ':sorcer-rio:sorcer-rio-start'
 include ':sorcer-rio:sorcer-rio-cli'
@@ -213,7 +213,7 @@ project(':sos-providers:dbp').projectDir = "$rootDir/sos-providers/dbp" as File
 project(':sos-providers:exerter:exerter-cfg').projectDir = "$rootDir/sos-providers/exerter/exerter-cfg" as File
 project(':sos-providers:exerter').projectDir = "$rootDir/sos-providers/exerter" as File
 project(':sos-providers').projectDir = "$rootDir/sos-providers" as File
-project(':tests:ju-arithmetic:ju-arithmetic-api').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-api" as File
+/*project(':tests:ju-arithmetic:ju-arithmetic-api').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-api" as File
 project(':tests:ju-arithmetic:ju-arithmetic-dl').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-dl" as File
 project(':tests:ju-arithmetic:ju-arithmetic-prv').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-prv" as File
 project(':tests:ju-arithmetic:ju-arithmetic-cfg-all').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-cfg-all" as File
@@ -225,8 +225,8 @@ project(':tests:par-model:par-model-cfg').projectDir = "$rootDir/tests/par-model
 project(':tests:par-model:par-model-prv').projectDir = "$rootDir/tests/par-model/par-model-prv" as File
 project(':tests:par-model').projectDir = "$rootDir/tests/par-model" as File
 project(':tests:model-beans').projectDir = "$rootDir/tests/model-beans" as File
-project(':tests').projectDir = "$rootDir/tests" as File
-project(':provider-root:examples:ex0:ex0-api').projectDir = "$rootDir/examples/ex0/ex0-api" as File
+project(':tests').projectDir = "$rootDir/tests" as File                            */
+/*project(':provider-root:examples:ex0:ex0-api').projectDir = "$rootDir/examples/ex0/ex0-api" as File
 project(':provider-root:examples:ex0:ex0-prv').projectDir = "$rootDir/examples/ex0/ex0-prv" as File
 project(':provider-root:examples:ex0:ex0-sui').projectDir = "$rootDir/examples/ex0/ex0-sui" as File
 project(':provider-root:examples:ex0:ex0-cfg').projectDir = "$rootDir/examples/ex0/ex0-cfg" as File
@@ -266,7 +266,7 @@ project(':provider-root:examples:ex5:ex5-cfg-one-bean').projectDir = "$rootDir/e
 project(':provider-root:examples:ex5:ex5-job').projectDir = "$rootDir/examples/ex5/ex5-job" as File
 project(':provider-root:examples:ex5:ex5-req').projectDir = "$rootDir/examples/ex5/ex5-req" as File
 project(':provider-root:examples:ex5:ex5-dl').projectDir = "$rootDir/examples/ex5/ex5-dl" as File
-project(':provider-root:examples:ex5').projectDir = "$rootDir/examples/ex5" as File
+project(':provider-root:examples:ex5').projectDir = "$rootDir/examples/ex5" as File*/
 project(':provider-root:examples:ex6:ex6-api').projectDir = "$rootDir/examples/ex6/ex6-api" as File
 project(':provider-root:examples:ex6:ex6-prv').projectDir = "$rootDir/examples/ex6/ex6-prv" as File
 project(':provider-root:examples:ex6:ex6-req').projectDir = "$rootDir/examples/ex6/ex6-req" as File
@@ -279,7 +279,7 @@ project(':provider-root:examples:ex6:ex6-cfg-one-bean').projectDir = "$rootDir/e
 project(':provider-root:examples:ex6:ex6-cfg-all').projectDir = "$rootDir/examples/ex6/ex6-cfg-all" as File
 project(':provider-root:examples:ex6:ex6-dl').projectDir = "$rootDir/examples/ex6/ex6-dl" as File
 project(':provider-root:examples:ex6').projectDir = "$rootDir/examples/ex6" as File
-project(':provider-root:examples:account:account-api').projectDir = "$rootDir/examples/account/account-api" as File
+/*project(':provider-root:examples:account:account-api').projectDir = "$rootDir/examples/account/account-api" as File
 project(':provider-root:examples:account:account-prv').projectDir = "$rootDir/examples/account/account-prv" as File
 project(':provider-root:examples:account:account-req').projectDir = "$rootDir/examples/account/account-req" as File
 project(':provider-root:examples:account:account-cfg-1').projectDir = "$rootDir/examples/account/account-cfg-1" as File
@@ -294,7 +294,7 @@ project(':provider-root:examples:caller:caller-prv').projectDir = "$rootDir/exam
 project(':provider-root:examples:caller:caller-req').projectDir = "$rootDir/examples/caller/caller-req" as File
 project(':provider-root:examples:caller:caller-sui').projectDir = "$rootDir/examples/caller/caller-sui" as File
 project(':provider-root:examples:caller').projectDir = "$rootDir/examples/caller" as File
-project(':provider-root:examples').projectDir = "$rootDir/examples" as File
+project(':provider-root:examples').projectDir = "$rootDir/examples" as File*/
 project(':sorcer-rio:sorcer-rio-config').projectDir = "$rootDir/sorcer-rio/sorcer-rio-config" as File
 project(':sorcer-rio:sorcer-rio-start').projectDir = "$rootDir/sorcer-rio/sorcer-rio-start" as File
 project(':sorcer-rio:sorcer-rio-cli').projectDir = "$rootDir/sorcer-rio/sorcer-rio-cli" as File

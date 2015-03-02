@@ -1,5 +1,6 @@
 
 description = 'SORCER OS :: platform'
+
 dependencies {
     compile group: 'org.sorcersoft.lockmgr', name: 'lockmgr-api', version:'0.2-3'
   compile project(':sos-providers:dbp:dbp-api')

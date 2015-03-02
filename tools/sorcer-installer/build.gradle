@@ -6,4 +6,5 @@ dependencies {
     compile group: 'org.rioproject.resolver', name: 'resolver-aether', version:rioVersion
     compile group: 'commons-io', name: 'commons-io', version:'2.4'
     compile group: 'org.slf4j', name: 'slf4j-api', version:slf4jVersion
+    compile group: 'org.slf4j', name: 'slf4j-simple', version:slf4jVersion
 }

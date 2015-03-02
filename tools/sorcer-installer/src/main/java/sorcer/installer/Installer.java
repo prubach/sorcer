@@ -54,10 +54,10 @@ public class Installer {
 
     protected Map<String, String> groupDirMap;
 
-    private static File logDir = new File(SorcerEnv.getHomeDir(), "logs");
-    private static File markerFile = new File(logDir, "sorcer_jars_installed_user_" + System.getProperty(USER_NAME) + ".tmp");
+    private static File logDir = null;
+    private static File markerFile = null;
 
-    final private static String COMMONS_LIBS = "commons";
+    final private static String COMMONS_LIBS = "common";
     protected static File configDir = new File(SorcerEnv.getHomeDir(), "configs");
 
     private static File REPOLAYOUT_PROPS_FILE = new File(configDir, "repolayout.properties");
@@ -76,12 +76,7 @@ public class Installer {
     }
 
     public boolean isInstallRequired() throws IOException {
-        File home = SorcerEnv.getHomeDir();
-        IOUtils.ensureFile(home, IOUtils.FileCheck.directory);
-        File logDir = new File(home, "logs");
-        IOUtils.ensureFile(logDir, IOUtils.FileCheck.directory, IOUtils.FileCheck.writable);
-        File sorcerApi = new File(libResolver.resolveAbsolute("org.sorcersoft.sorcer:sorcer-api"));
-        return sorcerApi.exists() && !markerFile.exists();
+        return !markerFile.exists();
     }
 
     public void install() throws IOException {
@@ -92,9 +87,15 @@ public class Installer {
 
     @SuppressWarnings("unchecked")
     public Installer() throws IOException {
-        groupDirMap = (Map) readProperties("META-INF/maven/repolayout.properties", REPOLAYOUT_PROPS_FILE);
+        File home = SorcerEnv.getHomeDir();
+        IOUtils.ensureFile(home, IOUtils.FileCheck.directory);
+        logDir = new File(home, "logs");
+        if (!logDir.exists()) logDir.mkdirs();
+        markerFile = new File(logDir, "sorcer_jars_installed_user_" + System.getProperty(USER_NAME) + ".tmp");
+        IOUtils.ensureFile(logDir, IOUtils.FileCheck.directory, IOUtils.FileCheck.writable);
+        //groupDirMap = (Map) readProperties("META-INF/maven/repolayout.properties", REPOLAYOUT_PROPS_FILE);
 
-        libResolver = new MappedFlattenedArtifactResolver(new File(SorcerEnv.getLibPath()), groupDirMap);
+        //libResolver = new MappedFlattenedArtifactResolver(new File(SorcerEnv.getLibPath()), groupDirMap);
     }
 
     /**
@@ -153,12 +154,13 @@ public class Installer {
                 return;
             }
 
-            String artifactId = ac.getArtifactId();
+            String artifactId = ac.getArtifactId() + "-" + ac.getVersion();
             if (!ArtifactCoordinates.PCKG_POM.equals(ac.getType())) {
                 artifactsPoms.put(artifactId, pom);
             } else {
                 try {
                     installPom(pom, ac);
+                    artifactsPoms.put(artifactId, pom);
                 } catch (Exception io) {
                     errorCount++;
                     log.error("Problem installing pom file: {}", pom.getAbsolutePath(), io);
@@ -168,14 +170,39 @@ public class Installer {
     }
 
     public void installJars() throws IOException {
+
+        log.info("!!!!!!!!!!!!!!!!!!!!GOT artifactPoms");
+        for (String key : artifactsPoms.keySet())
+            log.info(key + " = " + artifactsPoms.get(key));
+
+        log.info("!!!!!!!!!!!!!!!!!!!!GOT artifactPoms\n\n\n\n\n");
+
         File libDir = new File(SorcerEnv.getLibPath());
 
         Collection<String> paths = new LinkedList<String>();
-        paths.addAll(groupDirMap.values());
-        paths.add(COMMONS_LIBS);
+        for (File file : libDir.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                String name = file.getName();
+                return file.isDirectory();
+            }
+        })) {
+            if (!file.getAbsolutePath().endsWith("sorcer"))
+                paths.add(file.getAbsolutePath());
+        }
+        paths.add(libDir + "/sorcer/lib");
+        paths.add(libDir + "/sorcer/lib-dl");
+        paths.add(libDir + "/sorcer/lib-ext");
+        if (System.getenv("RIO_HOME")!=null) {
+            paths.add(System.getenv("RIO_HOME") + "/lib");
+            paths.add(System.getenv("RIO_HOME") + "/lib-dl");
+            paths.add(System.getenv("RIO_HOME") + "/lib/resolver");
+            paths.add(System.getenv("RIO_HOME") + "/lib/logging");
+            paths.add(System.getenv("RIO_HOME") + "/lib/logging/logback");
+        }
 
         for (String dir : paths) {
-            installJars(new File(libDir, dir));
+            installJars(new File(dir));
         }
     }
 
@@ -229,6 +256,8 @@ public class Installer {
         if (artifactsPoms.containsKey(artifactId)) {
             pom = artifactsPoms.get(artifactId);
         } else {
+            if (artifactId.contains("groovy-all"))
+                log.error("PROBLEM with Groovy-all - it usually comes with the wrong pom inside!!!");
             pom = getPomFromJar(file, artifactId);
             pomInTmp = true;
         }
