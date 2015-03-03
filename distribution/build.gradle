@@ -262,6 +262,10 @@ task createDistribution(dependsOn: [":tools:sos-boot:install",
         versionProps.setProperty("slf4j.version", slf4jVersion)
         versionProps.store(versionPropsFile.newWriter(), null)*/
 
+        copy {
+            from("${projectDir.path}/../deploy")
+            into "${distDir}-${version}/deploy"
+        }
 
 
         def homePath = System.properties['user.home']

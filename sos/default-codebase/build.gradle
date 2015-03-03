@@ -1,0 +1,11 @@
+
+description = 'SORCER OS :: default-codebase'
+
+dependencies {
+    runtime project(':sos:sos-platform')
+    runtime project(':sos:sorcer-api')
+    runtime project(':sos-providers:dbp:dbp-api')
+
+    runtime(group: 'org.sorcersoft.lockmgr', name: 'lockmgr-api', version: v_lockmgr)
+    runtime(group: 'org.slf4j', name: 'slf4j-api', version: v_slf4j)
+}

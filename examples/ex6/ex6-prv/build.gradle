@@ -4,6 +4,5 @@ dependencies {
   compile project(':sos:sos-api')
   compile project(':sos:sos-platform')
   compile project(':provider-root:examples:ex6:ex6-sui')
-  compile project(':provider-root:examples:ex6:ex6-api')
-  //providedCompile project(':provider-root:examples:ex6:ex6-api')
+    compile project(':provider-root:examples:ex6:ex6-api')
 }

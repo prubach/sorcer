@@ -402,7 +402,7 @@ $MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-proxy/$V_RIO/rio-proxy-$V_RIO.jar:\
-$MVN_REPO/org/sorcersoft/sigar/	/$V_SIGAR/sigar-$V_SIGAR.jar"
+$MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
 
     # Determine webster url
 

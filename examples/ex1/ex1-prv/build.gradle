@@ -3,7 +3,6 @@ description = 'SORCER examples :: ex1 :: prv'
 dependencies {
   compile project(':provider-root:examples:ex1:ex1-api')
   compile project(':sos:sos-util')
-    runtime group: 'ch.qos.logback', name: 'logback-classic', version:'1.0.13'
-  //providedCompile project(':sos:sos-platform')
-  compile project(':sos:sos-platform')
+  runtime group: 'ch.qos.logback', name: 'logback-classic', version:'1.0.13'
+  provided project(':sos:sos-platform')
 }

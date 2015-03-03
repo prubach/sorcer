@@ -18,14 +18,6 @@ dependencies {
   runtime project(':sos:sorcer-loader')
     testCompile group: 'junit', name: 'junit', version:junitVersion
     testCompile group: 'org.slf4j', name: 'slf4j-simple', version:slf4jVersion
-    compile(group: 'org.codehaus.groovy', name: 'groovy-all', version:groovyVersion) {
-       /* This dependency was originally in the Maven provided scope, but the project was not of type war.
-       This behavior is not yet supported by Gradle, so this dependency has been converted to a compile dependency.
-       Please review and delete this closure when resolved. */
-    }
-    compile(group: 'javax.xml', name: 'jaxrpc-api', version:'1.1') {
-       /* This dependency was originally in the Maven provided scope, but the project was not of type war.
-       This behavior is not yet supported by Gradle, so this dependency has been converted to a compile dependency.
-       Please review and delete this closure when resolved. */
-    }
+    provided(group: 'org.codehaus.groovy', name: 'groovy-all', version:groovyVersion)
+    provided(group: 'javax.xml', name: 'jaxrpc-api', version:'1.1')
 }

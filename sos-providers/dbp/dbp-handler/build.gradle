@@ -1,15 +1,10 @@
 
 description = 'SORCER OS :: providers :: dbp :: Handler'
 dependencies {
-  compile project(':sos-providers:dbp:dbp-api')
-  compile project(':sos:sorcer-api')
-  //providedCompile project(':sos:sos-platform')
-  //providedCompile project(':sos:sos-util')
-    compile project(':sos:sos-platform')
-    compile project(':sos:sos-util')
-    compile(group: 'javax.inject', name: 'javax.inject', version:'1') {
-       /* This dependency was originally in the Maven provided scope, but the project was not of type war.
-       This behavior is not yet supported by Gradle, so this dependency has been converted to a compile dependency.
-       Please review and delete this closure when resolved. */
-    }
+    compile project(':sos-providers:dbp:dbp-api')
+    compile project(':sos:sorcer-api')
+
+    provided project(':sos:sos-platform')
+    provided project(':sos:sos-util')
+    provided(group: 'javax.inject', name: 'javax.inject', version:'1')
 }
