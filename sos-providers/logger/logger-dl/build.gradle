@@ -1,0 +1,8 @@
+
+
+description = 'SORCER OS :: providers :: logger :: dl'
+
+dependencies {
+    runtime project(':sos:default-codebase')
+    runtime project(':sos-providers:logger:logger-api')
+}

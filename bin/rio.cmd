@@ -21,11 +21,6 @@
 :: Use local variables
 setLocal EnableDelayedExpansion
 
-:: Set local variables
-if "%RIO_HOME%" == "" set RIO_HOME=%~dp0..\lib\rio
-
-set RIO_LIB=%RIO_HOME%\lib
-
 :: Sorcer basic jars added to classpath
 SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
@@ -50,6 +45,13 @@ IF defined SORCER_HOME (
 set SLF4J_CLASSPATH=%LOG_CP%;%MVN_REPO%\org\rioproject\rio-logging-support\%v.rio%\rio-logging-support-%v.rio%.jar
 set rioVersion=%v.rio%
 
+:: Set local variables
+if "%RIO_HOME%" == "" set RIO_HOME=%~dp0..\rio-%rioVersion%
+
+set RIO_LIB=%RIO_HOME%\lib
+
+
+
 if "%JAVA_MEM_OPTIONS%" == "" set JAVA_MEM_OPTIONS="-XX:MaxPermSize=256m"
 
 :: Parse command line
@@ -64,7 +66,7 @@ set command_line=%*
 set launchTarget=org.rioproject.tools.cli.CLI
 set classpath=-cp "%RIO_HOME%\lib\rio-cli-%rioVersion%.jar";"%SLF4J_CLASSPATH%";"%SORCER_RIO_CP%"
 set props="-DRIO_HOME=%RIO_HOME%"
-"%JAVACMD%" %JAVA_OPTS% %classpath% -Xms256m -Xmx256m -Djava.protocol.handler.pkgs=org.rioproject.url -DRIO_HOME="%RIO_HOME%" -Djava.rmi.server.useCodebaseOnly=false -Djava.security.policy="%RIO_HOME%\..\..\configs\rio\rio.policy" %launchTarget% %cliExt% %command_line%
+"%JAVACMD%" %JAVA_OPTS% %classpath% -Xms256m -Xmx256m -Djava.protocol.handler.pkgs=org.rioproject.url -DRIO_HOME="%RIO_HOME%" -Djava.rmi.server.useCodebaseOnly=false -Djava.security.policy="%RIO_HOME%\..\configs\rio\rio.policy" %launchTarget% %cliExt% %command_line%
 goto end
 
 :create-project
@@ -77,17 +79,18 @@ goto end
 shift
 if "%1"=="" goto noService
 set service=%1
-set starterConfig="%RIO_HOME%\..\..\configs\rio\start-%1.groovy"
+set starterConfig="%RIO_HOME%\..\configs\rio\start-%1.groovy"
 if not exist "%starterConfig%" goto noStarter
 shift
 
 :: Call the install script, do not assume that Groovy has been installed.
 set groovyClasspath=-cp "%RIO_HOME%\lib\groovy-all-%groovyVersion%.jar"
-"%JAVA_HOME%\bin\java" %groovyClasspath% org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain "%RIO_HOME%\..\..\configs\rio\install.groovy" "%JAVA_HOME%" "%RIO_HOME%"
+"%JAVA_HOME%\bin\java" %groovyClasspath% org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain "%RIO_HOME%\..\configs\rio\install.groovy" "%JAVA_HOME%" "%RIO_HOME%"
 
 :: Call the Sorcer installer to install Sorcer jars to local repo
-set SOS_INST_CP=-cp "%LIB_DIR%\sorcer\sos-boot.jar;%LIB_DIR%\sorcer\sos-util.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\slf4j-simple.jar;%LIB_DIR%\commons\commons-io.jar;%LIB_DIR%\commons\xercesImpl.jar;%LIB_DIR%\commons\xml-apis.jar"
-if exist %LIB_DIR%\sorcer\sos-env.jar if not exist "%SORCER_HOME%\logs\sorcer_jars_installed.tmp" (
+set SOS_INST_CP=-cp "%LIB_DIR%\sorcer\lib\sos-boot-%v.sorcer%.jar;%LIB_DIR%\sorcer\lib\sos-util-%v.sorcer%.jar;%LIB_DIR%\common\slf4j-api-%v.slf4j%.jar;%LIB_DIR%\common\slf4j-simple-%v.slf4j%.jar;%LIB_DIR%\common\commons-io-2.4.jar;%LIB_DIR%\common\xercesImpl-2.6.2.jar;
+:: %LIB_DIR%\common\xml-apis-1..jar"
+if exist %LIB_DIR%\sorcer\lib\sorcer-api-%v.sorcer%.jar if not exist "%SORCER_HOME%\logs\sorcer_jars_installed.tmp" (
     "%JAVACMD%" %SOS_INST_CP% sorcer.installer.Installer
 )
 
@@ -103,11 +106,11 @@ set launchTarget=org.rioproject.start.ServiceStarter
 
 set loggingConfig="%RIO_HOME%\..\..\configs\rio\logging\rio-logging.properties"
 
-"%JAVA_HOME%\bin\java" -server %JAVA_MEM_OPTIONS% %classpath% %agentpath% -Djava.protocol.handler.pkgs=org.rioproject.url -Djava.rmi.server.useCodebaseOnly=false -Djava.util.logging.config.file=%loggingConfig% -Dorg.rioproject.service=%service% %USER_OPTS% -Djava.security.policy="%RIO_HOME%"\..\..\configs\rio\rio.policy -Djava.library.path=%RIO_NATIVE_DIR% -DRIO_HOME="%RIO_HOME%" -Dorg.rioproject.home="%RIO_HOME%" -DRIO_NATIVE_DIR=%RIO_NATIVE_DIR% -DRIO_LOG_DIR=%RIO_LOG_DIR% -Drio.script.mainClass=%launchTarget% %launchTarget% "%starterConfig%"
+"%JAVA_HOME%\bin\java" -server %JAVA_MEM_OPTIONS% %classpath% %agentpath% -Djava.protocol.handler.pkgs=org.rioproject.url -Djava.rmi.server.useCodebaseOnly=false -Djava.util.logging.config.file=%loggingConfig% -Dorg.rioproject.service=%service% %USER_OPTS% -Djava.security.policy="%RIO_HOME%"\..\configs\rio\rio.policy -Djava.library.path=%RIO_NATIVE_DIR% -DRIO_HOME="%RIO_HOME%" -Dorg.rioproject.home="%RIO_HOME%" -DRIO_NATIVE_DIR=%RIO_NATIVE_DIR% -DRIO_LOG_DIR=%RIO_LOG_DIR% -Drio.script.mainClass=%launchTarget% %launchTarget% "%starterConfig%"
 goto end
 
 :noStarter
-echo Cannot locate expected service starter file [start-%1.config] in [%RIO_HOME%\..\..\configs\rio], exiting"
+echo Cannot locate expected service starter file [start-%1.config] in [%RIO_HOME%\..\configs\rio], exiting"
 goto exitWithError
 
 :noService

@@ -7,7 +7,7 @@ def getRiverVersion() {
 }
 
 def getBlitzVersion() {
-    return "2.2.1-1";
+    return "2.3";
 }
 
 def sorcer(String artifactId) {

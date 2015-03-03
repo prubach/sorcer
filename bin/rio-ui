@@ -28,7 +28,7 @@ rioVersion=$(getVersion v.rio)
 
 if [ "${RIO_HOME}defined" = defined ] ; then
     if [ "$scriptDir" = "bin" ] ; then
-        RIO_HOME="$scriptDir/../lib/rio"
+        RIO_HOME="$scriptDir/../rio-$rioVersion"
         path_to_jar="${RIO_HOME}/lib/rio-ui-$rioVersion.jar"
     else
         #if [ "$scriptDir" = "." ] ; then
@@ -63,7 +63,7 @@ exec "$JAVACMD" \
 $JAVA_OPTS \
 -cp $RIOUI_CLASSPATH \
 -DRIO_HOME=$RIO_HOME \
--Dorg.rioproject.tools.ui.logDir=$RIO_HOME/../../logs \
--Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
+-Dorg.rioproject.tools.ui.logDir=$RIO_HOME/../logs \
+-Djava.security.policy=$RIO_HOME/../configs/rio/rio.policy \
 $MAIN_CLASS \
 $*

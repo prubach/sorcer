@@ -34,7 +34,7 @@ public interface SorcerConstants {
 	/* service provider genetic properties */
     public static final String SORCER_VERSION = "1.1-SNAPSHOT";
     // Rio default version
-    public static final String RIO_VERSION = "5.0-M5S0";
+    public static final String RIO_VERSION = "5.1.2";
 	// SORCER global properties defined in sorcer.util.SorcerEnv.java
 	public static final String SORCER_HOME = "sorcer.home";
 

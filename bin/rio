@@ -59,7 +59,7 @@ fi
 
 # Set local variables
 if [ "x$RIO_HOME" = "x" ]; then
-	RIO_HOME=$SORCER_HOME/lib/rio
+	RIO_HOME=$SORCER_HOME/rio-$V_RIO
 fi
 rioVersion=$V_RIO
 RIO_LIB=$RIO_HOME/lib
@@ -73,12 +73,12 @@ esac
 # Function to find a file
 getStarterConfig() {
     service="$1"
-    if [ -f "$RIO_HOME/../../configs/rio/start-$service.groovy" ] ; then
-	    starterConfig="$RIO_HOME/../../configs/rio/start-$service.groovy"
+    if [ -f "$RIO_HOME/../configs/rio/start-$service.groovy" ] ; then
+	    starterConfig="$RIO_HOME/../configs/rio/start-$service.groovy"
     elif [ -f "$service" ] ; then
         starterConfig="$service"
     else
-	    echo "Cannot locate expected service starter file [start-$service.groovy] in [$RIO_HOME/../../configs/rio], exiting"
+	    echo "Cannot locate expected service starter file [start-$service.groovy] in [$RIO_HOME/../configs/rio], exiting"
 	    exit 1
     fi
 }
@@ -93,7 +93,7 @@ SOS_CLASSPATH=$(createSorcerRioCp)
 # Build the classpath for SLF4J Logging
 SLF4J_CLASSPATH=$LOG_CP:$MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.jar
 
-loggingConfig="-Dlogback.configurationFile=`toNative $RIO_HOME/../../configs/logback.groovy`"
+loggingConfig="-Dlogback.configurationFile=`toNative $RIO_HOME/../configs/logback.groovy`"
 
 #DEBUG=-Dorg.rioproject.tools.webster.debug
 #NETWORK=-Djava.rmi.server.hostname=130.0.0.1
@@ -168,16 +168,16 @@ if [ "$start" = "1" ]; then
     # -------------------
         ""$JAVACMD"" -server $JAVA_MEM_OPTIONS $JAVA_RMI_OPTIONS $JAVA_GC_OPTIONS \
         -XX:+HeapDumpOnOutOfMemoryError \
-        -XX:OnOutOfMemoryError="$RIO_HOME/../../bin/rio restart %p $service" \
-        -XX:HeapDumpPath=$RIO_HOME/../../logs/ \
+        -XX:OnOutOfMemoryError="$RIO_HOME/../bin/rio restart %p $service" \
+        -XX:HeapDumpPath=$RIO_HOME/../logs/ \
         $classpath $agentpath $libpath $RIO_OPTS \
-        -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
+        -Djava.security.policy=$RIO_HOME/../configs/rio/rio.policy \
         '-Djava.protocol.handler.pkgs=net.jini.url|org.rioproject.url' \
         $loggingConfig \
         -Dorg.rioproject.service=$service \
         -Djava.rmi.server.useCodebaseOnly=false \
         -DRIO_HOME=$RIO_HOME \
-        -DRIO_LOG_DIR=$RIO_HOME/../../logs/ \
+        -DRIO_LOG_DIR=$RIO_HOME/../logs/ \
         -Drio.script.mainClass="$launchTarget" \
         $USER_OPTS \
         $NETWORK $JAVA_OPTS $launchTarget $starterConfig $command_line
@@ -191,13 +191,13 @@ elif [ "$project" = "1" ] ;then
 else
     # Set system properties
     PROPS="-DRIO_HOME=$RIO_HOME"
-    cliExt="$RIO_HOME/../../configs/rio/tools.groovy"
+    cliExt="$RIO_HOME/../configs/rio/tools.groovy"
     launchTarget=org.rioproject.tools.cli.CLI
     #classpath="-cp `toNative $RIO_LIB/rio-cli-$rioVersion.jar:$RIO_LIB/rio-start-$rioVersion.jar:$RIO_LIB/rio-platform-$rioVersion.jar:$JAVA_HOME/lib/tools.jar:$RIO_LIB/groovy-all-$groovyVersion.jar:$SLF4J_CLASSPATH:$SOS_CLASSPATH`"
     classpath="-cp `toNative $RIO_LIB/rio-cli-$rioVersion.jar:$SLF4J_CLASSPATH:$SOS_CLASSPATH`"
 #    echo "RioCP:"$classpath
     "$JAVACMD" $classpath $JAVA_MEM_OPTIONS  $RIO_OPTS \
-        -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
+        -Djava.security.policy=$RIO_HOME/../configs/rio/rio.policy \
         '-Djava.protocol.handler.pkgs=net.jini.url|org.rioproject.url' \
         -Djava.rmi.server.useCodebaseOnly=false \
         $loggingConfig \

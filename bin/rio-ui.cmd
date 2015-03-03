@@ -22,9 +22,6 @@
 title Rio UI
 set command_line=%*
 
-if "%RIO_HOME%" == "" set RIO_HOME=%~dp0..\lib\rio
-set rioVersion=5.1.1
-
 :: Sorcer basic jars added to classpath
 SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
@@ -46,9 +43,11 @@ IF defined SORCER_HOME (
 )
 set rioVersion=%v.rio%
 
+if "%RIO_HOME%" == "" set RIO_HOME=%~dp0..\rio-%rioVersion%
+
 set RIOUI_CLASSPATH=
 set RIOUI_CLASSPATH="%SORCER_RIOUI_CP%;%RIO_HOME%\lib\rio-ui-%rioVersion%.jar"
 set MAIN_CLASS=org.rioproject.tools.ui.Main
 rem echo %RIOUI_CLASSPATH%
 
-call "%JAVACMD%" %JAVA_OPTS% -cp %RIOUI_CLASSPATH% -DRIO_HOME="%RIO_HOME%" -Dorg.rioproject.tools.ui.logDir="%RIO_HOME%\..\..\logs" -Djava.security.policy="%RIO_HOME%\..\..\configs\rio\rio.policy" -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url %MAIN_CLASS% %command_line%
+call "%JAVACMD%" %JAVA_OPTS% -cp %RIOUI_CLASSPATH% -DRIO_HOME="%RIO_HOME%" -Dorg.rioproject.tools.ui.logDir="%RIO_HOME%\..\logs" -Djava.security.policy="%RIO_HOME%\..\configs\rio\rio.policy" -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url %MAIN_CLASS% %command_line%

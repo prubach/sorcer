@@ -22,7 +22,7 @@ ext {
 	sorcerVersion = version
 
 	groovyVersion = "2.3.8"
-	rioVersion = "5.1.1"
+	rioVersion = "5.1.2"
     //rioVersion = "5.0-M5S0"
 	riverVersion = "2.2.2"
 	slf4jVersion = "1.7.7"
@@ -36,16 +36,15 @@ ext {
 
     v_sorcer = version
     v_sos_release = "1.0"
-	v_jini = "2.2.2"
-    v_blitz = "2.3"
-	v_sleepycat = "5.0.104"
-    //v_rio = "5.0-M5S0"
-    v_rio = "5.1.1"
-    v_groovy = "2.3.8"
+	v_jini = riverVersion
+    v_blitz = blitzVersion
+	v_sleepycat = jeVersion
+    v_rio = rioVersion
+    v_groovy = groovyVersion
     v_sigar = "1.6.4-3"
 	v_lockmgr = "0.2-3"
-    v_slf4j = "1.7.5"
-    v_junit = "4.11"
+    v_slf4j = slf4jVersion
+    v_junit = junitVersion
     v_logback = "1.0.13"
     v_plexus = "3.0.15"
     v_guava = "16.0.1"
