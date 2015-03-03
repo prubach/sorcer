@@ -1,14 +1,39 @@
-ext {
-    enclaveRepo = "10.131.7.138:7001"
-    enclave = InetAddress.getLocalHost().getHostAddress().startsWith("10.131")
-}
-
 allprojects {
     group = 'org.sorcersoft.sorcer'
     version = '1.1-SNAPSHOT'
 }
 
+buildscript {
+    String hostName = InetAddress.getLocalHost().getHostName()
+    String address = InetAddress.getLocalHost().getHostAddress()
+    println "hostName: ${hostName}, address: ${address}"
+    ext {
+        engGradleExtVersion = "1.7"
+        onEnclave = (hostName.endsWith("wpafb.af.mil") || address.startsWith("10.131"))
+    }
+    repositories {
+        mavenLocal()
+        if(!onEnclave) {
+            maven { url "http://www.rio-project.org/maven2" }
+            mavenCentral()
+        } else {
+            maven { url "http://10.131.7.138:7001" }
+        }
+    }
+    dependencies {
+        classpath group: 'mil.afrl.mstc.open.tools', name: 'gradle-ext', version: engGradleExtVersion
+    }
+}
+
+ext {
+    enclaveRepo = "10.131.7.138:7001"
+    enclave = InetAddress.getLocalHost().getHostAddress().startsWith("10.131")
+    intTests = false
+}
+
 apply from: file('gradle/libraries.gradle')
+
+import mil.afrl.mstc.open.tools.configbuilder.ConfigBuilder
 
 subprojects {
     if (project.name != "examples" && project.name != "sorcer-int-tests") {
@@ -50,6 +75,23 @@ subprojects {
             }
             // end of add poms to jars
 
+            /*configure(subprojects.findAll {it.name.endsWith("prv")}) {
+                apply plugin: 'configbuilder'
+                apply plugin: 'java'
+                //apply plugin: 'startme'
+                //apply plugin: 'stopme'
+
+                tasks['processResources'].dependsOn {
+                    tasks.withType(ConfigBuilder.class)
+                }
+            } */
+
+            test {
+                useJUnit {
+                 //   if (!intTests)
+                 //       excludeCategories 'sorcer.junit.SorcerClient'
+                }
+            }
         }
 
         repositories {
@@ -60,6 +102,26 @@ subprojects {
             maven { url "http://mvn.sorcersoft.com/content/groups/public" }
         }
 
+
+
+
     }
 
+}
+
+task allTests(type: TestReport /*, dependsOn: "bootSorcerRio"*/) {
+    description = 'Aggregates all tests, view them in build/reports/tests/index.html.'
+    destinationDir = file("$buildDir/reports/allTests")
+    intTests = true
+    project.subprojects { project ->
+        tasks.withType(Test) {
+            ignoreFailures true
+            reportOn it
+        }
+    }
+    doLast {
+        println "\nThe allTests task is complete. See the results at: file://${destinationDir.path}/index.html"
+    }
+
+    //finalizedBy("terminateSorcerRio")
 }

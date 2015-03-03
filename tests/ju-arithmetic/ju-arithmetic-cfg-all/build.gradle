@@ -3,3 +3,15 @@ description = 'SORCER OS :: int tests :: arithmetic :: config'
 dependencies {
   compile project(':tests:ju-arithmetic:ju-arithmetic-prv')
 }
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": project.name,
+                "Implementation-Version": version,
+                "OAR-OperationalString" : "AllArithmeticBoot.groovy",
+                "OAR-Name" : "ArithmeticAllBoot",
+                "OAR-Version" : project.version,
+                "OAR-Activation" : "Automatic")
+    }
+}

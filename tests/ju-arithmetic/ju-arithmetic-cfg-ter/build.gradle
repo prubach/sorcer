@@ -4,3 +4,15 @@ dependencies {
   compile project(':tests:ju-arithmetic:ju-arithmetic-api')
   compile project(':sos:sos-api')
 }
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": project.name,
+                "Implementation-Version": version,
+                "OAR-OperationalString" : "ArithmeticExertleterBoot.groovy",
+                "OAR-Name" : "ArithmeticExertleterBoot",
+                "OAR-Version" : project.version,
+                "OAR-Activation" : "Automatic")
+    }
+}

@@ -4,3 +4,15 @@ dependencies {
   compile project(':provider-root:examples:account:account-prv')
   compile project(':sos:sorcer-ui')
 }
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": project.name,
+                "Implementation-Version": version,
+                "OAR-OperationalString" : "account.groovy",
+                "OAR-Name" : "AccountBoot",
+                "OAR-Version" : project.version,
+                "OAR-Activation" : "Automatic")
+    }
+}

@@ -5,3 +5,15 @@ dependencies {
   compile project(':provider-root:examples:ex0:ex0-prv')
   compile project(':provider-root:examples:ex0:ex0-dl')
 }
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": project.name,
+                "Implementation-Version": version,
+                "OAR-OperationalString" : "opstring.groovy",
+                "OAR-Name" : "Ex0Boot",
+                "OAR-Version" : project.version,
+                "OAR-Activation" : "Automatic")
+    }
+}

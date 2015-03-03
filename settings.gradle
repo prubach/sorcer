@@ -62,7 +62,7 @@ include ':sos-providers:dbp'
 include ':sos-providers:exerter:exerter-cfg'
 include ':sos-providers:exerter'
 include ':sos-providers'
-/*include ':tests:ju-arithmetic:ju-arithmetic-api'
+include ':tests:ju-arithmetic:ju-arithmetic-api'
 include ':tests:ju-arithmetic:ju-arithmetic-dl'
 include ':tests:ju-arithmetic:ju-arithmetic-prv'
 include ':tests:ju-arithmetic:ju-arithmetic-cfg-all'
@@ -82,7 +82,7 @@ include ':provider-root:examples:ex0:ex0-cfg'
 include ':provider-root:examples:ex0:ex0-req'
 include ':provider-root:examples:ex0:ex0-dl'
 include ':provider-root:examples:ex0'
-include ':provider-root:examples:ex1:ex1-api'
+/*include ':provider-root:examples:ex1:ex1-api'
 include ':provider-root:examples:ex1:ex1-prv'
 include ':provider-root:examples:ex1:ex1-rdl'
 include ':provider-root:examples:ex1:ex1-req'
@@ -213,7 +213,7 @@ project(':sos-providers:dbp').projectDir = "$rootDir/sos-providers/dbp" as File
 project(':sos-providers:exerter:exerter-cfg').projectDir = "$rootDir/sos-providers/exerter/exerter-cfg" as File
 project(':sos-providers:exerter').projectDir = "$rootDir/sos-providers/exerter" as File
 project(':sos-providers').projectDir = "$rootDir/sos-providers" as File
-/*project(':tests:ju-arithmetic:ju-arithmetic-api').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-api" as File
+project(':tests:ju-arithmetic:ju-arithmetic-api').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-api" as File
 project(':tests:ju-arithmetic:ju-arithmetic-dl').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-dl" as File
 project(':tests:ju-arithmetic:ju-arithmetic-prv').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-prv" as File
 project(':tests:ju-arithmetic:ju-arithmetic-cfg-all').projectDir = "$rootDir/tests/ju-arithmetic/ju-arithmetic-cfg-all" as File
@@ -225,15 +225,15 @@ project(':tests:par-model:par-model-cfg').projectDir = "$rootDir/tests/par-model
 project(':tests:par-model:par-model-prv').projectDir = "$rootDir/tests/par-model/par-model-prv" as File
 project(':tests:par-model').projectDir = "$rootDir/tests/par-model" as File
 project(':tests:model-beans').projectDir = "$rootDir/tests/model-beans" as File
-project(':tests').projectDir = "$rootDir/tests" as File                            */
-/*project(':provider-root:examples:ex0:ex0-api').projectDir = "$rootDir/examples/ex0/ex0-api" as File
+project(':tests').projectDir = "$rootDir/tests" as File
+project(':provider-root:examples:ex0:ex0-api').projectDir = "$rootDir/examples/ex0/ex0-api" as File
 project(':provider-root:examples:ex0:ex0-prv').projectDir = "$rootDir/examples/ex0/ex0-prv" as File
 project(':provider-root:examples:ex0:ex0-sui').projectDir = "$rootDir/examples/ex0/ex0-sui" as File
 project(':provider-root:examples:ex0:ex0-cfg').projectDir = "$rootDir/examples/ex0/ex0-cfg" as File
 project(':provider-root:examples:ex0:ex0-req').projectDir = "$rootDir/examples/ex0/ex0-req" as File
 project(':provider-root:examples:ex0:ex0-dl').projectDir = "$rootDir/examples/ex0/ex0-dl" as File
 project(':provider-root:examples:ex0').projectDir = "$rootDir/examples/ex0" as File
-project(':provider-root:examples:ex1:ex1-api').projectDir = "$rootDir/examples/ex1/ex1-api" as File
+/*project(':provider-root:examples:ex1:ex1-api').projectDir = "$rootDir/examples/ex1/ex1-api" as File
 project(':provider-root:examples:ex1:ex1-prv').projectDir = "$rootDir/examples/ex1/ex1-prv" as File
 project(':provider-root:examples:ex1:ex1-rdl').projectDir = "$rootDir/examples/ex1/ex1-rdl" as File
 project(':provider-root:examples:ex1:ex1-req').projectDir = "$rootDir/examples/ex1/ex1-req" as File

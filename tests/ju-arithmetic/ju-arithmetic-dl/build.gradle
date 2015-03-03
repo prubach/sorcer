@@ -1,0 +1,6 @@
+
+description = 'SORCER :: ju-arithmetic :: DL'
+dependencies {
+  compile project(':tests:ju-arithmetic:ju-arithmetic-api')
+  compile project(':sos:default-codebase')
+}

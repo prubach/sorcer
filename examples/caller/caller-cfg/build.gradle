@@ -5,3 +5,15 @@ dependencies {
   compile project(':sos:sorcer-ui')
   compile project(':provider-root:examples:caller:caller-dl')
 }
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": project.name,
+                "Implementation-Version": version,
+                "OAR-OperationalString" : "caller.groovy",
+                "OAR-Name" : "callerBoot",
+                "OAR-Version" : project.version,
+                "OAR-Activation" : "Automatic")
+    }
+}

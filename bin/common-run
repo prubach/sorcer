@@ -588,7 +588,7 @@ $RIO_HOME/lib/resolver/resolver-aether-$V_RIO.jar"
 # $LIB_DIR/commons/xml-apis.jar:\
 
 
-	    echo "Installer CP: ".$SOS_INST_CP
+	    # echo "Installer CP: ".$SOS_INST_CP
             if [ "$daem" = "1" ]; then
 				""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer > $SORCER_HOME/logs/rio-boot.log
             else

@@ -1,6 +1,20 @@
 
 description = 'SORCER examples :: ex0 :: provider'
+
 dependencies {
   compile project(':provider-root:examples:ex0:ex0-api')
   compile project(':sos:sos-platform')
 }
+
+/*def deployConfig = file("build/config/${project.name}-deploy.config")
+artifacts {
+    archives deployConfig
+}
+
+configbuilder {
+    codebase = "${project.group}:ex0-api:$version"
+    serviceConfig = file("${project.projectDir.path}/configs/ex0-prv.config")
+    providerClass = 'sorcer.core.provider.ServiceTasker'
+    configFile = deployConfig
+    jvmArgs = "-Xms128m -Xmx512m -Xss512m"
+} */
