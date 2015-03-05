@@ -18,6 +18,7 @@ package sorcer.launcher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.util.*;
@@ -158,7 +159,7 @@ public abstract class Launcher implements ILauncher {
             // note that rio home system property is named just as the env variable - RIO_HOME
             rio = FileUtils.getDir(System.getProperty(E_RIO_HOME, System.getenv(E_RIO_HOME)));
         if (rio == null)
-            rio = new File(home, "lib/rio");
+            rio = new File(home, "rio-" + SorcerConstants.RIO_VERSION);
 
         if (configDir == null)
             configDir = new File(home, "configs");
@@ -230,6 +231,7 @@ public abstract class Launcher implements ILauncher {
         //rio
         sysProps.put("org.rioproject.service", "all");
         sysProps.put("RIO_HOME", rio.getPath());
+        sysProps.put("rio.home", rio.getPath());
         sysProps.put("RIO_LOG_DIR", logDir.getPath());
         sysProps.put("org.rioproject.resolver.jar", resolverPath);
 

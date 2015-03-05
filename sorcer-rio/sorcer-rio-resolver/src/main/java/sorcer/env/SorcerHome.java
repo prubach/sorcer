@@ -20,7 +20,17 @@ public class SorcerHome {
         String envSorcerHome = System.getenv(ENV_SORCER_HOME);
         sorcerHome = (envSorcerHome!=null && !envSorcerHome.isEmpty() ?
                 envSorcerHome : System.getProperty(SORCER_HOME));
-        JavaSystemProperties.ensure("RIO_HOME", (System.getenv("RIO_HOME") != null ? System.getenv("RIO_HOME") : new File(sorcerHome, "lib/rio").getPath()));
+
+        String rioHomeDir = "";
+        File sorcerHomefile = new File(sorcerHome);
+        String[] fileList = sorcerHomefile.list();
+        for(String name : fileList) {
+            if (new File(sorcerHomefile, name).isDirectory() && name.startsWith("rio")) {
+                rioHomeDir = name;
+                break;
+            }
+        }
+        JavaSystemProperties.ensure("RIO_HOME", (System.getenv("RIO_HOME") != null ? System.getenv("RIO_HOME") : new File(sorcerHome, rioHomeDir).getPath()));
     }
 
     public static boolean isClearResolverCache() {

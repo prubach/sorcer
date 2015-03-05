@@ -53,4 +53,6 @@ ext {
     v_cio = "2.4"
     v_guice = "4.0-beta4"
     v_maven = "3.1.1"
+
+    sorcerDistHome = "${rootProject.projectDir.path}/distribution/build/sorcer-$version"
 }

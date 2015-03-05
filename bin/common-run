@@ -232,7 +232,7 @@ lateInit ( ) {
 	V_SIGAR=$(getVersion v.sigar)
 
 	if [ "x$RIO_HOME" = "x" ]; then
-		rioHome=${SORCER_HOME}/lib/rio
+		rioHome=${SORCER_HOME}/rio-$V_RIO
 	else
 		rioHome=$RIO_HOME
 	fi
@@ -583,7 +583,7 @@ $LIB_DIR/common/slf4j-api-1.7.7.jar:\
 $LIB_DIR/common/slf4j-simple-1.7.7.jar:\
 $LIB_DIR/common/commons-io-2.4.jar:\
 $LIB_DIR/common/xercesImpl-2.6.2.jar:\
-$RIO_HOME/lib/resolver/resolver-aether-$V_RIO.jar"
+$SORCER_HOME/rio-$V_RIO/lib/resolver/resolver-aether-$V_RIO.jar"
 
 # $LIB_DIR/commons/xml-apis.jar:\
 

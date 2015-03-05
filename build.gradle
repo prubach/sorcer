@@ -32,6 +32,7 @@ ext {
 }
 
 apply from: file('gradle/libraries.gradle')
+apply from: file("gradle/utils.gradle")
 
 import mil.afrl.mstc.open.tools.configbuilder.ConfigBuilder
 
@@ -107,6 +108,14 @@ subprojects {
 
     }
 
+}
+
+import mil.afrl.mstc.open.tools.stopme.Stopper
+/*
+ * Destroy Sorcer and Rio
+ */
+task terminateSorcer() {
+    Stopper.stop("Sorcer", true)
 }
 
 task allTests(type: TestReport /*, dependsOn: "bootSorcerRio"*/) {
