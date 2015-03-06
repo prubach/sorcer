@@ -8,7 +8,7 @@ buildscript {
     String address = InetAddress.getLocalHost().getHostAddress()
     println "hostName: ${hostName}, address: ${address}"
     ext {
-        engGradleExtVersion = "1.7"
+        engGradleExtVersion = "2.0"
         onEnclave = (hostName.endsWith("wpafb.af.mil") || address.startsWith("10.131"))
     }
     repositories {
