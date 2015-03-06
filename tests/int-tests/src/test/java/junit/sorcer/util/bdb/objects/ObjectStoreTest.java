@@ -44,7 +44,7 @@ import sorcer.util.url.sos.SdbUtil;
 @SuppressWarnings({ "rawtypes", "unchecked"})
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api", "org.sorcersoft.sorcer:dbp-api"})
+//@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api", "org.sorcersoft.sorcer:dbp-api"})
 public class ObjectStoreTest {
 	private final static Logger logger = LoggerFactory.getLogger(ObjectStoreTest.class.getName());
 

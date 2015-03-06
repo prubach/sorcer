@@ -34,7 +34,7 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api"})
+//@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api"})
 public class SpaceAccessorTest {
     private final static Logger logger = LoggerFactory.getLogger(SpaceAccessorTest.class
             .getName());

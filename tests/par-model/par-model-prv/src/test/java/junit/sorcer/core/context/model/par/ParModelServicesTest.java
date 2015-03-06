@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import sorcer.co.operator;
+import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.model.par.ParModel;
 import sorcer.junit.ExportCodebase;
@@ -49,7 +50,7 @@ import sorcer.service.Task;
 @Category(SorcerClient.class)
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
         "org.sorcersoft.sorcer:model-beans"})
-@SorcerServiceConfiguration(":par-model-cfg")
+@SorcerServiceConfiguration("org.sorcersoft.sorcer:par-model-cfg:" + SorcerConstants.SORCER_VERSION)
 public class ParModelServicesTest {
 	private final static Logger logger = LoggerFactory.getLogger(ParModelServicesTest.class
 			.getName());

@@ -49,7 +49,7 @@ import sorcer.util.Stopwatch;
  */
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api"})
+//@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api"})
 public class ProviderAccessorTest {
 
     public static final net.jini.core.lookup.ServiceTemplate jobberTemplate = Accessor.getServiceTemplate(null, ANY, new Class[]{Jobber.class}, null);

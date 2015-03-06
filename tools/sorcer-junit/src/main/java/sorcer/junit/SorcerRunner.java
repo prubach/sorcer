@@ -53,7 +53,7 @@ import static sorcer.util.JavaSystemProperties.RMI_SERVER_CLASS_LOADER;
 /**
  * @author Rafał Krupiński
  */
-public class SorcerRunner extends BlockJUnit4ClassRunner {
+public class SorcerRunner extends SorcerTestRunner {
     private static File home;
     private static final Logger log;
 
@@ -169,6 +169,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         launcher.setConfigs(new LinkedList<String>(Arrays.asList(serviceConfigPaths)));
         launcher.addSorcerListener(listener);
         launcher.setHome(home);
+        log.info("Setting S_HOME: " + home);
         File logDir = new File(System.getProperty("java.io.tmpdir"), "logs");
         logDir.mkdir();
         launcher.setLogDir(logDir);

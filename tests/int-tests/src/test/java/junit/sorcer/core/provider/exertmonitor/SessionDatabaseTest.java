@@ -51,9 +51,9 @@ import com.sleepycat.collections.StoredMap;
  * @author Mike Sobolewski
  */
 @RunWith(SorcerRunner.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-        "org.sorcersoft.sorcer:dbp-api"
-})
+//@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+//        "org.sorcersoft.sorcer:dbp-api"
+//})
 public class SessionDatabaseTest {
 
 	private final static Logger logger = LoggerFactory

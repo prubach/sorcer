@@ -40,9 +40,9 @@ import sorcer.service.*;
  * @author Mike Sobolewski
  */
 @RunWith(SorcerRunner.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-        "org.sorcersoft.sorcer:ju-arithmetic-dl:pom"
-})
+//@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+//        "org.sorcersoft.sorcer:ju-arithmetic-dl:pom"
+//})
 public class ArithmeticNoNetTest {
 
 	private final static Logger logger = LoggerFactory

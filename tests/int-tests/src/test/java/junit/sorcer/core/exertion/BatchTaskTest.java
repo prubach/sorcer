@@ -49,9 +49,9 @@ import sorcer.service.Task;
  * @author Mike Sobolewski
  */
 @RunWith(SorcerRunner.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-        "org.sorcersoft.sorcer:ju-arithmetic-api"
-})
+//@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+//        "org.sorcersoft.sorcer:ju-arithmetic-api"
+//})
 public class BatchTaskTest {
 
     @Test

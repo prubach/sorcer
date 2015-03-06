@@ -79,9 +79,9 @@ import sorcer.util.exec.ExecUtils.CmdResult;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @RunWith(SorcerRunner.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-        "org.sorcersoft.sorcer:ju-arithmetic-api"
-})
+//@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+//        "org.sorcersoft.sorcer:ju-arithmetic-api"
+//})
 public class InvokerTest {
 	private final static Logger logger = LoggerFactory.getLogger(InvokerTest.class
 			.getName());

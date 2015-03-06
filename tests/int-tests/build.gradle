@@ -14,3 +14,12 @@ dependencies {
   testCompile project(':sorcer-rio:sorcer-rio-config')
   provided  project(':tests:ju-arithmetic:ju-arithmetic-prv')
 }
+
+
+test {
+    description = 'Tests local and remote services with JUnit test case.'
+    systemProperty "java.rmi.server.codebase",  "artifact:org.sorcersoft.sorcer/ju-arithmetic-dl/" + sorcerVersion +
+                                                " artifact:org.sorcersoft.sorcer/ex6-dl/" + sorcerVersion +
+                                                " artifact:org.sorcersoft.sorcer/model-beans/" + sorcerVersion +
+                                                " artifact:org.rioproject.monitor/monitor-api/" + rioVersion
+}

@@ -4,3 +4,15 @@ dependencies {
   compile project(':provider-root:examples:ex6:ex6-prv')
   compile project(':provider-root:examples:ex6:ex6-dl')
 }
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": project.name,
+                "Implementation-Version": version,
+                "OAR-OperationalString" : "AllEx6Boot.groovy",
+                "OAR-Name" : "Ex6AllBoot",
+                "OAR-Version" : project.version,
+                "OAR-Activation" : "Automatic")
+    }
+}

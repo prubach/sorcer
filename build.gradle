@@ -33,6 +33,7 @@ ext {
 
 apply from: file('gradle/libraries.gradle')
 apply from: file("gradle/utils.gradle")
+apply from: file("gradle/testProperties.gradle")
 
 import mil.afrl.mstc.open.tools.configbuilder.ConfigBuilder
 
@@ -118,7 +119,7 @@ task terminateSorcer() {
     Stopper.stop("Sorcer", true)
 }
 
-task allTests(type: TestReport /*, dependsOn: "bootSorcerRio"*/) {
+task allTests(type: TestReport, dependsOn: "bootSorcerRio") {
     description = 'Aggregates all tests, view them in build/reports/tests/index.html.'
     destinationDir = file("$buildDir/reports/allTests")
     intTests = true

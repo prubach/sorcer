@@ -20,6 +20,8 @@ package junit.sorcer.core.provider;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.junit.*;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
@@ -40,10 +42,10 @@ import static sorcer.eo.operator.*;
  */
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-        "org.sorcersoft.sorcer:ju-arithmetic-api"})
+//@ExportCodebase({"org.sorcersoft.sorcer:ju-arithmetic-dl:pom"})
+@ProjectContext("tests/int-tests")
 @SorcerServiceConfiguration(
-        { ":ju-arithmetic-cfg-all", ":ju-arithmetic-cfg-ctx" })
+        { "org.sorcersoft.sorcer:ju-arithmetic-cfg-all:" + SorcerConstants.SORCER_VERSION, "org.sorcersoft.sorcer:ju-arithmetic-cfg-ctx:" + SorcerConstants.SORCER_VERSION })
 public class ArithmeticNetTest {
 
 	private final static Logger logger = LoggerFactory
@@ -159,6 +161,8 @@ public class ArithmeticNetTest {
     // Needs ju-arithmetic-cfg-ctx service
     @Test
     public void netContexterTaskTest() throws Exception {
+        System.out.println("CODEBASE: " + System.getProperty("java.rmi.server.codebase"));
+
         Task t5 = task("t5", sig("add", Adder.class),
                 sig("getContext", Contexter.class, "Add Contexter", Signature.APD),
                 context("add", inEnt("arg/x1"), inEnt("arg/x2"),

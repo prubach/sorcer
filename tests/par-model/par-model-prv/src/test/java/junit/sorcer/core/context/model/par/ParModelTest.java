@@ -60,6 +60,7 @@ import org.junit.Test;
 
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.par.Agent;
@@ -89,7 +90,7 @@ import sorcer.service.*;
                 "org.sorcersoft.sorcer:ju-arithmetic-prv",
                 "org.sorcersoft.sorcer:model-beans"
 })
-@SorcerServiceConfiguration(":par-model-cfg")
+@SorcerServiceConfiguration("org.sorcersoft.sorcer:par-model-cfg:" + SorcerConstants.SORCER_VERSION)
 public class ParModelTest {
 	private final static Logger logger = LoggerFactory.getLogger(ParModelTest.class
 			.getName());

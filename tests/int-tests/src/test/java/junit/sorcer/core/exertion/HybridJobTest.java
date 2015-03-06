@@ -41,9 +41,9 @@ import sorcer.service.Task;
  */
 
 @RunWith(SorcerRunner.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-        "org.sorcersoft.sorcer:ju-arithmetic-api"
-})
+//@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+//        "org.sorcersoft.sorcer:ju-arithmetic-api"
+//})
 public class HybridJobTest {
 	private final static Logger logger = LoggerFactory.getLogger(HybridJobTest.class
 			.getName());

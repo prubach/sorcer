@@ -45,7 +45,7 @@ bootSorcer.onlyIf {
 /*
  * Start Sorcer using Rio
  */
-task bootSorcerRio(type: Exec, dependsOn: "webster") {
+task bootSorcerRio(type: Exec) {
     description = 'Starts SORCER OS Services with Rio services for service provisioning.'
     def args = []
     if(System.properties['os.name'].contains("Windows")) {
@@ -56,7 +56,7 @@ task bootSorcerRio(type: Exec, dependsOn: "webster") {
     args << "-M force-fork"
     args << "-w start"
     args << "-P"
-    args << "rio"
+    args << "mix"
     def env = []
     if(System.getProperty("maxMem")!=null) {
         environment "MAX_MEM": System.getProperty("maxMem")
@@ -100,16 +100,14 @@ task browser(type: Exec) {
         args << "cmd.exe"
         args << "/C"
     }
-    args << "ant"
-    args << "-f"
-    args << "${file("${sorcerDistHome}").path}/bin/browser/bin/sorcer-browser.xml"
-    args << "browser.spawn"
+    args << "${file("${sorcerDistHome}").path}/bin/sorcer-browser"
+    args << "&"
     commandLine args
 }
-browser.onlyIf {
-    def jps = jps().execute()
-    !jps.text.contains("sorcer-browser")
-}
+//browser.onlyIf {
+//    def jps = jps().execute()
+//    !jps.text.contains("sorcer-browser")
+//}
 
 /*
  * Start the Rio UI

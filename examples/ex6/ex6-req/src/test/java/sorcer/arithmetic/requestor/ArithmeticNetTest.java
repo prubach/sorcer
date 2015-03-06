@@ -24,6 +24,7 @@ import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Arithmetic;
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.Subtractor;
+import sorcer.core.SorcerConstants;
 import sorcer.junit.SorcerServiceConfiguration;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
@@ -51,7 +52,7 @@ import static sorcer.eo.operator.*;
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
                  "org.sorcersoft.sorcer:sos-platform",
                 "org.sorcersoft.sorcer:ex6-api"})
-@SorcerServiceConfiguration(":ex6-cfg-all")
+@SorcerServiceConfiguration("org.sorcersoft.sorcer:ex6-cfg-all:" + SorcerConstants.SORCER_VERSION)
 public class ArithmeticNetTest {
 
 	private final static Logger logger = LoggerFactory

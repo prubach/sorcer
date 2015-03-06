@@ -56,7 +56,7 @@ import com.sleepycat.je.DatabaseException;
 
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api"})
+//@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api"})
 public class SorcerDatabaseTest {
 
 	private final static Logger logger = LoggerFactory

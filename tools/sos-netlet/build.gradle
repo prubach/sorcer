@@ -9,5 +9,4 @@ dependencies {
   runtime project(':sos:sos-api')
     testCompile group: 'junit', name: 'junit', version:junitVersion
     testCompile group: 'org.slf4j', name: 'slf4j-simple', version:slf4jVersion
-  testCompile project(':provider-root:examples:ex6:ex6-api')
 }

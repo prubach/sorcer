@@ -37,10 +37,10 @@ import static sorcer.eo.operator.*;
  */
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-        "org.sorcersoft.sorcer:ju-arithmetic-api",
-        "org.rioproject.monitor:monitor-api"
-})
+//@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+//        "org.sorcersoft.sorcer:ju-arithmetic-dl:pom",
+//        "org.rioproject.monitor:monitor-api"
+//})
 //@SorcerServiceConfiguration(":ex6-cfg-all")
 public class DeployExertionTest extends DeploySetup {
 
@@ -58,6 +58,7 @@ public class DeployExertionTest extends DeploySetup {
         //Util.waitForDeployment(manager);
         //System.out.println("Waited "+(System.currentTimeMillis()-t0)+" millis for [Sorcer OS] provisioning");
         Job f1 = Util.createJob();
+        logger.info("F1 for provisioning: " + f1.toString());
         //Task f1 = Util.createTaskt();
         assertTrue(f1.isProvisionable());
         verifyExertion(f1);

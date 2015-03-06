@@ -30,7 +30,7 @@ import sorcer.junit.SorcerRunner;
  */
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api"})
+//@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api"})
 //@SorcerServiceConfiguration(":ex6-cfg-all")
 public class ProvisionManagerTest extends DeploySetup {
 
