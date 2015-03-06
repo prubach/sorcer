@@ -170,6 +170,7 @@ task createDistribution(dependsOn: [":tools:sos-boot:install",
                               ":tools:sos-webster:install",
                               ":tools:sos-shell:install",
                               ":tools:sorcer-installer:install",
+                              grCacheToM2,
                               gatherDeps]) {
     description 'Creates a Sorcer distribution'
     doLast {
@@ -325,6 +326,7 @@ task createDistribution(dependsOn: [":tools:sos-boot:install",
                 include "com/google/google/5/google-5.pom"
                 include "asm/asm/3.3.1/asm-3.3.1.pom"
                 include "xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.pom"
+                include "xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.pom"
                 include "com/sleepycat/je/4.0.92/je-4.0.92.pom"
             }
             into "${project.buildDir.path}/tmp/configs/poms"
@@ -367,6 +369,17 @@ task createDistribution(dependsOn: [":tools:sos-boot:install",
         }
 
     }
+}
+
+task grCacheToM2(type: Exec) {
+    description = 'Copy jars from gradle cache to M2'
+    def args = []
+    if(System.properties['os.name'].contains("Windows")) {
+        args << "cmd.exe"
+        args << "/C"
+    }
+    args << "${file("${project.buildDir.path}").path}/../../bin/CacheToM2.groovy"
+    commandLine args
 }
 
 task distribution(type: Zip, dependsOn: [createDistribution]) {
