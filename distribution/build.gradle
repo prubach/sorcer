@@ -161,7 +161,18 @@ def filterDeps(project, prefix, dest) {
     }
 }
 
-task createDistribution(dependsOn: [":tools:sos-boot:install",
+task grCacheToM2(type: Exec) {
+    description = 'Copy jars from gradle cache to M2'
+    def args = []
+    if(System.properties['os.name'].contains("Windows")) {
+        args << "cmd.exe"
+        args << "/C"
+    }
+    args << "${file("${project.buildDir.path}").path}/../../bin/CacheToM2.groovy"
+    commandLine args
+}
+
+task createDistribution(dependsOn: [grCacheToM2, ":tools:sos-boot:install",
                               ":tools:sorcer-lib:install",
                               ":sos:sorcer-ui:install",
                               ":tools:sorcer-junit:install",
@@ -170,7 +181,6 @@ task createDistribution(dependsOn: [":tools:sos-boot:install",
                               ":tools:sos-webster:install",
                               ":tools:sos-shell:install",
                               ":tools:sorcer-installer:install",
-                              grCacheToM2,
                               gatherDeps]) {
     description 'Creates a Sorcer distribution'
     doLast {
@@ -369,17 +379,6 @@ task createDistribution(dependsOn: [":tools:sos-boot:install",
         }
 
     }
-}
-
-task grCacheToM2(type: Exec) {
-    description = 'Copy jars from gradle cache to M2'
-    def args = []
-    if(System.properties['os.name'].contains("Windows")) {
-        args << "cmd.exe"
-        args << "/C"
-    }
-    args << "${file("${project.buildDir.path}").path}/../../bin/CacheToM2.groovy"
-    commandLine args
 }
 
 task distribution(type: Zip, dependsOn: [createDistribution]) {
