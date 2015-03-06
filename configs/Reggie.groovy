@@ -27,7 +27,7 @@ deployment(name: 'Sorcer') {
         implementation(class: 'com.sun.jini.reggie.TransientRegistrarImpl') {
             artifact ref: 'reggie'
         }
-        configuration file: getSorcerHome() + "/configs/jini/configs/reggie.config"
+        configuration file: getSorcerHome() + "/configs/reggie.config"
         maintain 1
     }
 }

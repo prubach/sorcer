@@ -345,6 +345,27 @@ task createDistribution(dependsOn: [":tools:sos-boot:install",
             }
             into "${distDir}-${version}/configs/poms"
         }
+        //   Libs necessary for R-java integration - java.endorsed.dir should point to this directory
+        copy {
+            from(file("${sorcerDistHome}")) {
+                include "rio-${rioVersion}/lib/rio-platform*"
+                include "rio-${rioVersion}/lib/resolver/resolver-aether*"
+                include "lib/common/slf4j-simple*"
+                include "lib/sorcer/lib/sorcer-resolving-loader*"
+            }
+            into "${project.buildDir.path}/tmp/lib/rjava-endorsed"
+            eachFile {details ->
+                def targetPath = details.getSourceName()
+                details.path = targetPath
+            }
+        }
+        copy {
+            from(file("${project.buildDir.path}/tmp/lib/rjava-endorsed")) {
+                include "*.jar"
+            }
+            into "${distDir}-${version}/lib/rjava-endorsed"
+        }
+
     }
 }
 
