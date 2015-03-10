@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<izpack:installation version="5.0"
-                     xmlns:izpack="http://izpack.org/schema/installation"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+<installation version="1.0">
     <info>
         <appname>Sorcer</appname>
-        <appversion>@v_sorcer@</appversion>
         <appsubpath>sorcer</appsubpath>
+        <appversion>1.1-SNAPSHOT</appversion>
         <authors>
             <author email="sobol@sorcersoft.org" name="Michael Sobolewski"/>
             <author email="pawel.rubach@sorcersoft.com" name="Pawe&#x142; Rubach"/>
@@ -70,7 +67,7 @@
     <packs>
         <pack name="Sorcer OS" id="sorcer_os" loose="false" packImgId="os_pack" preselected="yes" required="yes">
             <description>SORCER Platform</description>
-            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
+            <fileset dir="../../../build/sorcer-1.1-SNAPSHOT" targetdir="$INSTALL_PATH"
                      defaultexcludes="yes">
                 <include name="bin/sorcer-boot" os="unix"/>
                 <include name="bin/sorcer-browser" os="unix"/>
@@ -96,7 +93,7 @@
                 <os family="unix"/>
                 <os family="mac"/>
             </fileset>
-            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
+            <fileset dir="../../../build/sorcer-1.1-SNAPSHOT" targetdir="$INSTALL_PATH"
                      defaultexcludes="yes">
                 <include name="bin/*.bat" os="windows"/>
                 <include name="bin/*.cmd" os="windows"/>
@@ -137,7 +134,7 @@
         </pack>
         <pack id="ant" name="Apache Ant" required="no">
             <description>Apache Ant - required to run Sorcer Examples</description>
-            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
+            <fileset dir="../../../build/sorcer-1.1-SNAPSHOT" targetdir="$INSTALL_PATH"
                      defaultexcludes="yes">
                 <include name="lib/apache-ant"/>
                 <include name="lib/apache-ant/**/*"/>
@@ -150,7 +147,7 @@
         </pack>
         <pack id="maven" name="Apache Maven" required="no">
             <description>Apache Maven - required to run Sorcer Examples</description>
-            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
+            <fileset dir="../../../build/sorcer-1.1-SNAPSHOT" targetdir="$INSTALL_PATH"
                      defaultexcludes="yes">
                 <include name="lib/apache-maven"/>
                 <include name="lib/apache-maven/**/*"/>
@@ -163,7 +160,7 @@
 
         <pack id="examples" loose="false" packImgId="examples_pack" name="Sorcer Examples" preselected="yes" required="no">
             <description>Sorcer Examples</description>
-            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@/examples"
+            <fileset dir="../../../build/sorcer-1.1-SNAPSHOT/examples"
                      targetdir="$INSTALL_PATH/examples" defaultexcludes="yes">
                 <include name="**/*"/>
                 <exclude name="**/target/**/*"/>
@@ -171,7 +168,7 @@
                 <exclude name="setenv"/>
                 <os family="windows"/>
             </fileset>
-            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@/examples"
+            <fileset dir="../../../build/sorcer-1.1-SNAPSHOT/examples"
                      targetdir="$INSTALL_PATH/examples" defaultexcludes="yes">
                 <include name="**/*"/>
                 <exclude name="**/target/**/*"/>
@@ -207,4 +204,4 @@
             <os family="windows"/>
         </listener>
     </listeners>
-</izpack:installation>
+</installation>

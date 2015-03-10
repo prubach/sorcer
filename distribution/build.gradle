@@ -19,6 +19,7 @@
 apply plugin: 'base'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'com.bmuschko.izpack'
 
 //version = sorcerVersion
 group = "org.sorcersoft.sorcer"
@@ -29,6 +30,16 @@ configurations {
     distribution.extendsFrom(runtime)
 }
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-izpack-plugin:2.0'
+    }
+}
+
 dependencies {
     ["mahalo", "outrigger", "reggie"].each { riverDep ->
         if(riverDep!="outrigger")
@@ -36,38 +47,26 @@ dependencies {
         distribution "org.apache.river:${riverDep}-dl:$riverVersion"
     }
     distribution "net.jini.lookup:serviceui:$riverVersion"
-    //["blitz", "blitz-dl", "blitzui"].each { blitz ->
-     //   distribution "org.dancres:${blitz}:$blitzVersion"
-   // }
     distribution "org.rioproject:distribution:${rioVersion}@zip"
+    izpack 'org.codehaus.izpack:izpack-standalone-compiler:4.3.5'
 }
 
 ext {
     distDir = "${project.buildDir.path}/sorcer"
 }
 
-task installer(dependsOn: ["distribution"]) {
+
+
+task installer(dependsOn: ["distribution", "izPackCreateInstaller"]) {
     description = "Creates a distribution and an IzPack based installer."
-    inputs.dir("${project.buildDir.path}/sorcer-${version}" as File)
-    outputs.files "${project.buildDir.path}/sorcer-${version}-installer.jar"
 
-    doLast {
-        ant.taskdef(name: 'izpack',
-                    classpath: fileTree(dir: file("${rootProject.projectDir.path}/distribution/izpack/lib"), includes: ['*.jar']).asPath,
-                    classname: 'com.izforge.izpack.ant.IzPackTask')
-
-        ant.property(name: 'app.group',   value: 'SORCER')
-        ant.property(name: 'app.name',    value: 'SORCER')
-        ant.property(name: 'app.title',   value: 'SORCER')
-        ant.property(name: 'app.version', value: version)
-        ant.property(name: 'app.subpath', value: "SORCER-$version")
-
-        ant.izpack(basedir: "${rootProject.projectDir.path}/distribution/izpack",
-                   output: "${project.buildDir.path}/sorcer-${version}-installer.jar",
-                   compression: 'deflate',
-                   compressionlevel: '9') {
-            config(file("${rootProject.projectDir.path}/distribution/izpack/installer.xml").text)
-        }
+    izpack {
+        baseDir = file("$buildDir/../src/main/izpack")
+        outputFile = file("$buildDir/sorcer-${version}-installer.jar")
+        compression = 'deflate'
+        compressionLevel = 9
+        appProperties = ['app.group': 'org.sorcersoft.sorcer', 'app.name': 'sorcer', 'app.title': 'Sorcer',
+                         'app.version': version, 'app.subpath': "sorcer-$version", 'v_sorcer' : version]
     }
 }
 installer.outputs.upToDateWhen { false }

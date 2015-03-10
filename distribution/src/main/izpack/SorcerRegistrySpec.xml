@@ -1,7 +1,4 @@
-<izpack:registry version="5.0"
-                 xmlns:izpack="http://izpack.org/schema/registry"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://izpack.org/schema/registry http://izpack.org/schema/5.0/izpack-registry-5.0.xsd">
+<registry>
     <pack name="Sorcer OS">
         <value name="SORCER_HOME"
                keypath="Environment"
@@ -20,4 +17,4 @@
                root="HKCU"
                string="$INSTALL_PATH/lib/apache-maven"/>
     </pack>-->
-</izpack:registry>
+</registry>
