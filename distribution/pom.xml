@@ -81,6 +81,11 @@
             <artifactId>sorcer-boot-rio</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-boot-resolver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 <!--
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
