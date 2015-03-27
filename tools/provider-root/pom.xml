@@ -75,6 +75,11 @@
                 <version>${v.slf4j}</version>
             </dependency>
             <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${v.slf4j}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
                 <version>${v.groovy}</version>
