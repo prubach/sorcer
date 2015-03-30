@@ -230,6 +230,7 @@ public abstract class Launcher implements ILauncher {
         //rio
         sysProps.put("org.rioproject.service", "all");
         sysProps.put("RIO_HOME", rio.getPath());
+        sysProps.put("rio.home", rio.getPath());
         sysProps.put("RIO_LOG_DIR", logDir.getPath());
         sysProps.put("org.rioproject.resolver.jar", resolverPath);
 

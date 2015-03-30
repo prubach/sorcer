@@ -248,6 +248,7 @@ lateInit ( ) {
 		-Dtools.jar=$TOOLS_JAR \
 		-Dorg.rioproject.resolver.jar=$MVN_REPO/org/rioproject/resolver/resolver-aether/$V_RIO/resolver-aether-$V_RIO.jar \
 		-DRIO_HOME=$rioHome\
+		-Drio.home=$rioHome\
 		-Dsorcer.home=$SORCER_HOME\
 		-Dwebster.tmp.dir=$WEBSTER_DATA_DIR\
         -Dwebster.put.dir=$WEBSTER_DATA_DIR"
