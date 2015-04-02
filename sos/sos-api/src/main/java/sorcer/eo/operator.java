@@ -1654,6 +1654,16 @@ public class operator {
         return new InEndPoint(inComponent, inPath);
     }
 
+    // Added for compatibility with SORCER 5.1.x
+    public static InEndPoint inPoint(String inComponent, String inPath) {
+        return in(inComponent, inPath);
+    }
+
+    // Added for compatibility with SORCER 5.1.x
+    public static OutEndPoint outPoint(Mappable outExertion, String outPath) {
+        return new OutEndPoint(outExertion, outPath);
+    }
+
     public static OutEndPoint output(Mappable outExertion, String outPath) {
         return new OutEndPoint(outExertion, outPath);
     }
