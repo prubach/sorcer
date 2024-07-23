@@ -16,7 +16,7 @@
 
 	<properties>
         <v.commons_compress>1.0</v.commons_compress>
-        <v.commons_collections>3.2.1</v.commons_collections>
+        <v.commons_collections>3.2.2</v.commons_collections>
 	</properties>
 
 	<dependencies>
